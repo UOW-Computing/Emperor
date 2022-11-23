@@ -36,15 +36,7 @@ class LJ:
 			logFile.write(format+ "\n")
 		logFile.close()
 
-	
-	# def LOGinChannel(guild: discord.guild, message: str) -> None:
-	# 	# send a log in log channel
-	# 	if logChannelID is not None:
-	# 		e = discord.Embed(title="LJ", description=f"{message}")
-	# 		print(logChannelID)
-	# 		channel = guild.get_channel(logChannelID)
-	# 		print(channel)
-	# 		#channel.send(embed=e)
+
 
 
 	def ljERROR():

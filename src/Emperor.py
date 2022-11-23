@@ -2,12 +2,12 @@ from discord.ext import commands
 import discord
 from lj import LJ
 
+
 # ----------------------------------
 PREFIX = "/"
-__cogs__ = ['cogs.admins']
+__cogs__ = ['cogs.admins', 'cogs.general']
 logChannelID = '1043986118258987008'
 # ----------------------------------
-
 
 
 class Emperor(commands.Bot):
@@ -38,10 +38,3 @@ class Emperor(commands.Bot):
 
 	async def on_command(self, ctx):
 		self.log.LOG("main/CommandHandler",f"Executing {ctx.command}")
-	
-	# handle_command(b);
-
-
-emperor = Emperor()
-
-emperor.run('Nzk3OTE1OTUxNDU3NzYzMzI4.GMKpcK.YKxB0lQb4CYB-Zm3_tYhf4AHhSbXM1KXx_oDRA')

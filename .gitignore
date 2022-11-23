@@ -2,3 +2,5 @@ node_modules/*
 __pycache__/*
 logs
 cogs/__pycache__/*
+package-lock.json
+package.json
