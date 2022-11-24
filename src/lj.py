@@ -1,6 +1,5 @@
 import time
-from src.util import TerminalColours
-import discord
+
 # -------------------------------------------------
 logChannelID = '1043986118258987008'
 # -------------------------------------------------

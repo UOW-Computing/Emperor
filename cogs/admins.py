@@ -6,18 +6,18 @@ from src.lj import LJ
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+    #
 
-    @commands.command(name="addrole", aliases=['addRole', 'roleAdd', 'newRole', 'createRole'])
-    async def add_role(self, ctx, *, args=None):
+    @commands.slash_command(name="addrole", description="Adds a role", guild_ids=[573602053352456193])
+    async def add_role(self, ctx, *, role_name=None):
         # local vars used
         ROLE_ALREADY_EXISTS_FLAG = False
         ROLE_ID = 0
         member = ctx.author
         guild = ctx.guild
-
         # role name, needs to be passed as
         # param
-        if not args:
+        if not role_name:
             await ctx.send(embed=no_args_erro(ctx.author, ctx.command.name))
         # get a list of perms the member has
         perms = ', '.join(
@@ -28,23 +28,24 @@ class Admin(commands.Cog):
             # check if the role already exists
             roles = await guild.fetch_roles()
             for role in roles:
-                if role.name == args:
+                if role.name == role_name:
                     # print("Role already exists")
                     ROLE_ALREADY_EXISTS_FLAG = True
                     ROLE_ID = role.id
                     break
 
             if ROLE_ALREADY_EXISTS_FLAG == False:
-                await guild.create_role(name=args, reason=f'{member} created role through command')
-                LJ.LOG("admins/roleAdd", f'{member} has created role {args}')
+                await guild.create_role(name=role_name, reason=f'{member} created role through command')
+                LJ.LOG("admins/roleAdd",
+                       f'{member} has created role {role_name}')
             else:
                 LJ.LOG(
                     "admins/roleAdd", f'{member} attempted to create a role that already exists!')
-                await ctx.send(f'{member}, <@&{ROLE_ID}> already exists. Duplicate roles cannot be created!')
+                await ctx.respond(f'{member}, <@&{ROLE_ID}> already exists. Duplicate roles cannot be created!')
 
         else:
-            await ctx.send(f'Insufficient Perms, <@{member.id}>')
+            await ctx.respond(f'Insufficient Perms, <@{member.id}>')
 
 
-async def setup(bot):
-    await bot.add_cog(Admin(bot))
+def setup(bot):
+    bot.add_cog(Admin(bot))

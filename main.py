@@ -1,6 +1,19 @@
+import discord
+import os
+from dotenv import load_dotenv
 from src.Emperor import Emperor
 
 
+bot = discord.Bot()
+__cogs__ = ['cogs.admins']
+
+load_dotenv()
+
+
 emperor = Emperor()
-emperor.run(
-    'Nzk3OTE1OTUxNDU3NzYzMzI4.GMKpcK.YKxB0lQb4CYB-Zm3_tYhf4AHhSbXM1KXx_oDRA')
+
+
+for cog in __cogs__:
+    emperor.load_extension(cog)
+
+emperor.run(os.getenv('TOKEN'))
