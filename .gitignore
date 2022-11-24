@@ -4,3 +4,5 @@ logs
 cogs/__pycache__/*
 package-lock.json
 package.json
+src/__pycache__/*
+
