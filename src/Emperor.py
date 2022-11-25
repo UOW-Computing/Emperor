@@ -2,10 +2,8 @@ from discord.ext import commands
 import discord
 from src.lj import LJ
 
-
 # ----------------------------------
 PREFIX = "/"
-__cogs__ = ['cogs.admins']
 logChannelID = '1043986118258987008'
 # ----------------------------------
 
@@ -24,9 +22,6 @@ class Emperor(commands.Bot):
     @commands.Cog.listener()
     async def on_ready(self):
         await self.change_presence(status=discord.Status.dnd, activity=discord.Game(name="<!>"))
-
-        for cog in __cogs__:
-            await self.load_extension(cog)
 
         print(f'BOT READY: {self.user}')
 
