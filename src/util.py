@@ -1,5 +1,7 @@
 import discord
+
 PREFIX = "/"
+GUILD_ID = [573602053352456193]
 
 # Depreciated method
 

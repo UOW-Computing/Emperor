@@ -2,10 +2,8 @@ from discord.ext import commands
 import discord
 from src.lj import LJ
 
-# Nzk3OTE1OTUxNDU3NzYzMzI4.GMKpcK.YKxB0lQb4CYB-Zm3_tYhf4AHhSbXM1KXx_oDRA
 # ----------------------------------
 PREFIX = "/"
-
 logChannelID = '1043986118258987008'
 # ----------------------------------
 
