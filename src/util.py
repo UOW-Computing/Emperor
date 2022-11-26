@@ -2,6 +2,7 @@ import discord
 
 PREFIX = "/"
 GUILD_ID = [573602053352456193]
+logChannelID = '1043986118258987008'
 
 # Depreciated method
 
