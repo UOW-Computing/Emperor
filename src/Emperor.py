@@ -4,7 +4,6 @@ from src.util import *
 
 import discord
 
-
 class Emperor(commands.Bot):
 
     log = LJ()
