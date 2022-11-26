@@ -8,6 +8,7 @@ import time
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
     @commands.slash_command(name="kick",
                             description="Kicks the mentioned user",
                             guild_ids=GUILD_ID)
@@ -47,12 +48,6 @@ class Admin(commands.Cog):
                             guild_ids=GUILD_ID)
     async def clear(self, ctx, message_limit: Option(int, "Enter the number of messages to delete",
                                                      required=True, default=100)):
-    @commands.slash_command(name="clear",
-                            description="Clears message in the mentiond channel",
-                            guild_ids=GUILD_ID)
-    async def clear(self, ctx, *, message_limit: Option(int, "Enter the number of messages to delete",
-                                                        required=None, default=100)):
-
         # Respond to the user
         await ctx.response.send_message(
             f'Executing command in <#{ctx.channel.id}>', ephemeral=True)
