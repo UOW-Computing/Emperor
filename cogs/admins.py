@@ -8,12 +8,51 @@ import time
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+    @commands.slash_command(name="kick",
+                            description="Kicks the mentioned user",
+                            guild_ids=GUILD_ID)
+    async def kick(self, ctx, user: Option(discord.Member, "Enter the user to kick",
+                                           required=True),
+                   reason: Option(str, "Enter the reason the user is being kicked for",
+                                  required=True, default="No Reason was provided!")):
 
+        if ctx.author.id == user.id:
+            await ctx.response.send_message(
+                'You cannot kick yourself, it is not possible. `;-;`', ephemeral=True)
+            return None
+
+        # get a list of perms the member has
+        perms = ', '.join(
+                perm for perm, value in ctx.author.guild_permissions if value)
+
+        userPerms = ', '.join(
+            perm for perm, value in user.guild_permissions if value)
+
+        # make sure that the user has perms to kick
+        if 'kick_member' not in perms:
+            await ctx.response.send_message("You do not have permission to execute this command!", ephemeral=True)
+            return None
+
+        # if the user has any manage perms then they cannot be kicked
+        if 'manage_guild' in userPerms or 'kick_member' in userPerms or 'ban_memeber' in userPerms:
+            await ctx.response.send_message("This user cannot be kicked, as they have manage perms", ephemeral=True)
+            return None
+
+        await discord.Member.kick(self=user, reason=reason)
+
+        await ctx.respond(f'<@{user.id}> has been kicked from the server!')
+
+    @commands.slash_command(name="clear",
+                            description="Clears message in the mentiond channel",
+                            guild_ids=GUILD_ID)
+    async def clear(self, ctx, message_limit: Option(int, "Enter the number of messages to delete",
+                                                     required=True, default=100)):
     @commands.slash_command(name="clear",
                             description="Clears message in the mentiond channel",
                             guild_ids=GUILD_ID)
     async def clear(self, ctx, *, message_limit: Option(int, "Enter the number of messages to delete",
                                                         required=None, default=100)):
+
         # Respond to the user
         await ctx.response.send_message(
             f'Executing command in <#{ctx.channel.id}>', ephemeral=True)
@@ -72,7 +111,8 @@ class Admin(commands.Cog):
         # role name, needs to be passed as
         # param
         if not role_name:
-            await ctx.respond(f'Command: `{ctx.command.name}` takes in a parameters, none was provided.', ephemeral=True)
+            await ctx.respond(f'Command: `{ctx.command.name}` takes in a parameter, none was provided.', ephemeral=True)
+            return -1
         # get a list of perms the member has
         perms = ', '.join(
                 perm for perm, value in member.guild_permissions if value)

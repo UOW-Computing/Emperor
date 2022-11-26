@@ -1,12 +1,8 @@
 from discord.ext import commands
-import discord
 from src.lj import LJ
+from src.util import *
 
-# ----------------------------------
-PREFIX = "/"
-logChannelID = '1043986118258987008'
-# ----------------------------------
-
+import discord
 
 class Emperor(commands.Bot):
 
@@ -28,6 +24,9 @@ class Emperor(commands.Bot):
     async def on_message(self, message):
         if message.author.bot:
             return
+
+        # Figure out if the message is from DM or guild
+
         self.log.LOG(context=f'{message.guild.name}/{message.channel.name}',
                      message=f'{message.author} [ID: {message.id}] {message.content}')
         await self.process_commands(message)
