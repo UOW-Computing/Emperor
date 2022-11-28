@@ -4,14 +4,17 @@ from src.util import *
 
 import discord
 
+
 class Emperor(commands.Bot):
 
-    log = LJ()
+    log = None
 
     def __init__(self):
 
         intents = discord.Intents.default()
         intents.message_content = True
+
+        self.log = LJ(self)
 
         super().__init__(command_prefix=PREFIX, description="Help me", intents=intents)
 
@@ -23,12 +26,12 @@ class Emperor(commands.Bot):
 
     async def on_message(self, message):
         if message.author.bot:
-            return
+            return None
 
         # Figure out if the message is from DM or guild
-
+        await self.log.LOGChannel(message=message)
         self.log.LOG(context=f'{message.guild.name}/{message.channel.name}',
-                     message=f'{message.author} [ID: {message.id}] {message.content}')
+                     message=f'{message.author} [MSG ID: {message.id}] {message.content}')
         await self.process_commands(message)
 
     async def on_command(self, ctx):

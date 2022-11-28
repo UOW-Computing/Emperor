@@ -20,6 +20,8 @@ class Admin(commands.Cog):
         if ctx.author.id == user.id:
             await ctx.response.send_message(
                 'You cannot kick yourself, it is not possible. `;-;`', ephemeral=True)
+            LJ.LOG("admins/kick",
+                   "User attempted to kick themselves, stopped execution.")
             return None
 
         # get a list of perms the member has
@@ -32,15 +34,19 @@ class Admin(commands.Cog):
         # make sure that the user has perms to kick
         if 'kick_member' not in perms:
             await ctx.response.send_message("You do not have permission to execute this command!", ephemeral=True)
+            LJ.LOG(
+                "admins/kick", "User does not have permission to execute this command, stopping execution.")
             return None
 
         # if the user has any manage perms then they cannot be kicked
-        if 'manage_guild' in userPerms or 'kick_member' in userPerms or 'ban_memeber' in userPerms:
-            await ctx.response.send_message("This user cannot be kicked, as they have manage perms", ephemeral=True)
+        if 'manage_guild' in userPerms or 'kick_member' in userPerms or 'ban_member' in userPerms:
+            await ctx.response.send_message("This user cannot be kicked!", ephemeral=True)
+            LJ.LOG(
+                "admins/kick", "User cannot be kicked as they have kick/ban/manage guild perms, stopping execution.")
             return None
 
         await discord.Member.kick(self=user, reason=reason)
-
+        LJ.LOG("admins/kick", f'{user} has been kicked by {ctx.author}')
         await ctx.respond(f'<@{user.id}> has been kicked from the server!')
 
     @commands.slash_command(name="clear",
@@ -56,6 +62,8 @@ class Admin(commands.Cog):
             await ctx.followup.send(
                 'Message limit is `100`, deleting more than `100` messages can only be done executing the command multiple times.',
                 ephemeral=True)
+            LJ.LOG(
+                "admins/clear", "Command execution was stopped due to message limit being greater than 100.")
             return -1
 
         # Get the messages and turn into list
@@ -64,6 +72,9 @@ class Admin(commands.Cog):
         # Delete the messages one by one
         for message in messagelist:
             await message.delete()
+
+        LJ.LOG("admins/clear",
+               f"Cleared {message_limit} messages in {ctx.channel.name}/{ctx.channel.id}")
 
         # inform the user the command has been executed
         await ctx.followup.send(f'Command Executed!', ephemeral=True)
@@ -79,9 +90,13 @@ class Admin(commands.Cog):
         if description == '':
             await ctx.response.send_message(
                 f'Command `{ctx.command.name}` requires parameter `description` to be provided.', ephemeral=True)
+            LJ.LOG("admins/announce",
+                   message=f'Parameter was not given, stopping execution.')
             return -1
         elif len(description) >= 4096:
             await ctx.response.send_message(f'`description` must be 4096 or less in length.', ephemeral=True)
+            LJ.LOG("admins/announce",
+                   message=f'Parameter size is greater than 4096 characters, stopping execution.')
             return -1
 
             # make the embed
@@ -91,8 +106,12 @@ class Admin(commands.Cog):
                          icon_url=ctx.user.display_avatar)
         embed.set_footer(text=self.bot.user.name,
                          icon_url=self.bot.user.display_avatar)
+
+        LJ.LOG(context="admins/announce",
+               message=f"announce was run by {ctx.author} in {ctx.channel.name}/{ctx.channel.id}")
         # send the embed
         await ctx.respond(embed=embed)
+#
 
     @commands.slash_command(name="addrole",
                             description="Adds a role",
