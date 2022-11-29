@@ -22,7 +22,7 @@ class Admin(commands.Cog):
     - announce
     - kick
     - clear
-    - add role
+    - add role // TODO: CHANGE COMMAND NAME INTO CREATE ROLE/CHANNEL
 
     """
 
@@ -122,21 +122,36 @@ class Admin(commands.Cog):
                                     ephemeral=True)
             LJ.LOG("admins/clear",
                    "Command stopped due to message limit being >100.")
-            return -1
+            return None
 
-        # Get the messages and turn into list
-        messagelist = await ctx.channel.history(limit=message_limit).flatten()
+        # get a list of perms the member has
+        perms = ', '.join(
+                perm for perm, value in ctx.author.guild_permissions if value)
 
-        # Delete the messages one by one
-        for message in messagelist:
-            await message.delete()
+        match(perms):
+            case 'manage_messages':
+                # Get the messages and turn into list
+                messagelist = await ctx.channel.history(limit=message_limit).flatten()
 
-        LJ.LOG("admins/clear",
-               f"Cleared {message_limit} messages in <#{ctx.channel.id}>")
+                # Delete the messages one by one
+                # for message in messagelist:
+                #     await message.delete()
 
-        # inform the user the command has been executed
-        await ctx.followup.send('Command Executed!', ephemeral=True)
+                LJ.LOG("admins/clear",
+                    f"Cleared {message_limit} messages in <#{ctx.channel.id}>")
 
+                # inform the user the command has been executed
+                await ctx.followup.send('Command Executed!', ephemeral=True)
+
+            case _:
+                await ctx.followup.send(
+                    "You do not have permission to execute this command!",
+                    ephemeral=True)
+                LJ.LOG("admins/kick",
+                    "User has no perms to run this command, stopped execution.")
+                return None
+
+        
     @commands.slash_command(name="announce",
                             description="Sends a embed in given channel",
                             guild_ids=GUILD_ID)
@@ -144,7 +159,7 @@ class Admin(commands.Cog):
                        title: Option(str,
                                      "Enter Title", required=False, default=''),
                        description: Option(str,
-                                           "Enter the announcement", required=True, default='')
+                                    "Enter the announcement", required=True, default='')
                        ):
         # ensure that the description has a value
         # and the length does not go above
@@ -155,13 +170,13 @@ class Admin(commands.Cog):
                 ephemeral=True)
             LJ.LOG("admins/announce",
                    message='Parameter was not given, stopping execution.')
-            return -1
+            return None
         elif len(description) >= 4096:
             await ctx.response.send_message(
                 '`description` must be 4096 or less in length.', ephemeral=True)
             LJ.LOG("admins/announce",
                    'Parameter size is >4096 characters, stopping execution.')
-            return -1
+            return None
 
         # make the embed
         embed = discord.Embed(title=title if title != '' else None,
@@ -193,7 +208,7 @@ class Admin(commands.Cog):
             await ctx.respond(
                 f'`{ctx.command.name}` takes a parameter, none was provided.',
                 ephemeral=True)
-            return -1
+            return None
         # get a list of perms the member has
         perms = ', '.join(
                 perm for perm, value in member.guild_permissions if value)

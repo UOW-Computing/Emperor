@@ -46,7 +46,11 @@ class LJ:
         if LOGCHANNELID is None:
             self.WARN("logger/LogChannel",
                       "Log Channel ID is undefined, cannot log inside servers")
-        logChannel = await message.guild.fetch_channel(LOGCHANNELID)
+        try:
+            logChannel = await message.guild.fetch_channel(LOGCHANNELID[0])
+        except:
+            logChannel = await message.guild.fetch_channel(LOGCHANNELID[1])
+
 
         # form a embed
         e = discord.Embed(title="Content",
