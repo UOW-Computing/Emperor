@@ -1,8 +1,10 @@
+# pylint: disable=assigning-non-slot
+import discord
+
 from discord.ext import commands
 from src.lj import LJ
-from src.util import *
+from src.util import PREFIX
 
-import discord
 
 
 class Emperor(commands.Bot):
@@ -16,11 +18,15 @@ class Emperor(commands.Bot):
 
         self.log = LJ(self)
 
-        super().__init__(command_prefix=PREFIX, description="Help me", intents=intents)
+        super().__init__(command_prefix=PREFIX,
+                         description="Help me",
+                         intents=intents)
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.change_presence(status=discord.Status.dnd, activity=discord.Game(name="<!>"))
+        await self.change_presence(
+                                   status=discord.Status.dnd,
+                                   activity=discord.Game(name="<!>"))
 
         print(f'BOT READY: {self.user}')
 
@@ -30,8 +36,8 @@ class Emperor(commands.Bot):
 
         # Figure out if the message is from DM or guild
         await self.log.LOGChannel(message=message)
-        self.log.LOG(context=f'{message.guild.name}/{message.channel.name}',
-                     message=f'{message.author} [MSG ID: {message.id}] {message.content}')
+        self.log.LOG(f'{message.guild.name}/{message.channel.name}',
+                   f'{message.author} [MSG ID: {message.id}] {message.content}')
         await self.process_commands(message)
 
     async def on_command(self, ctx):

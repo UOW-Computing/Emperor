@@ -1,5 +1,6 @@
-import discord
 import os
+import discord
+
 from dotenv import load_dotenv
 from src.Emperor import Emperor
 
