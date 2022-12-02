@@ -22,7 +22,8 @@ class Admin(commands.Cog):
     - announce
     - kick
     - clear
-    - add role
+    - createrole 
+    // TODO: CHANGE COMMAND NAME INTO CREATE, add subcommands ROLE/CHANNEL
 
     """
 
@@ -34,11 +35,11 @@ class Admin(commands.Cog):
                             guild_ids=GUILD_ID)
     async def kick(self, ctx,
                    user: Option(discord.Member,
-                                "Enter the user to kick",
-                                required=True),
+                            "Enter the user to kick",
+                            required=True),
                    reason: Option(str,
-                                  "Enter the reason the user is being kicked for",
-                                  required=True, default="No Reason was provided!")):
+                            "Enter the reason the user is being kicked for",
+                            required=True, default="No Reason was provided!")):
         """
         Command to kick a user from the server.
 
@@ -78,7 +79,7 @@ class Admin(commands.Cog):
 
         # if the user has any manage perms then they cannot be kicked
         match(userPerms):
-            case ['manage_guild', 'kick_member', 'ban_member']:
+            case 'kick_member':
                 await ctx.response.send_message("This user cannot be kicked!",
                                                 ephemeral=True)
                 LJ.LOG("admins/kick",
@@ -93,28 +94,26 @@ class Admin(commands.Cog):
                             description="Deletes messages in a channel",
                             guild_ids=GUILD_ID)
     async def clear(self, ctx,
-                    message_limit: Option(int,
+                    mlimit: Option(int,
                         "Enter the number of messages to delete",
                         required=True, default=100)):
 
         """
-        This is an example of Google style.
+        Clears a channels messages
 
         Args:
-            param1: This is the first param.
-            param2: This is a second param.
+            mlimit: the number of messages to delete (default is 100)
 
         Returns:
-            This is a description of what is returned.
+            None: Indicating that the command run unsuccessfuly
+            Nothing: The cccommand run successful.
 
-        Raises:
-            KeyError: Raises an exception.
         """
         # Respond to the user
         await ctx.response.send_message(
             f'Executing command in <#{ctx.channel.id}>', ephemeral=True)
 
-        if int(message_limit) > 100:
+        if int(mlimit) > 100:
             await ctx.followup.send("""Message limit is `100`.
             Deleting `>100` messages cannot be done through a single command.
             Use the command multiple times to delete more than 100 messages.
@@ -124,28 +123,52 @@ class Admin(commands.Cog):
                    "Command stopped due to message limit being >100.")
             return -1
 
-        # Get the messages and turn into list
-        messagelist = await ctx.channel.history(limit=message_limit).flatten()
+        # get a list of perms the member has
+        perms = ', '.join(
+                perm for perm, value in ctx.author.guild_permissions if value)
 
-        # Delete the messages one by one
-        for message in messagelist:
-            await message.delete()
+        if 'manage_messages' in perms:
+            # Respond to the user
+            await ctx.response.send_message(
+                f'Executing command in <#{ctx.channel.id}>', ephemeral=True)
 
-        LJ.LOG("admins/clear",
-               f"Cleared {message_limit} messages in <#{ctx.channel.id}>")
+            # Get the messages and turn into list
+            messagelist = await ctx.channel.history(limit=mlimit).flatten()
 
-        # inform the user the command has been executed
-        await ctx.followup.send('Command Executed!', ephemeral=True)
+            # Delete the messages one by one
+            for message in messagelist:
+                await message.delete()
+
+            LJ.LOG("admins/clear",
+                f"Cleared {mlimit} messages in <#{ctx.channel.id}>")
+
+            # inform the user the command has been executed
+            await ctx.followup.send('Command Executed!', ephemeral=True)
+        else:
+            await ctx.response.send_message('You do not have perms for this!!', 
+            ephemeral=True)
 
     @commands.slash_command(name="announce",
                             description="Sends a embed in given channel",
                             guild_ids=GUILD_ID)
     async def announce(self, ctx,
                        title: Option(str,
-                                     "Enter Title", required=False, default=''),
+                            "Enter Title", required=False, default=''),
                        description: Option(str,
-                                           "Enter the announcement", required=True, default='')
+                            "Enter the announcement", required=True, default='')
                        ):
+        """
+        Makes an embed in the mentioned channel
+
+        Args:
+            title: the title of the embed
+            description: the description of the embedd (the content)
+
+        Returns:
+            None: Indicating that the command run unsuccessfuly
+            Nothing: The command run successful.
+
+        """
         # ensure that the description has a value
         # and the length does not go above
         # 4096 characters
@@ -172,16 +195,28 @@ class Admin(commands.Cog):
                          icon_url=self.bot.user.display_avatar)
 
         LJ.LOG(context="admins/announce",
-               message=f"announce executed by {ctx.author} in <#{ctx.channel.id}>")
+            message=f"announce executed by {ctx.author} in <#{ctx.channel.id}>")
         # send the embed
         await ctx.respond(embed=embed)
 
-    @commands.slash_command(name="addrole",
+    @commands.slash_command(name="createrole",
                             description="Adds a role",
                             guild_ids=GUILD_ID)
-    async def add_role(self, ctx, *,
+    async def create_role(self, ctx, *,
                        role_name: Option(str,
-                                         "Enter role name", required=True, default=None)):
+                                         "Enter role name",
+                                         required=True, default=None)):
+        """
+        Creates a new role
+
+        Args:
+            role_name: The name of the role
+
+        Returns:
+            None: Indicating that the command run unsuccessfuly
+            Nothing: The command run successful.
+
+        """
         # local vars used
         ROLE_ALREADY_EXISTS_FLAG = False
         ROLE_ID = 0
