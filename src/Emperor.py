@@ -1,15 +1,15 @@
 # pylint: disable=assigning-non-slot
+import os
 import discord
 
 from discord.ext import commands
 from src.lj import LJ
-from src.util import PREFIX
-
 
 
 class Emperor(commands.Bot):
 
     log = None
+
 
     def __init__(self):
 
@@ -18,7 +18,7 @@ class Emperor(commands.Bot):
 
         self.log = LJ(self)
 
-        super().__init__(command_prefix=PREFIX,
+        super().__init__(command_prefix=os.getenv('BOT_PREFIX'),
                          description="Help me",
                          intents=intents)
 

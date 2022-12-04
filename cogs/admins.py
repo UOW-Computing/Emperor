@@ -5,12 +5,12 @@ admins.py
 Holds all the commands for admin category.
 """
 
+import os
 import discord
 
 from discord.commands import Option
 from discord.ext import commands
 
-from src.util import GUILD_ID
 from src.lj import LJ
 
 
@@ -32,7 +32,7 @@ class Admin(commands.Cog):
 
     @commands.slash_command(name="kick",
                             description="Kicks the mentioned user",
-                            guild_ids=GUILD_ID)
+                            guild_ids=eval(os.getenv('GUILD_ID')))
     async def kick(self, ctx,
                    user: Option(discord.Member,
                             "Enter the user to kick",
@@ -92,7 +92,7 @@ class Admin(commands.Cog):
 
     @commands.slash_command(name="clear",
                             description="Deletes messages in a channel",
-                            guild_ids=GUILD_ID)
+                            guild_ids=eval(os.getenv('GUILD_ID')))
     async def clear(self, ctx,
                     mlimit: Option(int,
                         "Enter the number of messages to delete",
@@ -109,9 +109,6 @@ class Admin(commands.Cog):
             Nothing: The cccommand run successful.
 
         """
-        # Respond to the user
-        await ctx.response.send_message(
-            f'Executing command in <#{ctx.channel.id}>', ephemeral=True)
 
         if int(mlimit) > 100:
             await ctx.followup.send("""Message limit is `100`.
@@ -150,7 +147,7 @@ class Admin(commands.Cog):
 
     @commands.slash_command(name="announce",
                             description="Sends a embed in given channel",
-                            guild_ids=GUILD_ID)
+                            guild_ids=eval(os.getenv('GUILD_ID')))
     async def announce(self, ctx,
                        title: Option(str,
                             "Enter Title", required=False, default=''),
@@ -201,7 +198,7 @@ class Admin(commands.Cog):
 
     @commands.slash_command(name="createrole",
                             description="Adds a role",
-                            guild_ids=GUILD_ID)
+                            guild_ids=eval(os.getenv('GUILD_ID')))
     async def create_role(self, ctx, *,
                        role_name: Option(str,
                                          "Enter role name",

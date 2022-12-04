@@ -1,7 +1,6 @@
+import os
 import time
 import discord
-from src.util import LOGCHANNELID
-
 
 class LJ:
 
@@ -9,7 +8,7 @@ class LJ:
     logfile = None
 
     def __init__(self, bot) -> None:
-        if LOGCHANNELID is None:
+        if int(eval(os.getenv('LOG_CHANNEL_ID'))) is None:
             self.WARN("logger/init", "Channel ID is undefined!")
         self.logfile = f'logs-{time.ctime(time.time())}'
 
@@ -43,10 +42,10 @@ class LJ:
         logFile.close()
 
     async def LOGChannel(self, message: discord.Message) -> None:
-        if LOGCHANNELID is None:
+        if eval(os.getenv('LOG_CHANNEL_ID'))  is None:
             self.WARN("logger/LogChannel",
                       "Log Channel ID is undefined, cannot log inside servers")
-        logChannel = await message.guild.fetch_channel(LOGCHANNELID)
+        logChannel = await message.guild.fetch_channel(eval(os.getenv('LOG_CHANNEL_ID')))
 
         # form a embed
         e = discord.Embed(title="Content",
