@@ -4,6 +4,7 @@ admins.py
 
 Holds all the commands for admin category.
 """
+# pylint: disable=eval-used
 
 import os
 import discord
@@ -22,7 +23,7 @@ class Admin(commands.Cog):
     - announce
     - kick
     - clear
-    - createrole 
+    - createrole
     // TODO: CHANGE COMMAND NAME INTO CREATE, add subcommands ROLE/CHANNEL
 
     """
@@ -35,11 +36,11 @@ class Admin(commands.Cog):
                             guild_ids=eval(os.getenv('GUILD_ID')))
     async def kick(self, ctx,
                    user: Option(discord.Member,
-                            "Enter the user to kick",
-                            required=True),
+                                "Enter the user to kick",
+                                required=True),
                    reason: Option(str,
-                            "Enter the reason the user is being kicked for",
-                            required=True, default="No Reason was provided!")):
+                                  "Enter the reason the user is being kicked for",
+                                  required=True, default="No Reason was provided!")):
         """
         Command to kick a user from the server.
 
@@ -95,8 +96,8 @@ class Admin(commands.Cog):
                             guild_ids=eval(os.getenv('GUILD_ID')))
     async def clear(self, ctx,
                     mlimit: Option(int,
-                        "Enter the number of messages to delete",
-                        required=True, default=100)):
+                                   "Enter the number of messages to delete",
+                                   required=True, default=100)):
 
         """
         Clears a channels messages
@@ -137,22 +138,23 @@ class Admin(commands.Cog):
                 await message.delete()
 
             LJ.LOG("admins/clear",
-                f"Cleared {mlimit} messages in <#{ctx.channel.id}>")
+                   f"Cleared {mlimit} messages in <#{ctx.channel.id}>")
 
             # inform the user the command has been executed
             await ctx.followup.send('Command Executed!', ephemeral=True)
         else:
-            await ctx.response.send_message('You do not have perms for this!!', 
-            ephemeral=True)
+            await ctx.response.send_message('You do not have perms for this!!',
+                                            ephemeral=True)
 
     @commands.slash_command(name="announce",
                             description="Sends a embed in given channel",
                             guild_ids=eval(os.getenv('GUILD_ID')))
     async def announce(self, ctx,
                        title: Option(str,
-                            "Enter Title", required=False, default=''),
+                                     "Enter Title", required=False, default=''),
                        description: Option(str,
-                            "Enter the announcement", required=True, default='')
+                                           "Enter the announcement",
+                                            required=True, default='')
                        ):
         """
         Makes an embed in the mentioned channel
@@ -192,7 +194,7 @@ class Admin(commands.Cog):
                          icon_url=self.bot.user.display_avatar)
 
         LJ.LOG(context="admins/announce",
-            message=f"announce executed by {ctx.author} in <#{ctx.channel.id}>")
+               message=f"announce executed by {ctx.author} in <#{ctx.channel.id}>")
         # send the embed
         await ctx.respond(embed=embed)
 
@@ -200,9 +202,9 @@ class Admin(commands.Cog):
                             description="Adds a role",
                             guild_ids=eval(os.getenv('GUILD_ID')))
     async def create_role(self, ctx, *,
-                       role_name: Option(str,
-                                         "Enter role name",
-                                         required=True, default=None)):
+                          role_name: Option(str,
+                                            "Enter role name",
+                                            required=True, default=None)):
         """
         Creates a new role
 

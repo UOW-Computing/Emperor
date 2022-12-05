@@ -1,4 +1,4 @@
-# pylint: disable=assigning-non-slot
+# pylint: disable=assigning-non-slot,
 import os
 import discord
 

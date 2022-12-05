@@ -1,3 +1,4 @@
+# pylint: disable=eval-used
 import os
 import time
 import discord
