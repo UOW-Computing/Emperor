@@ -1,46 +1,41 @@
 import time
-import discord
-from src.util import LOGCHANNELID
 
 
-class LJ:
+class Lj:
 
-    bot = None
-    logfile = None
+    log_file = None
 
-    def __init__(self, bot) -> None:
-        if LOGCHANNELID is None:
-            self.WARN("logger/init", "Channel ID is undefined!")
-        self.logfile = f'logs-{time.ctime(time.time())}'
-
-        self.bot = bot
+    def __init__(self):
+        pass
 
     @staticmethod
-    def WARN(context: str = "main",
+    def warn(context: str = "main",
              msg: str = "Unknown error occured!") -> None:
 
         # get the current time
         ctime = time.ctime(time.time())
         # Print ot console
-        WARNformat = f'[{ctime}] [{context}] \x1b[2;30;41m[WARN] {msg}\x1b[0m'
-        print(WARNformat)
+        warn_format = f'[{ctime}] [{context}] \x1b[2;30;41m[WARN] {msg}\x1b[0m'
+        print(warn_format)
 
         # Save to file
         with open('logs', 'a', encoding='utf-8') as logFile:
-            logFile.write(WARNformat + "\n")
+            logFile.write(warn_format + "\n")
         logFile.close()
 
     @staticmethod
-    def LOG(context: str = "main",
+    def log(context: str = "main",
             message: str = "No context provided") -> None:
         # print to console
-        LOGformat = f'[{time.ctime(time.time())}] [{context}]: {message}'
-        print(LOGformat)
+        log_format = f'[{time.ctime(time.time())}] [{context}]: {message}'
+        print(log_format)
 
         # save to file
         with open('logs', 'a', encoding='utf-8') as logFile:
-            logFile.write(LOGformat + "\n")
+            logFile.write(log_format + "\n")
         logFile.close()
+<<<<<<< HEAD
+=======
 
     async def LOGChannel(self, message: discord.Message) -> None:
         if LOGCHANNELID is None:
@@ -72,3 +67,4 @@ class LJ:
 
     # def ljERROR():
     #     pass
+>>>>>>> 9866474ddeb59ea42a058eb30ac6fcb75caca521
