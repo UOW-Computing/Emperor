@@ -1,4 +1,4 @@
-# [Emperor v0.0.62](https://github.com/UOW-Computing/Emperor)
+# [Emperor v0.0.71](https://github.com/UOW-Computing/Emperor)
 *Bot is limited in functionality as its currently in development.*
 
 

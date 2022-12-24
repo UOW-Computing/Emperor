@@ -13,7 +13,7 @@ from src.config import Settings
 
 
 bot = discord.Bot()
-__cogs__ = ['admins', 'generals']
+__cogs__ = ["admins", "generals"]
 
 load_dotenv()
 
@@ -21,21 +21,21 @@ config = Settings()
 
 emperor = Emperor(config)
 
-print(f"""
-                                                          
- _____                           
-|   __|_____ ___ ___ ___ ___ ___ 
+print(
+    f"""
+ _____
+|   __|_____ ___ ___ ___ ___ ___
 |   __|     | . | -_|  _| . |  _|
-|_____|_|_|_|  _|___|_| |___|_|  
-            |_| © 2022 nukestye                 
+|_____|_|_|_|  _|___|_| |___|_|
+            |_| © 2022 nukestye
 
 Welcome to Emperor v{os.getenv('BOT_ENV_VERSION')}!
 Loading cogs...\n
-""")
+"""
+)
 
 for cog in __cogs__:
-    print(f'Loaded {cog}')
-    emperor.load_extension(f'cogs.{cog}')
+    print(f"Loaded {cog}")
+    emperor.load_extension(f"cogs.{cog}")
 
 emperor.run(config.TOKEN)
-# print(eval(os.getenv('LOG_CHANNEL_ID'))['573602053352456193'])
