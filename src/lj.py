@@ -34,3 +34,37 @@ class Lj:
         with open('logs', 'a', encoding='utf-8') as logFile:
             logFile.write(log_format + "\n")
         logFile.close()
+<<<<<<< HEAD
+=======
+
+    async def LOGChannel(self, message: discord.Message) -> None:
+        if LOGCHANNELID is None:
+            self.WARN("logger/LogChannel",
+                      "Log Channel ID is undefined, cannot log inside servers")
+        try:
+            logChannel = await message.guild.fetch_channel(LOGCHANNELID[0])
+        except:
+            logChannel = await message.guild.fetch_channel(LOGCHANNELID[1])
+
+
+        # form a embed
+        e = discord.Embed(title="Content",
+                              description=f'{message.content}',
+                              timestamp=message.created_at,
+                              color=discord.Color.from_rgb(128, 0, 128))
+        e.set_author(name=self.bot.user.name,
+                         icon_url=self.bot.user.display_avatar)
+        e.set_thumbnail(url=message.author.display_avatar)
+        e.add_field(
+            name="Send by", value=f'<@{message.author.id}>', inline=True)
+        e.add_field(name="IDs",
+                    value=f'```\nMessage:\t{message.id}\nUser:\t{message.author.id}```',
+                    inline=True)
+        e.add_field(name="Channel",
+                    value=f'<#{message.channel.id}>\nID: `{message.channel.id}`')
+
+        await logChannel.send(embed=e)
+
+    # def ljERROR():
+    #     pass
+>>>>>>> 9866474ddeb59ea42a058eb30ac6fcb75caca521
