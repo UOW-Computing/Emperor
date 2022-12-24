@@ -4,17 +4,15 @@ General Category.
 Holds command that do not belong to a specific category.
 
 """
-# pylint: disable=eval-used
 
-import os
 import json
 import random
 import discord
 import requests
 
-
-from discord.ext import commands
 from discord.commands import Option
+from discord.ext import commands
+from main import config
 
 
 class General(commands.Cog):
@@ -32,7 +30,7 @@ class General(commands.Cog):
 
     @commands.slash_command(name="hello",
                             description="Says Hello back",
-                            guild_ids=eval(os.getenv('GUILD_ID')))
+                            guild_ids=config.GUILD_ID)
     async def hello(self, ctx):
         """
         A simple hello command.
@@ -41,7 +39,7 @@ class General(commands.Cog):
 
     @commands.slash_command(name="serverinfo",
                             description="Gives information about the server",
-                            guild_ids=eval(os.getenv('GUILD_ID')))
+                            guild_ids=config.GUILD_ID)
     async def server(self, ctx):
         """
         Gives information about the server the
@@ -72,7 +70,7 @@ class General(commands.Cog):
 
     @commands.slash_command(name="reddit",
                             description="Search subreddits on reddit",
-                            guild_ids=eval(os.getenv('GUILD_ID')))
+                            guild_ids=config.GUILD_ID)
     async def reddit_search(self, ctx, subreddit: Option(str, "Subreddit to look through",
                                                          required=False)):
         """
@@ -83,11 +81,22 @@ class General(commands.Cog):
         """
 
         def check(msg):
+            """
+            Checks if the message has content
+
+            Params:
+                msg: the message
+
+            Returns:
+                True if the message has content
+                False if the message doesnt
+            """
+
+            # If the message is given by the same user
+            # and in the same channel
             if msg.author == ctx.author and msg.channel == ctx.channel:
-                if msg.content != "":
-                    return True
-                else:
-                    return False
+                return msg.content != ""
+            return None
 
         if subreddit is None:
             subreddit_ask = await ctx.channel.send("Please enter the subreddit to look through")
@@ -102,7 +111,7 @@ class General(commands.Cog):
         subreddit_link = f'https://www.reddit.com/r/{subreddit}/hot/.json?sort=top&t=week&limit=10'
 
         # Asking for a random post
-        r = requests.get(subreddit_link, headers={'User-agent': 'Emperor'})
+        r = requests.get(subreddit_link, headers={'User-agent': 'Emperor'}, timeout=30)
 
         # Checking if the subreddit does exist
         json_data = json.JSONDecoder().decode(r.text)
@@ -118,7 +127,7 @@ class General(commands.Cog):
             await ctx.followup.send("Bot cannot post 18+ content.", ephemeral=True)
             return
 
-        post_data['data']['title'] = post_data['data']['title'].replace(u"\u2018", "'").replace(u"\u2019", "'")
+        post_data['data']['title'] = post_data['data']['title'].replace("\u2018", "'").replace("\u2019", "'")
 
         post_title = f"[{post_data['data']['title']}](https://www.reddit.com{post_data['data']['permalink']})"
 

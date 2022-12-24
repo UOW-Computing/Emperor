@@ -1,19 +1,12 @@
-import os 
 import time
-import discord
 
 
 class Lj:
 
-    bot = None
     log_file = None
 
-    def __init__(self, bot) -> None:
-        if int(eval(os.getenv('LOG_CHANNEL_ID'))) is None:
-            self.warn("logger/init", "Channel ID is undefined!")
-        self.log_file = f'logs-{time.ctime(time.time())}'
-
-        self.bot = bot
+    def __init__(self):
+        pass
 
     @staticmethod
     def warn(context: str = "main",

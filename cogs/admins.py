@@ -4,15 +4,14 @@ admins.py
 
 Holds all the commands for admin category.
 """
-# pylint: disable=eval-used
 
-import os
 import discord
 
 from discord.commands import Option
 from discord.ext import commands
 
 from src.lj import Lj
+from main import config
 
 
 class Admin(commands.Cog):
@@ -32,7 +31,7 @@ class Admin(commands.Cog):
 
     @commands.slash_command(name="kick",
                             description="Kicks the mentioned user",
-                            guild_ids=eval(os.getenv('GUILD_ID')))
+                            guild_ids=config.GUILD_ID)
     async def kick(self, ctx,
                    user: Option(discord.Member,
                                 "Enter the user to kick",
@@ -92,7 +91,7 @@ class Admin(commands.Cog):
 
     @commands.slash_command(name="clear",
                             description="Deletes messages in a channel",
-                            guild_ids=eval(os.getenv('GUILD_ID')))
+                            guild_ids=config.GUILD_ID)
     async def clear(self, ctx,
                     mlimit: Option(int,
                                    "Enter the number of messages to delete",
@@ -147,7 +146,7 @@ class Admin(commands.Cog):
 
     @commands.slash_command(name="announce",
                             description="Sends a embed in given channel",
-                            guild_ids=eval(os.getenv('GUILD_ID')))
+                            guild_ids=config.GUILD_ID)
     async def announce(self, ctx,
                        title: Option(str,
                                      "Enter Title", required=False, default=''),
@@ -199,7 +198,7 @@ class Admin(commands.Cog):
 
     @commands.slash_command(name="createrole",
                             description="Adds a role",
-                            guild_ids=eval(os.getenv('GUILD_ID')))
+                            guild_ids=config.GUILD_ID)
     async def create_role(self, ctx, *,
                           role_name: Option(str,
                                             "Enter role name",
@@ -216,8 +215,8 @@ class Admin(commands.Cog):
 
         """
         # local vars used
-        ROLE_ALREADY_EXISTS_FLAG = False
-        ROLE_ID = 0
+        flag_role_already_exists = False
+        role_id = 0
         member = ctx.author
         guild = ctx.guild
         # role name, needs to be passed as
@@ -238,21 +237,23 @@ class Admin(commands.Cog):
             for role in roles:
                 if role.name == role_name:
                     # print("Role already exists")
-                    ROLE_ALREADY_EXISTS_FLAG = True
-                    ROLE_ID = role.id
+                    flag_role_already_exists = True
+                    role_id = role.id
                     break
 
-            if ROLE_ALREADY_EXISTS_FLAG is False:
-                await guild.create_role(
+            if flag_role_already_exists is False:
+                role = await guild.create_role(
                     name=role_name,
                     reason=f'{member} created role through command')
                 Lj.log("admins/roleAdd",
                        f'<@{member.id}> has created role {role_name}')
+                await ctx.respond(
+                    f'<@&{role.id}> has been created!')
             else:
                 Lj.log("admins/roleAdd",
                        f'{member} attempted to create a role that already exists!')
                 await ctx.respond(
-                    f'<@&{ROLE_ID}> exists, cannot create duplicate roles.')
+                    f'<@&{role_id}> exists, cannot create duplicate roles.')
 
         else:
             await ctx.respond(f'Insufficient Perms, <@{member.id}>')

@@ -39,3 +39,5 @@ Afterwards, either create a `.env` file yourself or use the `setup.py` to create
 - [ ] Introduce `CHANGELOG.md`
 - [ ] Push `setup.py` into repo
 - [ ] Better error handling than just Lj
+- [X] Remove use of `eval`
+- [ ] Add timeout in `reddit` command, when asking for subreddit

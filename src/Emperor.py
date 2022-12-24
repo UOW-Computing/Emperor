@@ -1,8 +1,8 @@
 # pylint: disable=assigning-non-slot,
-import os
 import discord
 
 from discord.ext import commands
+from src.config import Settings
 from src.lj import Lj
 
 
@@ -13,8 +13,9 @@ class Emperor(commands.Bot):
 
     """
     log = None
+    config = None
 
-    def __init__(self):
+    def __init__(self, config: Settings):
         """
         Constructor class for Emperor
 
@@ -29,17 +30,20 @@ class Emperor(commands.Bot):
 
         # Initilises the Constructor
         # for LJ class
-        self.log = Lj(self)
+        self.log = Lj()
+        self.config = config
 
-        super().__init__(command_prefix=os.getenv('BOT_PREFIX'),
+        super().__init__(command_prefix=self.config.BOT_PREFIX,
                          description="Very Important Discord Bot.",
-                         intents=intents)
+                         intents=intents,
+                         status=discord.Status.dnd,
+                         activity=discord.Game(name="with myself!"))
 
     async def log_in_channel(self, message: discord.Message) -> None:
-        if eval(os.getenv('LOG_CHANNEL_ID')) is None:
+        if self.config.LOG_CHANNEL_ID is None:
             self.log.warn("logger/LogChannel",
                           "Log Channel ID is undefined, cannot log inside servers")
-        log_channel = await message.guild.fetch_channel(eval(os.getenv('LOG_CHANNEL_ID')))
+        log_channel = await message.guild.fetch_channel(self.config.LOG_CHANNEL_ID)
 
         # form a embed
         log_embed = discord.Embed(title="Content",
@@ -61,9 +65,6 @@ class Emperor(commands.Bot):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.change_presence(
-                                   status=discord.Status.dnd,
-                                   activity=discord.Game(name="with myself!"))
 
         print(f'{self.user} is ready in {len(self.guilds)} servers!')
 

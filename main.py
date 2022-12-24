@@ -3,6 +3,7 @@ import discord
 
 from dotenv import load_dotenv
 from src.Emperor import Emperor
+from src.config import Settings
 
 # TODO:
 # - Make log channel a dict inside .env file
@@ -16,8 +17,9 @@ __cogs__ = ['admins', 'generals']
 
 load_dotenv()
 
+config = Settings()
 
-emperor = Emperor()
+emperor = Emperor(config)
 
 print(f"""
                                                           
@@ -35,5 +37,5 @@ for cog in __cogs__:
     print(f'Loaded {cog}')
     emperor.load_extension(f'cogs.{cog}')
 
-emperor.run(os.getenv('TOKEN'))
+emperor.run(config.TOKEN)
 # print(eval(os.getenv('LOG_CHANNEL_ID'))['573602053352456193'])
