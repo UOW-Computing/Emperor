@@ -12,7 +12,7 @@ import discord
 from discord.commands import Option
 from discord.ext import commands
 
-from src.lj import LJ
+from src.lj import Lj
 
 
 class Admin(commands.Cog):
@@ -23,8 +23,7 @@ class Admin(commands.Cog):
     - announce
     - kick
     - clear
-    - createrole
-    // TODO: CHANGE COMMAND NAME INTO CREATE, add subcommands ROLE/CHANNEL
+    - createrole TODO: CHANGE COMMAND NAME INTO CREATE, add subcommands ROLE/CHANNEL
 
     """
 
@@ -58,7 +57,7 @@ class Admin(commands.Cog):
             await ctx.response.send_message(
                 'You cannot kick yourself, it is not possible. `;-;`',
                 ephemeral=True)
-            LJ.LOG("admins/kick",
+            Lj.log("admins/kick",
                    "User attempted to kick themselves, stopped execution.")
             return None
 
@@ -74,7 +73,7 @@ class Admin(commands.Cog):
             await ctx.response.send_message(
                 "You do not have permission to execute this command!",
                 ephemeral=True)
-            LJ.LOG("admins/kick",
+            Lj.log("admins/kick",
                    "User has no perms to run this command, stopped execution.")
             return None
 
@@ -83,12 +82,12 @@ class Admin(commands.Cog):
             case 'kick_member':
                 await ctx.response.send_message("This user cannot be kicked!",
                                                 ephemeral=True)
-                LJ.LOG("admins/kick",
+                Lj.log("admins/kick",
                        "User could not be kicked, stopping execution.")
                 return None
 
         await discord.Member.kick(self=user, reason=reason)
-        LJ.LOG("admins/kick", f'{user} has been kicked by {ctx.author}')
+        Lj.log("admins/kick", f'{user} has been kicked by {ctx.author}')
         await ctx.respond(f'<@{user.id}> has been kicked from the server!')
 
     @commands.slash_command(name="clear",
@@ -117,7 +116,7 @@ class Admin(commands.Cog):
             Use the command multiple times to delete more than 100 messages.
             """,
                                     ephemeral=True)
-            LJ.LOG("admins/clear",
+            Lj.log("admins/clear",
                    "Command stopped due to message limit being >100.")
             return -1
 
@@ -137,7 +136,7 @@ class Admin(commands.Cog):
             for message in messagelist:
                 await message.delete()
 
-            LJ.LOG("admins/clear",
+            Lj.log("admins/clear",
                    f"Cleared {mlimit} messages in <#{ctx.channel.id}>")
 
             # inform the user the command has been executed
@@ -175,13 +174,13 @@ class Admin(commands.Cog):
             await ctx.response.send_message(
                 f'`{ctx.command.name}` requires `description` to be given.',
                 ephemeral=True)
-            LJ.LOG("admins/announce",
+            Lj.log("admins/announce",
                    message='Parameter was not given, stopping execution.')
             return -1
         elif len(description) >= 4096:
             await ctx.response.send_message(
                 '`description` must be 4096 or less in length.', ephemeral=True)
-            LJ.LOG("admins/announce",
+            Lj.log("admins/announce",
                    'Parameter size is >4096 characters, stopping execution.')
             return -1
 
@@ -193,7 +192,7 @@ class Admin(commands.Cog):
         embed.set_footer(text=self.bot.user.name,
                          icon_url=self.bot.user.display_avatar)
 
-        LJ.LOG(context="admins/announce",
+        Lj.log(context="admins/announce",
                message=f"announce executed by {ctx.author} in <#{ctx.channel.id}>")
         # send the embed
         await ctx.respond(embed=embed)
@@ -247,10 +246,10 @@ class Admin(commands.Cog):
                 await guild.create_role(
                     name=role_name,
                     reason=f'{member} created role through command')
-                LJ.LOG("admins/roleAdd",
+                Lj.log("admins/roleAdd",
                        f'<@{member.id}> has created role {role_name}')
             else:
-                LJ.LOG("admins/roleAdd",
+                Lj.log("admins/roleAdd",
                        f'{member} attempted to create a role that already exists!')
                 await ctx.respond(
                     f'<@&{ROLE_ID}> exists, cannot create duplicate roles.')
