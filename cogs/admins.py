@@ -22,11 +22,7 @@ class Admin(commands.Cog):
     - announce
     - kick
     - clear
-<<<<<<< HEAD
     - createrole TODO: CHANGE COMMAND NAME INTO CREATE, add subcommands ROLE/CHANNEL
-=======
-    - add role // TODO: CHANGE COMMAND NAME INTO CREATE ROLE/CHANNEL
->>>>>>> 9866474ddeb59ea42a058eb30ac6fcb75caca521
 
     """
 
@@ -68,7 +64,7 @@ class Admin(commands.Cog):
         perms = ', '.join(
                 perm for perm, value in ctx.author.guild_permissions if value)
 
-        userPerms = ', '.join(
+        user_perms = ', '.join(
             perm for perm, value in user.guild_permissions if value)
 
         # make sure that the user has perms to kick
@@ -81,7 +77,7 @@ class Admin(commands.Cog):
             return None
 
         # if the user has any manage perms then they cannot be kicked
-        match(userPerms):
+        match user_perms:
             case 'kick_member':
                 await ctx.response.send_message("This user cannot be kicked!",
                                                 ephemeral=True)
@@ -105,6 +101,7 @@ class Admin(commands.Cog):
         Clears a channels messages
 
         Args:
+            ctx: Context of the command being executed
             mlimit: the number of messages to delete (default is 100)
 
         Returns:
@@ -127,7 +124,6 @@ class Admin(commands.Cog):
         perms = ', '.join(
                 perm for perm, value in ctx.author.guild_permissions if value)
 
-<<<<<<< HEAD
         if 'manage_messages' in perms:
             # Respond to the user
             await ctx.response.send_message(
@@ -137,8 +133,8 @@ class Admin(commands.Cog):
             messagelist = await ctx.channel.history(limit=mlimit).flatten()
 
             # Delete the messages one by one
-            for message in messagelist:
-                await message.delete()
+            for msg in messagelist:
+                await msg.delete()
 
             Lj.log("admins/clear",
                    f"Cleared {mlimit} messages in <#{ctx.channel.id}>")
@@ -148,50 +144,25 @@ class Admin(commands.Cog):
         else:
             await ctx.response.send_message('You do not have perms for this!!',
                                             ephemeral=True)
-=======
-        match(perms):
-            case 'manage_messages':
-                # Get the messages and turn into list
-                messagelist = await ctx.channel.history(limit=message_limit).flatten()
+            Lj.LOG("admins/kick",
+                   "User has no perms to run this command, stopped execution.")
+            return None
 
-                # Delete the messages one by one
-                # for message in messagelist:
-                #     await message.delete()
-
-                LJ.LOG("admins/clear",
-                    f"Cleared {message_limit} messages in <#{ctx.channel.id}>")
->>>>>>> 9866474ddeb59ea42a058eb30ac6fcb75caca521
-
-                # inform the user the command has been executed
-                await ctx.followup.send('Command Executed!', ephemeral=True)
-
-            case _:
-                await ctx.followup.send(
-                    "You do not have permission to execute this command!",
-                    ephemeral=True)
-                LJ.LOG("admins/kick",
-                    "User has no perms to run this command, stopped execution.")
-                return None
-
-        
     @commands.slash_command(name="announce",
                             description="Sends a embed in given channel",
                             guild_ids=config.GUILD_ID)
     async def announce(self, ctx,
                        title: Option(str,
-                                     "Enter Title", required=False, default=''),
+                                     "Enter Title",
+                                     required=False, default=''),
                        description: Option(str,
-<<<<<<< HEAD
                                            "Enter the announcement",
-                                            required=True, default='')
-=======
-                                    "Enter the announcement", required=True, default='')
->>>>>>> 9866474ddeb59ea42a058eb30ac6fcb75caca521
-                       ):
+                                           required=True, default='')):
         """
         Makes an embed in the mentioned channel
 
         Args:
+            ctx: Context of the command being executed
             title: the title of the embed
             description: the description of the embedd (the content)
 
@@ -241,6 +212,7 @@ class Admin(commands.Cog):
         Creates a new role
 
         Args:
+            ctx: Context of the command being executed
             role_name: The name of the role
 
         Returns:
