@@ -9,3 +9,4 @@ src/__pycache__/*
 .env
 *.json
 test.py
+venv

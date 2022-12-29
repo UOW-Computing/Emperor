@@ -3,9 +3,13 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
 
+    # Hardcoded values in env
+    COGS: list
+
+    # Changeable fields
     TOKEN: str
     BOT_PREFIX: str
-    GUILD_ID: str | list
+    GUILD_ID: int | list
     LOG_CHANNEL_ID: str | dict
 
     class Config:
