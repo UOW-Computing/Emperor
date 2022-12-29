@@ -28,6 +28,7 @@ Afterwards, either create a `.env` file yourself or use the `setup.py` to create
 - `createrole`: Creates a role with default permissions
 
 ### Fun
+
 - `hello`: Says hello back to you
 - `server`: Gives info of the server in which it was executed in
 - `reddit`: Responds with a post in the subreddit given
@@ -37,7 +38,7 @@ Afterwards, either create a `.env` file yourself or use the `setup.py` to create
 - [ ] Add database into Lj for logging and server backups
 - [ ] Turn createrole and server into sub commands of their own respective command, `create role` for `createrole` and `info server` for `server`
 - [ ] Introduce `CHANGELOG.md`
-- [ ] Push `setup.py` into repo
+- [X] Push `setup.py` into repo
 - [ ] Better error handling than just Lj
 - [X] Remove use of `eval`
-- [ ] Add timeout in `reddit` command, when asking for subreddit
+- [X] Add timeout in `reddit` command, when asking for subreddit

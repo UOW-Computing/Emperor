@@ -5,21 +5,12 @@ from dotenv import load_dotenv
 from src.Emperor import Emperor
 from src.config import Settings
 
-# TODO:
-# - Make log channel a dict inside .env file
-# - Add setup.py into VC
-# - More General Commands
-# - Add changelog.md into VC
-
-
 bot = discord.Bot()
-__cogs__ = ["admins", "generals"]
+
 
 load_dotenv()
 
 config = Settings()
-
-emperor = Emperor(config)
 
 print(
     f"""
@@ -34,8 +25,6 @@ Loading cogs...\n
 """
 )
 
-for cog in __cogs__:
-    print(f"Loaded {cog}")
-    emperor.load_extension(f"cogs.{cog}")
+emperor = Emperor(config)
 
 emperor.run(config.TOKEN)

@@ -1,9 +1,11 @@
 node_modules/*
 __pycache__/*
-logs*
+logs/*
+logs
 cogs/__pycache__/*
 package-lock.json
 package.json
 src/__pycache__/*
 .env
 *.json
+test.py
