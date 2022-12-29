@@ -54,7 +54,7 @@ class Admin(commands.Cog):
 			# The cog was reloaded
 			await ctx.send(f'The `{cog}` was successfully reloaded')
 		except Exception as exc:
-			ctx.send(f"Cannot reload the cog, {exc}")
+			await ctx.send(exc)
 
 async def setup(bot):
 	await bot.add_cog(Admin(bot), 	guild=(discord.Object(id=bot.config.GUILD_ID)))
