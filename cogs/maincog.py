@@ -4,6 +4,7 @@ import asyncio
 from discord 		import app_commands
 from discord.ext 	import commands
 
+
 class Main(commands.Cog):
 	"""The description for NewCog goes here."""
 
@@ -11,7 +12,7 @@ class Main(commands.Cog):
 		self.bot = bot
 
 	async def cog_load(self):
-		print("Loaded new cog")
+		self.bot.lj.log('emperor.cogs.maincog', 'MainCog was loaded')
 
 	async def cog_unload(self):
 		# clean up logic goes here
@@ -42,7 +43,6 @@ class Main(commands.Cog):
 		print("Command was invoked")
 
 	@app_commands.command(name="hello")
-
 	async def hello(self, interaction: discord.Interaction) -> None:
 		"""
 		A simple hello command.
@@ -56,4 +56,4 @@ class Main(commands.Cog):
 		await interaction.response.send_message(f"<@{interaction.user.id}>, helo!")
 
 async def setup(bot):
-	await bot.add_cog(Main(bot), 	guild=(discord.Object(id=bot.config.GUILD_ID)))
+	await bot.add_cog(Main(bot), guild=(discord.Object(id=bot.config.GUILD_ID)))

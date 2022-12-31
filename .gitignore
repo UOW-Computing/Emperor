@@ -10,3 +10,4 @@ src/__pycache__/*
 *.json
 test.py
 venv
+activate.bat

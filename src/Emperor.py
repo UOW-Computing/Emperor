@@ -10,11 +10,12 @@ import discord
 
 from src.config import Settings
 from discord.ext import commands
-
+from src.Lj import Lj
 
 class Emperor(commands.Bot):
 
 	config: Settings = None
+	lj: Lj = None
 
 	def __init__(self, p_intents: discord.Intents, p_config: Settings) -> None:
 		super().__init__(
@@ -23,6 +24,7 @@ class Emperor(commands.Bot):
 				intents=p_intents)
 
 		self.config = p_config	
+		self.lj = Lj()
 
   
 	async def setup_hook(self):
@@ -34,13 +36,13 @@ class Emperor(commands.Bot):
 	
 	
 	async def on_ready(self):
-		print(f'Logged on as {self.user} (ID: {self.user.id})')
+		self.lj.log('emperor.onready', f'Logged on as {self.user} (ID: {self.user.id})')
 
 	async def on_message(self, message: discord.Message):
 
 		if message.author.bot: return
 
-		print(message.content)
+		self.lj.log(f'emperor.message    {message.guild.name}.{message.channel.name}', f'{message.author}: {message.content}')
 		await self.process_commands(message)
   
   

@@ -11,7 +11,7 @@ class Admin(commands.Cog):
 		self.bot = bot
 
 	async def cog_load(self):
-		print("Loaded admin cog")
+		self.bot.lj.log('emperor.cogs.admin', 'Admin was loaded')
 
 	async def cog_unload(self):
 		# clean up logic goes here
