@@ -11,6 +11,8 @@ class Main(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
+	info_group = app_commands.Group(name="info", description="Gives information about server, member or channel.")
+
 	async def cog_load(self):
 		self.bot.lj.log('emperor.cogs.maincog', 'MainCog was loaded')
 
@@ -54,6 +56,20 @@ class Main(commands.Cog):
 			Nothing
 		"""
 		await interaction.response.send_message(f"<@{interaction.user.id}>, helo!")
+
+	# TODO: Complete the commands below
+ 
+	@info_group.command(name='server')
+	async def info_server(self, interaction: discord.Interaction) -> None:
+		await interaction.response.send_message('This is a `/info server`')
+
+	@info_group.command(name='member')
+	async def info_member(self, interaction: discord.Interaction) -> None:
+		await interaction.response.send_message('This is a `/info member`')
+
+	@info_group.command(name='channel')
+	async def info_channel(self, interaction: discord.Interaction) -> None:
+		await interaction.response.send_message('This is a `/info channel`')
 
 async def setup(bot):
 	await bot.add_cog(Main(bot), guild=(discord.Object(id=bot.config.GUILD_ID)))

@@ -5,7 +5,6 @@ Emperor v0.1.0
 
 """
 
-import typing
 import discord
 
 from src.config import Settings
