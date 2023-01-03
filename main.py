@@ -27,6 +27,8 @@ Welcome to Emperor v{os.getenv('BOT_ENV_VERSION')}!\n
 # Sending the intents
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
+intents.presences = True
 
 emperor = Emperor(intents, config)
 

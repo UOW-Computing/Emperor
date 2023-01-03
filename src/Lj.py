@@ -17,9 +17,9 @@ class Lj:
 		self.log_file = 'logs/log-'+datetime.now().strftime("%Y %m %d-%H %M")
 		
 	
-	def log(self, pathway: str = 'emperor', content: str = 'no content was given') -> bool:
+	def info(self, pathway: str = 'emperor', content: str = 'no content was given') -> bool:
 		"""	
-		Makes an LOG entry to log file and prints the log to console
+		Makes an INFO entry to log file and prints the log to console
 
 		Args:
 			pathway (str, optional): the place where the log was called. Defaults to 'emperor'.

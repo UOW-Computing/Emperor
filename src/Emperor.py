@@ -1,5 +1,5 @@
 """
-Emperor v0.1.0
+Emperor v0.1.2
 	Main class
 
 
@@ -7,9 +7,9 @@ Emperor v0.1.0
 
 import discord
 
+from src.Lj import Lj
 from src.config import Settings
 from discord.ext import commands
-from src.Lj import Lj
 
 class Emperor(commands.Bot):
 
@@ -35,13 +35,13 @@ class Emperor(commands.Bot):
 	
 	
 	async def on_ready(self):
-		self.lj.log('emperor.onready', f'Logged on as {self.user} (ID: {self.user.id})')
+		self.lj.info('emperor.onready', f'Logged on as {self.user} (ID: {self.user.id})')
 
 	async def on_message(self, message: discord.Message):
 
 		if message.author.bot: return
 
-		self.lj.log(f'emperor.message    {message.guild.name}.{message.channel.name}', f'{message.author}: {message.content}')
+		self.lj.info(f'emperor.message    {message.guild.name}.{message.channel.name}', f'{message.author}: {message.content}')
 		await self.process_commands(message)
   
   

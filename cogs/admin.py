@@ -11,11 +11,10 @@ class Admin(commands.Cog):
 		self.bot = bot
 
 	async def cog_load(self):
-		self.bot.lj.log('emperor.cogs.admin', 'Admin was loaded')
+		self.bot.lj.info('emperor.cogs.admin', 'Admin cog was loaded')
 
 	async def cog_unload(self):
-		# clean up logic goes here
-		pass
+		self.bot.lj.warn('emperor.cogs.admin', 'Admin cog was unloaded')
 
 	async def cog_check(self, ctx):
 		return await self.bot.is_owner(ctx.author)
@@ -33,18 +32,27 @@ class Admin(commands.Cog):
 		print(error)
 		
 	async def cog_app_command_error(self, interaction, error):
-		print(error)
+		self.bot.lj.warn(f'emperor.cogs.admin.{interaction.command.name}',
+				   		 f'<@{interaction.user.id}>, {error}')
+		await interaction.response.send_message(f'<@{interaction.user.id}>, {error}')
 
 	async def cog_before_invoke(self, ctx):
-		print("Command is invoked")
+		self.bot.lj.info(f'emperor.cogs.admin.{ctx.invoked_with}',
+					f'{ctx.author.name} has attempted to executed {ctx.invoked_with}')
 
 	async def cog_after_invoke(self, ctx):
-		print("Command was invoked")
+		self.bot.lj.info(f'emperor.cogs.admin.{ctx.invoked_with}',
+					f'{ctx.author.name} has executed {ctx.invoked_with} command')
 
 	@commands.command(name="reload")
 	async def reload(self, ctx: commands.Context, cog: str) -> None:
 		"""
-		Reload function
+		Allows the changes to be run without having the restart the discord bot
+
+		Args:
+			cog str: The cog to reload
+
+
 		"""
 
 		try:
@@ -57,4 +65,10 @@ class Admin(commands.Cog):
 			await ctx.send(exc)
 
 async def setup(bot):
-	await bot.add_cog(Admin(bot), 	guild=(discord.Object(id=bot.config.GUILD_ID)))
+	# Make an discord.Object for each
+	# guild in the list
+	guild_objects: list(discord.Object) = []
+	for guild in bot.config.GUILD_ID:
+		guild_objects.append(discord.Object(id=guild))
+
+	await bot.add_cog(Admin(bot), 	guilds=guild_objects)

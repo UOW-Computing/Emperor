@@ -5,6 +5,7 @@ class Settings(BaseSettings):
 
     # Hardcoded values in env
     COGS: list
+    COLOUR: int
 
     # Changeable fields
     TOKEN: str
