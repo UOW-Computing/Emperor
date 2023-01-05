@@ -131,8 +131,7 @@ class Main(commands.Cog):
 		"""
 		await interaction.response.send_message(f"<@{interaction.user.id}>, hello!")
 
-	# TODO: Complete the commands below
- 
+
 	@info_group.command(name='server')
 	async def info_server(self, interaction: discord.Interaction) -> None:
 		"""Collects and sends an embed with information about the server
