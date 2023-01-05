@@ -41,6 +41,28 @@ class Emperor(commands.Bot):
 
 		if message.author.bot: return
 
+		def check_for_message(msg: discord.Message):
+			"""
+			Insures that if an attachment is given the content is not left blank
+
+			TODO: Add support to allow both content and attachments to be parsered through
+			NOTE: Currently bugged, does not work with attachments
+   
+   	
+			Args:
+				msg (discord.Message): The message to parser through
+
+			Returns:
+				str: Message content if it had text
+				url: Url(s) if the message had no content
+			"""
+			if message.content == "":
+				return " ".join(message.attachments.url)
+			else:
+				return message.content
+
+		
+
 		self.lj.info(f'emperor.message    {message.guild.name}.{message.channel.name}', f'{message.author}: {message.content}')
 		await self.process_commands(message)
   

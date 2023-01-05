@@ -1,9 +1,11 @@
 import discord
-import datetime
+
 import asyncio
 
 from discord 		import app_commands
 from discord.ext 	import commands
+from datetime		import datetime as dt
+from discord.utils	import format_dt
 
 
 class Main(commands.Cog):
@@ -86,6 +88,15 @@ class Main(commands.Cog):
 				num += 1
 
 		return num
+
+	def __count_top_three_roles(self, member: discord.Member) -> str:
+		roles = ""
+    
+		roles += f"<@&{member.roles[-1].id}>, "
+		roles += f"<@&{member.roles[-2].id}>, "
+		roles += f"<@&{member.roles[-3].id}>."
+
+		return roles
 
 	def __count_emojis(self, guild: discord.Guild) -> str:
 		"""
@@ -170,7 +181,7 @@ class Main(commands.Cog):
                          	   value=self.__count_emojis(guild),
                                inline=True)
 
-		server_embed.set_footer(text=f'ID: {guild.id} | Server Created • {(guild.created_at.strftime("%Y/%m/%d %H:%M"))}')
+		server_embed.set_footer(text=f'ID: {guild.id} | Server Created • {(guild.created_at.strftime("%Y/%m/%d %H:%M %p"))}')
 
 		if guild.icon is not None:
 			await interaction.response.send_message(embed=server_embed)
@@ -179,12 +190,20 @@ class Main(commands.Cog):
 		# await interaction.response.send_message('This is a `/info server`')
 
 	@info_group.command(name='member')
-	async def info_member(self, interaction: discord.Interaction) -> None:
-		await interaction.response.send_message('This is a `/info member`')
+	async def info_member(self, interaction: discord.Interaction, member: discord.Member) -> None:
+		memberEmbed = discord.Embed(color=self.bot.config.COLOUR,
+                              		title='Member Information',
+                                	description=\
+            f"""Name: `{member.name}{f" ({member.display_name})" if member.display_name != member.name else ""}`
+            Joined Discord on: {format_dt(member.created_at)}
+            Joined Server on: {format_dt(member.joined_at)}
+            Roles: {self.__count_top_three_roles(member)}""")
 
-	@info_group.command(name='channel')
-	async def info_channel(self, interaction: discord.Interaction) -> None:
-		await interaction.response.send_message('This is a `/info channel`')
+		memberEmbed.set_image(url=member.display_avatar.url)
+		memberEmbed.set_footer(text=f'{self.bot.user.name} | {dt.now().strftime("%d %B %Y %H:%M %p")}',
+                         	   icon_url=self.bot.user.display_avatar)
+  
+		await interaction.response.send_message(embed=memberEmbed)
 
 async def setup(bot):
 	# Make an discord.Object for each

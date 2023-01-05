@@ -30,10 +30,10 @@ class Lj:
 		"""
 		# format: Year-month-day hour:minute:seconds	INFO	path way	content
 		time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-		log_format = f'{time} \x1b[1;49;94mINFO\x1b[0m     \x1b[1;49;95m{pathway}\x1b[0m: {content}'
+		log_format = f'{time} \x1b[1;49;94mINFO\x1b[0m     \x1b[1;49;95m{pathway}\x1b[0m:\t {content}'
 
 		# escape characters cant be in file, therefore cleaned here
-		clean_info_format = f'{time} INFO \t {pathway}: {content}'
+		clean_info_format = f'{time} INFO \t {pathway}:\t {content}'
 		print(log_format)
 
 		# Simple try and except where it saves to file
@@ -61,10 +61,10 @@ class Lj:
   
 		# format: Year-month-day hour:minute:seconds	WARN	path way	content
 		time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-		warn_format =	f'{time} \x1b[1;49;33mWARN\x1b[0m     \x1b[1;49;95m{pathway}\x1b[0m: {content}'
+		warn_format =	f'{time} \x1b[1;49;33mWARN\x1b[0m     \x1b[1;49;95m{pathway}\x1b[0m:\t {content}'
   
   		# escape characters cant be in file, therefore cleaned here
-		clean_warn_format = f'{time} WARN \t {pathway}: {content}'
+		clean_warn_format = f'{time} WARN \t {pathway}:\t {content}'
   
 		print(warn_format)
 
@@ -96,12 +96,12 @@ class Lj:
 		time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 		error_format = f"""
 {time} \x1b[1;49;31mERROR\x1b[0m
-{time} \x1b[1;49;31mERROR\x1b[0m     \x1b[1;49;95m{pathway}\x1b[0m: {content}
+{time} \x1b[1;49;31mERROR\x1b[0m     \x1b[1;49;95m{pathway}\x1b[0m:\t {content}
 {time} \x1b[1;49;31mERROR\x1b[0m\n
 """
 
 		# escape characters cant be in file, therefore cleaned here
-		clean_error_format = f'{time} ERROR \t {pathway}: {content}'
+		clean_error_format = f'{time} ERROR \n{time} ERROR \t {pathway}:\t {content}\n{time} ERROR '
   
 		print(error_format)
 

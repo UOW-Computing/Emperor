@@ -8,6 +8,7 @@ package.json
 src/__pycache__/*
 .env
 *.json
-test.py
+test*
 venv
 activate.bat
+response*
