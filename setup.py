@@ -75,15 +75,15 @@ if check_input(create_ENV_file) == "yes":
 	print("Please enter GUILD ID followed by log channel ID in the GUILD")
 	while True:
 		id_input = input("GUILD ID (-1 to stop): ")
-		if not id_input.isdigit():
-			print("Invalid GUILD ID, try again!")
-			continue
 		match id_input:
 			case "-1":
 				# If they want to stop break out of the
 				# while loop
 				break
 			case _:
+				if not id_input.isdigit():
+					print("Invalid GUILD ID, try again!")
+					continue
 				# They want to enter more IDs
 				guild_ids.append(id_input)
 				# implement it as a dict
