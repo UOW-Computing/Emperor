@@ -63,6 +63,12 @@ class Mod(commands.Cog):
 	@ticket_group.command(name="create",
 						  description="Creates a channel for the ticket to be handled")
 	async def ticket_create(self, interaction: discord.Interaction,  reason: str) -> None:
+		"""
+  		Creates a channel for the ticket to be handled by support
+    
+		Args:
+			reason (str): The purpose of the ticket being open
+		"""
 		
 		role = interaction.guild.get_role(1045055491220443287) # self.bot.config.SUPPORT_ROLE
 		overwrites = {
@@ -83,11 +89,19 @@ class Mod(commands.Cog):
 
 		await channel.send(embed=supportEmbed)
 
+		self.bot.lj.log('emperor.mod.ticket.create', f'Ticket ({channel.id}) has been created by {interaction.user.name}')
+
 		await interaction.response.send_message(f'Ticket has been created, <#{channel.id}>')
   
 	@ticket_group.command(name="close",
 						  description='Closes an already open ticket')
 	async def ticket_close(self, interaction: discord.Interaction) -> None:
+		"""
+  		Closes an already open ticket made by an member
+    
+		Args:
+			None (user side)
+		"""
 		# Check if the channel is ticket channel
 		guild = interaction.guild
 
@@ -100,6 +114,7 @@ class Mod(commands.Cog):
 
 		if is_ticket_channel:
 			await interaction.response.send_message(embed=thankEmbed)
+			self.bot.lj.log('emperor.mod.ticket.close', f'Ticket ({channel.id}) has been closed by {interaction.user.name}')
 			await asyncio.sleep(5)
 			await channel.delete()
 		else:

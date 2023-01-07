@@ -54,7 +54,7 @@ class API(commands.Cog):
 		self.bot.lj.info(f'emperor.cogs.api.{ctx.invoked_with}',
 						 f'{ctx.author.name} has executed {ctx.invoked_with} command')
 
-	@app_commands.command(name="reddit", description="Look through a subreddit")
+	@app_commands.command(name="reddit", description="Looks through subreddits given by the user")
 	async def reddit(
 		self, interaction: discord.Interaction, subreddit: str
 	):

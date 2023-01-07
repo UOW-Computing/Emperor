@@ -132,7 +132,8 @@ class Main(commands.Cog):
 		await interaction.response.send_message(f"<@{interaction.user.id}>, hello!")
 
 
-	@info_group.command(name='server')
+	@info_group.command(name='server',
+                     	description="Collects and sends an embed with information about the server")
 	async def info_server(self, interaction: discord.Interaction) -> None:
 		"""Collects and sends an embed with information about the server
 
@@ -191,6 +192,15 @@ class Main(commands.Cog):
 	@info_group.command(name='member',
 						description='Gets information about the user')
 	async def info_member(self, interaction: discord.Interaction, member: discord.Member) -> None:
+		"""
+		Gets the information about the user and sends it as an embed
+
+		Args:
+			member (discord.Member): The user to collect information about
+
+		Returns:
+			Embed (discord.Embed): Information collected on the user
+		"""
 		memberEmbed = discord.Embed(color=self.bot.config.COLOUR,
                               		title='Member Information',
                                 	description=\

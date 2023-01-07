@@ -5,7 +5,11 @@ from discord 		import app_commands
 from discord.ext 	import commands
 
 class Admin(commands.Cog):
-	"""The description for NewCog goes here."""
+	"""
+ 	Admin cog
+
+	Holds developer commands that should not be run by anyone but the bot owner
+ 	"""
 
 	def __init__(self, bot):
 		self.bot = bot

@@ -19,7 +19,7 @@ class Emperor(commands.Bot):
 	def __init__(self, p_intents: discord.Intents, p_config: Settings) -> None:
 		super().__init__(
 				description="Very important discord bot",
-				command_prefix=commands.when_mentioned_or('em!'),
+				command_prefix=commands.when_mentioned_or('e!'),
 				intents=p_intents)
 
 		self.config = p_config	
@@ -35,6 +35,7 @@ class Emperor(commands.Bot):
 	
 	
 	async def on_ready(self):
+		await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="e!"))
 		self.lj.info('emperor.onready', f'Logged on as {self.user} (ID: {self.user.id})')
 
 	async def on_message(self, message: discord.Message):

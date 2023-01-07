@@ -1,0 +1,44 @@
+{
+	"General":
+	{
+		"hello":
+		[{
+			"name": "hello",
+			"description": "A simple hello command.",
+			"usage": "/hello"
+		}],
+		"info":[
+			{
+				"name":"member",
+				"description":"Gets information about the user",
+				"usage":"/info member"
+			},
+			{
+				"name":"server",
+				"description":"Collects and sends an embed with information about the server",
+				"usage":"/info server"
+			}
+		]
+	},
+	"API": 
+	{
+		"reddit": [{
+			"name": "reddit",
+			"description": "Looks through subreddits given by the user",
+			"usage": "/reddit [subreddit]"
+		}]
+	},
+	"Mod": {
+		"ticket": [{
+			"name": "create",
+			"description": "Creates a channel for the ticket to be handled",
+			"usage": "/ticket create"
+		},
+		{
+			"name": "close",
+			"description": "Closes an already open ticket",
+			"usage": "/ticket close"
+		}]
+	}
+
+}
