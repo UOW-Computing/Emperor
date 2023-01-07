@@ -35,7 +35,7 @@ class Emperor(commands.Bot):
 	
 	
 	async def on_ready(self):
-		await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="e!"))
+		await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="e!"))
 		self.lj.info('emperor.onready', f'Logged on as {self.user} (ID: {self.user.id})')
 
 	async def on_message(self, message: discord.Message):
