@@ -1,90 +1,71 @@
-# pylint: disable=assigning-non-slot,
+"""
+Emperor v0.1.2
+	Main class
+
+
+"""
+
 import discord
 
-from discord.ext import commands
+from src.Lj import Lj
 from src.config import Settings
-from src.lj import Lj
-
+from discord.ext import commands
 
 class Emperor(commands.Bot):
-    """
-    Main class of the Bot
-    Inherits all the properties of commnads.Bot
 
-    """
-    log = None
-    config = None
+	config: Settings = None
+	lj: Lj = None
 
-    def __init__(self, config: Settings):
-        """
-        Constructor class for Emperor
+	def __init__(self, p_intents: discord.Intents, p_config: Settings) -> None:
+		super().__init__(
+				description="Very important discord bot",
+				command_prefix=commands.when_mentioned_or('e!'),
+				intents=p_intents)
 
-        Main Bot class initializeds as well
-        """
+		self.config = p_config	
+		self.lj = Lj()
 
-        # Allow the default intents
-        intents = discord.Intents.default()
-        # makes sure we gain access to the content
-        # of the messages
-        intents.message_content = True
+  
+	async def setup_hook(self):
+		for cog in self.config.COGS:
+			try:
+				await self.load_extension("cogs."+cog)
+			except Exception as exc:
+				print(f'Could not load extension {cog} due to {exc.__class__.__name__}: {exc}')
+	
+	
+	async def on_ready(self):
+		await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="e!"))
+		self.lj.info('emperor.onready', f'Logged on as {self.user} (ID: {self.user.id})')
 
-        # Initilises the Constructor
-        # for LJ class
-        self.log = Lj()
-        self.config = config
+	async def on_message(self, message: discord.Message):
 
-        super().__init__(command_prefix=self.config.BOT_PREFIX,
-                         description="Very Important Discord Bot.",
-                         intents=intents,
-                         status=discord.Status.dnd,
-                         activity=discord.Game(name="with myself!"))
+		if message.author.bot: return
 
-    async def log_in_channel(self, message: discord.Message) -> None:
-        if self.config.LOG_CHANNEL_ID is None:
-            self.log.warn("logger/LogChannel",
-                          "Log Channel ID is undefined, cannot log inside servers")
-        log_channel = await message.guild.fetch_channel(self.config.LOG_CHANNEL_ID)
+		def check_for_message(msg: discord.Message):
+			"""
+			Insures that if an attachment is given the content is not left blank
 
-        # form a embed
-        log_embed = discord.Embed(title="Content",
-                                  description=f'{message.content}',
-                                  timestamp=message.created_at,
-                                  color=discord.Color.from_rgb(128, 0, 128))
-        log_embed.set_author(name=self.user.name,
-                             icon_url=self.user.display_avatar)
-        log_embed.set_thumbnail(url=message.author.display_avatar)
-        log_embed.add_field(
-            name="Send by", value=f'<@{message.author.id}>', inline=True)
-        log_embed.add_field(name="IDs",
-                            value=f'```\nMessage:\t{message.id}\nUser:\t{message.author.id}```',
-                            inline=True)
-        log_embed.add_field(name="Channel",
-                            value=f'<#{message.channel.id}>\nID: `{message.channel.id}`')
+			TODO: Add support to allow both content and attachments to be parsered through
+			NOTE: Currently bugged, does not work with attachments
 
-        await log_channel.send(embed=log_embed)
+			Args:
+				msg (discord.Message): The message to parser through
 
-    @commands.Cog.listener()
-    async def on_ready(self):
+			Returns:
+				str: Message content if it had text
+				url: Url(s) if the message had no content
+			"""
+			if message.content == "":
+				return " ".join(message.attachments.url)
+			else:
+				return message.content
 
-        print(f'{self.user} is ready in {len(self.guilds)} servers!')
+		
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        """
-        Handles all the messages sent by users
+		self.lj.info(f'emperor.message    {message.guild.name}.{message.channel.name}', f'{message.author}: {message.content}')
+		await self.process_commands(message)
+  
+  
 
-        Params:
-            message: discord.Message, the event that triggered this function
 
-        """
-        if message.author.bot:
-            return None
-
-        # Figure out if the message is from DM or guild
-        await self.log_in_channel(message=message)
-        self.log.log(f'{message.guild.name}/{message.channel.name}',
-                     f'{message.author} [MSG ID: {message.id}] {message.content}')
-        await self.process_commands(message)
-
-    async def on_command(self, ctx):
-        self.log.log("main/CommandHandler", f"Executing {ctx.command}")

@@ -3,12 +3,17 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
 
-    TOKEN: str
-    BOT_PREFIX: str
-    GUILD_ID: str | list
-    LOG_CHANNEL_ID: str | dict
+	# Hardcoded values in env
+	COGS: list
+	COLOUR: int
 
-    class Config:
+	# Changeable fields
+	TOKEN: str
+	BOT_PREFIX: str
+	GUILD_ID: int | list
+	LOG_CHANNEL_ID: str | dict
 
-        env_file = ".env"
-        env_file_encoding = "utf-8"
+	class Config:
+
+		env_file = ".env"
+		env_file_encoding = "utf-8"
