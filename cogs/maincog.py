@@ -188,7 +188,8 @@ class Main(commands.Cog):
 			await interaction.response.send_message(file=discordfile, embed=server_embed)
 		# await interaction.response.send_message('This is a `/info server`')
 
-	@info_group.command(name='member')
+	@info_group.command(name='member',
+						description='Gets information about the user')
 	async def info_member(self, interaction: discord.Interaction, member: discord.Member) -> None:
 		memberEmbed = discord.Embed(color=self.bot.config.COLOUR,
                               		title='Member Information',

@@ -47,8 +47,7 @@ class Emperor(commands.Bot):
 
 			TODO: Add support to allow both content and attachments to be parsered through
 			NOTE: Currently bugged, does not work with attachments
-   
-   	
+
 			Args:
 				msg (discord.Message): The message to parser through
 

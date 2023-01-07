@@ -37,10 +37,10 @@ def check_for_int(value: str) -> str:
 	Checks whether param value is a integer.
 
 	Params:
-					value: the variable to process if its int or not
+		value: the variable to process if its int or not
 
 	Returns:
-					str: integer value in string format
+		str: integer value in string format
 	"""
 	if value.isdigit():
 		return value
