@@ -1,4 +1,4 @@
-# [Emperor v0.1.4](https://github.com/UOW-Computing/Emperor)
+# [Emperor v0.1.41](https://github.com/UOW-Computing/Emperor)
 
 *Bot is limited in functionality as its currently in development.*
 
@@ -26,13 +26,16 @@ Afterwards, either create a `.env` file yourself or use the `setup.py` to create
 ### General
 
 - `hello`: Says hello back to you
-- `server`: Gives info of the server in which it was executed in
-- `member`: Gives information about the member mentioned
+ - `info server`: Gives info of the server in which it was executed in
+ - `info member`: Gives information about the member mentioned
+
+### API
+
 - `reddit`: Responds with a post in the subreddit given
 
 ## TODO
 
-- [ ] Add Lj logging into Ticket command
+- [x] Add Lj logging into Ticket command
 - [ ] Rewrite `clear` as `purge` command for discord.py
 - [ ] Handle attachmens on `on_message` event
 - [ ] Turn createrole into sub commands of their own respective command, `create role` for `createrole`
