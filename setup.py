@@ -11,10 +11,10 @@ def check_input(var_input: str) -> str:
 	Checks whether the user input is correct
 
 	Params:
-					var_input: the user input
+		var_input: the user input
 
 	Returns:
-					Correct user input
+		Correct user input
 	"""
 	if var_input.lower() in ["y", "yes", "ye"]:
 		return "yes"
@@ -30,23 +30,6 @@ Please only enter yes or no:
 """
 		)
 	)
-
-
-def check_for_int(value: str) -> str:
-	"""
-	Checks whether param value is a integer.
-
-	Params:
-		value: the variable to process if its int or not
-
-	Returns:
-		str: integer value in string format
-	"""
-	if value.isdigit():
-		return value
-
-	# ask again for a integer values only
-	return check_for_int(input("Please enter only integer values: "))
 
 
 print("\n" * 100)
