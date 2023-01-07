@@ -20,7 +20,7 @@ Afterwards, either create a `.env` file yourself or use the `setup.py` to create
 
 ### Moderation
 
-- `ticket create`: Creates a channel exculsive to the ticket creater and staff members
+- `ticket create`: Creates a channel exclusive to the ticket creater and staff members
 - `ticket close`: Closes a ticket channel
 
 ### General
