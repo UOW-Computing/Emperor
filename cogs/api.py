@@ -54,7 +54,7 @@ class API(commands.Cog):
 						 f'{ctx.author.name} has executed {ctx.invoked_with} command')
 
 
-	async def __get_search_results(query: str) -> List[Tuple[str, str]]:
+	async def __get_search_results(self, query: str) -> List[Tuple[str, str]]:
 		"""
 		Send a search query to the DuckDuckGo search engine and return the links and titles
 		of the search results.
