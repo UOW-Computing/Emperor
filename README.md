@@ -61,7 +61,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
   <a href="https://github.com/UOW-Computing/Emperor">
-    <img src="res/screenshot.png" alt="Logo" width="1400" height="600">
+    <img src="res/screenshot.png" alt="Logo" width="400" height="400">
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
