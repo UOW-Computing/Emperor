@@ -1,7 +1,7 @@
 import time
 
 from datetime import datetime
-from src import Utils
+from src.ServerUtils import Utils
 
 class Lj:
 	"""
@@ -40,7 +40,7 @@ class Lj:
 		# Simple try and except where it saves to file
 		try:
 			# save to file
-			Utils.writeToFile(self.log_file, clean_info_format)
+			Utils.writeToFile(self.log_file, clean_info_format,directory='logs/')
 			return True
 		except FileNotFoundError:
 			print(f'{time} \x1b[1;49;33mWARN\x1b[0m \x1b[1;49;95memperor.lj[0m: File could not be found')
@@ -71,7 +71,7 @@ class Lj:
 		# Simple try and except where it saves to file
 		try:
 			# save to file
-			Utils.writeToFile(self.log_file, clean_warn_format)
+			Utils.writeToFile(self.log_file, clean_warn_format,directory='logs/')
 			return True
 		except FileNotFoundError:
 				print(f'{time} \x1b[1;49;33mWARN\x1b[0m \x1b[1;49;95memperor.lj[0m: File could not be found')
@@ -106,7 +106,7 @@ class Lj:
 		# Simple try and except where it saves to file
 		try:
 			# save to file
-			Utils.writeToFile(self.log_file, clean_error_format)
+			Utils.writeToFile(self.log_file, clean_error_format,directory='logs/')
 			return True
 		except FileNotFoundError:
 				print(f'{time} \x1b[1;49;33mWARN\x1b[0m \t \x1b[1;49;95memperor.lj[0m: File could not be found')

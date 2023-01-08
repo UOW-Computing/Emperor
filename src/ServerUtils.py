@@ -1,6 +1,6 @@
 class Utils:
     @staticmethod
-    def writeToFile(filename, content, mode='a',extension='.txt') -> None: # Writes the data into a text file
+    def writeToFile(filename, content, mode='a',extension='.txt', directory='') -> None: # Writes the data into a text file
     #NOTE: when giving the filename, do not use .txt since the function already does that for you.
 
         """ Writes the data to a given file name.
@@ -20,10 +20,31 @@ class Utils:
         Known Errors:
             When setting mode to r or x errors will occour. - Under Revision
         """
-        with open(f"{filename}{extension}", mode, encoding="utf-8") as file: #NOTE: reference ".txt".
+        with open(f"{directory}{filename}{extension}", mode, encoding="utf-8") as file: #NOTE: reference ".txt".
             file.write(content + "\n")
             file.close()
         
+
+    @staticmethod
+    def outputBranding(): 
+        # Moved this into a function in order to declutter setup.py
+        """
+        Outputs Emperor Branding.
+        """
+        print("\n" * 100)
+        print(
+            """
+            _____
+            |   __|_____ ___ ___ ___ ___ ___
+            |   __|     | . | -_|  _| . |  _|
+            |_____|_|_|_|  _|___|_| |___|_|
+                v0.0.72 |_|  © 2022 nukestye
+
+        Welcome to Emperor!
+        As this is your first time setting up the discord bot, please either
+        make a .env file or follow the wizard below to create one.
+        """
+        )
 
 
 

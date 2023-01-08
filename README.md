@@ -6,9 +6,13 @@ Discord bot used for School of Computing discord server.
 The bot is highly customisable and coded by the server members themselves.
 
 ## Instructions
+#NOTE: Need to add instructions on how to fork/git init the project enviroment.
 
 To localy run Emperor, you need a `.env` file.
-You can look at `.env.example`, it outlines how the file should look like.
+#UPDATE: Setup.py now can genereate and .env file.
+Follow this order when setting up the project for the first time:
+1- run setup.py follow it's instructions.
+2- run main.py - main.py runs the server for the bot.
 
 Before creating the file make sure to have a bot ready with its token copied.
 
