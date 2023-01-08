@@ -5,6 +5,7 @@ import discord
 
 from dotenv import load_dotenv
 from src.config import Settings
+from src.ServerUtils import Utils
 from src.Emperor import Emperor
 from discord.ext import commands
 
@@ -12,17 +13,7 @@ load_dotenv()
 
 config = Settings()
 
-print(
-    f"""
- _____
-|   __|_____ ___ ___ ___ ___ ___
-|   __|     | . | -_|  _| . |  _|
-|_____|_|_|_|  _|___|_| |___|_|
-            |_| © 2022 nukestye
-
-Welcome to Emperor v{os.getenv('BOT_ENV_VERSION')}!\n
-"""
-)
+Utils.outputBranding() # Prints Emperor Logo Branding
 
 # Sending the intents
 intents = discord.Intents.default()
@@ -31,7 +22,6 @@ intents.members = True
 intents.presences = True
 
 emperor = Emperor(intents, config)
-
 
 # Command used to sync command changes
 @emperor.command()
