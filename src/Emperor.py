@@ -17,13 +17,17 @@ class Emperor(commands.Bot):
 	lj: Lj = None
 
 	def __init__(self, p_intents: discord.Intents, p_config: Settings) -> None:
-		super().__init__(
-				description="Very important discord bot",
-				command_prefix=commands.when_mentioned_or('e!'),
-				intents=p_intents)
 
 		self.config = p_config	
 		self.lj = Lj()
+
+	
+		super().__init__(
+				description="Very important discord bot",
+				command_prefix=commands.when_mentioned_or(self.config.BOT_PREFIX),
+				intents=p_intents)
+
+
 
   
 	async def setup_hook(self):
@@ -36,7 +40,7 @@ class Emperor(commands.Bot):
 	
 	async def on_ready(self):
 		await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="e!"))
-		self.lj.info('emperor.onready', f'Logged on as {self.user} (ID: {self.user.id})')
+		self.lj.log('emperor.onready', f'Logged on as {self.user} (ID: {self.user.id})')
 
 	async def on_message(self, message: discord.Message):
 
@@ -63,7 +67,7 @@ class Emperor(commands.Bot):
 
 		
 
-		self.lj.info(f'emperor.message    {message.guild.name}.{message.channel.name}', f'{message.author}: {message.content}')
+		self.lj.log(f'emperor.message    {message.guild.name}.{message.channel.name}', f'{message.author}: {message.content}')
 		await self.process_commands(message)
   
   

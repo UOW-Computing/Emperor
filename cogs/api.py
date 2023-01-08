@@ -21,7 +21,7 @@ class API(commands.Cog):
 
 
 	async def cog_load(self):
-		self.bot.lj.info('emperor.cogs.api', 'API cog was loaded')
+		self.bot.lj.log('emperor.cogs.api', 'API cog was loaded')
 
 	async def cog_unload(self):
 		self.bot.lj.warn('emperor.cogs.api', 'API cog was unloaded')
@@ -47,11 +47,11 @@ class API(commands.Cog):
 		await interaction.response.send_message(f'<@{interaction.user.id}>, {error}')
 
 	async def cog_before_invoke(self, ctx):
-		self.bot.lj.info(f'emperor.cogs.api.{ctx.invoked_with}',
+		self.bot.lj.log(f'emperor.cogs.api.{ctx.invoked_with}',
 						 f'{ctx.author.name} has attempted to executed {ctx.invoked_with}')
 
 	async def cog_after_invoke(self, ctx):
-		self.bot.lj.info(f'emperor.cogs.api.{ctx.invoked_with}',
+		self.bot.lj.log(f'emperor.cogs.api.{ctx.invoked_with}',
 						 f'{ctx.author.name} has executed {ctx.invoked_with} command')
 
 	@app_commands.command(name="reddit", description="Looks through subreddits given by the user")

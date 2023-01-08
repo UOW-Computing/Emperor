@@ -18,10 +18,10 @@ class Main(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
-	info_group = app_commands.Group(name="info", description="Gives information about server, member or channel.")
+	info_group = app_commands.Group(name="log", description="Gives information about server, member or channel.")
 
 	async def cog_load(self):
-		self.bot.lj.info('emperor.cogs.maincog', 'MainCog cog was loaded')
+		self.bot.lj.log('emperor.cogs.maincog', 'MainCog cog was loaded')
 
 	async def cog_unload(self):
 		self.bot.lj.warn('emperor.cogs.maincog', 'MainCog cog was unloaded')
@@ -47,11 +47,11 @@ class Main(commands.Cog):
 		await interaction.response.send_message(f'<@{interaction.user.id}>, {error}')
 
 	async def cog_before_invoke(self, ctx):
-		self.bot.lj.info(f'emperor.cogs.maincog.{ctx.invoked_with}',
+		self.bot.lj.log(f'emperor.cogs.maincog.{ctx.invoked_with}',
 						 f'{ctx.author.name} has attempted to executed {ctx.invoked_with}')
 
 	async def cog_after_invoke(self, ctx):
-		self.bot.lj.info(f'emperor.cogs.maincog.{ctx.invoked_with}',
+		self.bot.lj.log(f'emperor.cogs.maincog.{ctx.invoked_with}',
 						 f'{ctx.author.name} has executed {ctx.invoked_with} command')
 
 
@@ -187,7 +187,7 @@ class Main(commands.Cog):
 			await interaction.response.send_message(embed=server_embed)
 		else:
 			await interaction.response.send_message(file=discordfile, embed=server_embed)
-		# await interaction.response.send_message('This is a `/info server`')
+		# await interaction.response.send_message('This is a `/log server`')
 
 	@info_group.command(name='member',
 						description='Gets information about the user')
