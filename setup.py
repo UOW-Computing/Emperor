@@ -1,8 +1,7 @@
 import json
 
 from pathlib import Path
-
-
+from src.Utils import Utils
 emperor_version = "v0.0.72"
 
 
@@ -25,8 +24,7 @@ def check_input(var_input: str) -> str:
 	return check_input(
 		var_input=input(
 			"""Incorrect input
-Would you like to create an env file?
-Please only enter yes or no:
+Would you like to create an env file?: [yes/no]
 """
 		)
 	)
@@ -48,13 +46,13 @@ make a .env file or follow the wizard below to create one.
 )
 
 
-create_ENV_file = input("Would you like to create a env file(yes or no): ")
+create_ENV_file = input("Create a new .env file?: [yes/no] ")
 
 if check_input(create_ENV_file) == "yes":
 	bot_token = input("Please enter your bot token: ")
 	# Enter guild name and the log channel
 	guild_ids = []
-	log_channel = {}
+	log_channel = []
 	print("Please enter GUILD ID followed by log channel ID in the GUILD")
 	while True:
 		id_input = input("GUILD ID (-1 to stop): ")
@@ -71,13 +69,13 @@ if check_input(create_ENV_file) == "yes":
 				guild_ids.append(id_input)
 				# implement it as a dict
 				# not as a list
-				log_channel[id_input] = input("lOG channel ID (0 for none): ")
+				log_channel = input("lOG channel ID (0 for none): ")
 
 	prefix = input("Would you like to change prefix (/): ")
 	if prefix == "":
 		prefix = "/"
 
-	env = f"""# Dotenv file
+	content_env = f"""# Dotenv file
 # author: nukestye
 # version: {emperor_version}
 
@@ -85,18 +83,20 @@ if check_input(create_ENV_file) == "yes":
 # Also, the bot should have access to the guild and log channel
 # otherwise an error will occur
 BOT_ENV_VERSION='{emperor_version}'
+COGS = ["maincog", "admin", "mod", "api", "help"]	# this was from nuke
+COLOUR = "4915330"									# this was from nuke
 
 TOKEN='{bot_token}'
 BOT_PREFIX='{prefix}'
-GUILD_ID='{guild_ids}'
-LOG_CHANNEL_ID='{json.dumps(log_channel, indent = 4)}'
+GUILD_ID={guild_ids}
+LOG_CHANNEL_ID='{log_channel}'
 
 """
-
-	with open(".envtest", "w", encoding="utf-8") as envfile:
-		envfile.write(env)
-	envfile.close()
-	print(".env has been created!\n")
+	Utils.writeToFile(filename='', content=content_env, mode='w', extension='.env')
+	# with open(".envtest", "w", encoding="utf-8") as envfile:
+	# 	envfile.write(env)
+	# envfile.close()
+	# print(".env has been created!\n")
 	
 	# Creates a logs folder, where Lj stores all the logs
 	print("Creating logs folder for Lj....")
