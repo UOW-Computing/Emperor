@@ -6,12 +6,15 @@ import time
 
 from discord 		import app_commands
 from discord.ext 	import commands
-
+from typing import List, Tuple
+import aiohttp
+import asyncio
+from bs4 import BeautifulSoup
 
 
 class API(commands.Cog):
 	"""
- 	API Cog
+	 API Cog
 
 	Holds all the commands that connect to APIs for stuff
 	"""
@@ -43,7 +46,7 @@ class API(commands.Cog):
 		
 	async def cog_app_command_error(self, interaction, error):
 		self.bot.lj.warn(f'emperor.cogs.api.{interaction.command.name}',
-				   		 f'<@{interaction.user.id}>, {error}')
+							f'<@{interaction.user.id}>, {error}')
 		await interaction.response.send_message(f'<@{interaction.user.id}>, {error}')
 
 	async def cog_before_invoke(self, ctx):
@@ -53,6 +56,27 @@ class API(commands.Cog):
 	async def cog_after_invoke(self, ctx):
 		self.bot.lj.info(f'emperor.cogs.api.{ctx.invoked_with}',
 						 f'{ctx.author.name} has executed {ctx.invoked_with} command')
+
+
+	async def __get_search_results(query: str) -> List[Tuple[str, str]]:
+		# Clean up the query string
+		query = "+".join(query.strip().split())
+
+		# Send an HTTP GET request to the DuckDuckGo search engine
+		async with aiohttp.ClientSession() as cs:
+			async with cs.get(f'https://duckduckgo.com/html/?q={query}') as r:
+				data = await r.text()
+
+		# Parse the response data using BeautifulSoup
+		soup = BeautifulSoup(data, 'html.parser')
+
+		# Find all the search result links
+		result_links = soup.select("a.result__a")
+
+		# Extract the link and title for each result
+		results = [(link['href'], link.text) for link in result_links]
+
+		return results
 
 	@app_commands.command(name="reddit", description="Looks through subreddits given by the user")
 	async def reddit(
@@ -112,6 +136,34 @@ class API(commands.Cog):
 				# postEmbed.set_author(name=data['data']['author'])
 
 				await interaction.response.send_message(embed=post_embed)
+
+	@app_commands.command(name="ddg", description="Get result from DuckDuckGo search by user")
+	async def ddg_search(
+		self, interaction: discord.Interaction, search_parameters: str
+	):
+		"""
+		Get search from DuckDuckGo.
+		Params:
+			search_parameters: get search result from DuckDuckGo.
+		"""
+		results = await self.__get_search_results(search_parameters)
+
+		resultEmbed = discord.Embed(color= self.bot.config.COLOUR, title="DDG search results")
+
+		desc = ""
+
+		resultLimit = 10
+
+		for result in results:
+			if resultLimit > 0:
+				print(result[0])
+				desc += f'[{result[1]}](https:{result[0]})\n'
+				resultLimit-= 1
+
+
+		resultEmbed.description = desc
+  
+		await interaction.response.send_message(embed=resultEmbed)
 
 async def setup(bot):
 	# Make an discord.Object for each
