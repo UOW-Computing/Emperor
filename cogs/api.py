@@ -59,6 +59,16 @@ class API(commands.Cog):
 
 
 	async def __get_search_results(query: str) -> List[Tuple[str, str]]:
+		"""
+    Send a search query to the DuckDuckGo search engine and return the links and titles
+    of the search results.
+
+    Parameters:
+    - query: the search query to send to the search engine.
+
+    Returns:
+    - A list of tuples, where each tuple contains the link and title for a single search result.
+    	"""
 		# Clean up the query string
 		query = "+".join(query.strip().split())
 
