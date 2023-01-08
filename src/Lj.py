@@ -14,7 +14,23 @@ class Lj:
 	log_file = None
 	
 	def __init__(self):
-		self.log_file = 'logs/log-'+datetime.now().strftime("%Y %m %d-%H %M")
+		self.log_file = f'logs_log-{datetime.now().strftime("%Y %m %d-%H %M")}''.txt' 
+
+
+	def writeToFile(filename, content) -> None: # Writes the data into a text file
+		#NOTE: when giving the filename, do not use .txt since the function already does that for you.
+
+		""" Writes the data to a given file name.
+			Currently not handling errors since 'a' should create/append to file. - Under revision.
+
+
+		Args:
+			filename (str): name of the file to be written to
+			content (str): data to be written
+		"""
+		with open(f"{filename}.txt", "a", encoding="utf-8") as file: #NOTE: reference ".txt".
+			file.write(content + "\n")
+			file.close()
 		
 	
 	def info(self, pathway: str = 'emperor', content: str = 'no content was given') -> bool:
@@ -39,14 +55,13 @@ class Lj:
 		# Simple try and except where it saves to file
 		try:
 			# save to file
-			with open(self.log_file, "a", encoding="utf-8") as file:
-				file.write(clean_info_format + "\n")
-			file.close()
+			Lj.writeToFile(self.log_file, clean_info_format)
 			return True
 		except FileNotFoundError:
 			print(f'{time} \x1b[1;49;33mWARN\x1b[0m \x1b[1;49;95memperor.lj[0m: File could not be found')
 			return False
-   
+
+
 	def warn(self, pathway: str = 'emperor', content: str = 'no content was given') -> bool:
 		"""
 		Makes an WARN entry to log file and prints the warn to console
@@ -71,9 +86,7 @@ class Lj:
 		# Simple try and except where it saves to file
 		try:
 			# save to file
-			with open(self.log_file, "a", encoding="utf-8") as file:
-				file.write(clean_warn_format + "\n")
-			file.close()
+			Lj.writeToFile(self.log_file, clean_warn_format)
 			return True
 		except FileNotFoundError:
 				print(f'{time} \x1b[1;49;33mWARN\x1b[0m \x1b[1;49;95memperor.lj[0m: File could not be found')
@@ -108,9 +121,7 @@ class Lj:
 		# Simple try and except where it saves to file
 		try:
 			# save to file
-			with open(self.log_file, "a", encoding="utf-8") as file:
-				file.write(clean_error_format + "\n")
-			file.close()
+			Lj.writeToFile(self.log_file, clean_error_format)
 			return True
 		except FileNotFoundError:
 				print(f'{time} \x1b[1;49;33mWARN\x1b[0m \t \x1b[1;49;95memperor.lj[0m: File could not be found')
