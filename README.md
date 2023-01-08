@@ -14,7 +14,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/UOW-Computing/Emperor">
-    <img src="res/screenshot.png" alt="Logo" width="80" height="80">
+    <img src="res/uowLogo.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Emperor, a discord bot from students of University of Westminster.</h3>
