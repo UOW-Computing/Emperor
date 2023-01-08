@@ -1,6 +1,7 @@
 import time
 
 from datetime import datetime
+from src.ServerUtils import Utils
 
 class Lj:
 	"""
@@ -14,7 +15,7 @@ class Lj:
 	log_file = None
 	
 	def __init__(self):
-		self.log_file = 'logs/log-'+datetime.now().strftime("%Y %m %d-%H %M")
+		self.log_file = f'logs_log-{datetime.now().strftime("%Y %m %d-%H %M")}''.txt' 
 		
 	
 	def info(self, pathway: str = 'emperor', content: str = 'no content was given') -> bool:
@@ -39,14 +40,13 @@ class Lj:
 		# Simple try and except where it saves to file
 		try:
 			# save to file
-			with open(self.log_file, "a", encoding="utf-8") as file:
-				file.write(clean_info_format + "\n")
-			file.close()
+			Utils.writeToFile(self.log_file, clean_info_format,directory='logs/')
 			return True
 		except FileNotFoundError:
 			print(f'{time} \x1b[1;49;33mWARN\x1b[0m \x1b[1;49;95memperor.lj[0m: File could not be found')
 			return False
-   
+
+
 	def warn(self, pathway: str = 'emperor', content: str = 'no content was given') -> bool:
 		"""
 		Makes an WARN entry to log file and prints the warn to console
@@ -71,9 +71,7 @@ class Lj:
 		# Simple try and except where it saves to file
 		try:
 			# save to file
-			with open(self.log_file, "a", encoding="utf-8") as file:
-				file.write(clean_warn_format + "\n")
-			file.close()
+			Utils.writeToFile(self.log_file, clean_warn_format,directory='logs/')
 			return True
 		except FileNotFoundError:
 				print(f'{time} \x1b[1;49;33mWARN\x1b[0m \x1b[1;49;95memperor.lj[0m: File could not be found')
@@ -108,9 +106,7 @@ class Lj:
 		# Simple try and except where it saves to file
 		try:
 			# save to file
-			with open(self.log_file, "a", encoding="utf-8") as file:
-				file.write(clean_error_format + "\n")
-			file.close()
+			Utils.writeToFile(self.log_file, clean_error_format,directory='logs/')
 			return True
 		except FileNotFoundError:
 				print(f'{time} \x1b[1;49;33mWARN\x1b[0m \t \x1b[1;49;95memperor.lj[0m: File could not be found')
