@@ -10,7 +10,7 @@ class Settings(BaseSettings):
 	# Changeable fields
 	TOKEN: str
 	BOT_PREFIX: str
-	GUILD_ID: str | list
+	GUILD_ID: int | list
 	LOG_CHANNEL_ID: str | list
 
 	class Config:

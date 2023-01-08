@@ -218,7 +218,7 @@ class Main(commands.Cog):
 async def setup(bot):
 	# Make an discord.Object for each
 	# guild in the list
-	guild_objects: list(discord.Object) = []
+	guild_objects: list[discord.Object] = []
 	for guild in bot.config.GUILD_ID:
 		guild_objects.append(discord.Object(id=guild))
 

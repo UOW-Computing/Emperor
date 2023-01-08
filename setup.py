@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from src.ServerUtils import Utils
-emperor_version = "v0.0.72"
+emperor_version = "v0.1.42"
 
 
 def check_input(var_input: str) -> str:
@@ -60,18 +60,20 @@ if check_input(create_ENV_file) == "yes":
 # author: nukestye & UOW TEAM
 # version: {emperor_version}
 
-# Ensure that all fields are given correct values.
-# Also, the bot should have access to the guild and log channel
-# otherwise an error will occur
+# -------------------------------------------------
+# Do not change anything here
 BOT_ENV_VERSION='{emperor_version}'
 COGS = ["maincog", "admin", "mod", "api", "help"]	# this was from nuke
 COLOUR = "4915330"									# this was from nuke
-
-TOKEN='{bot_token}'
-BOT_PREFIX='{prefix}'
-GUILD_ID='{guild_id}'
-LOG_CHANNEL_ID='{log_channel_id}'
-
+# -------------------------------------------------
+#
+# Ensure that all fields are given correct values.
+# Also, the bot should have access to the guild and log channel
+# otherwise an error will occur
+TOKEN="{bot_token}"
+BOT_PREFIX="{prefix}"
+GUILD_ID=["{guild_id}"]
+LOG_CHANNEL_ID="{log_channel_id}"
 """
 	# Creates the .env file with the contents parsed above
 	Utils.writeToFile(filename='', content=content_env, mode='w', extension='.env')	
