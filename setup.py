@@ -1,5 +1,3 @@
-import json
-
 from pathlib import Path
 from src.Utils import Utils
 emperor_version = "v0.0.72"
@@ -47,31 +45,30 @@ make a .env file or follow the wizard below to create one.
 
 
 create_ENV_file = input("Create a new .env file?: [yes/no] ")
+# NOTE: currently guild id and log channel id are being held as constant values
+# Nuke I removed the multiple guild ID's and the json feature, we'll speak about this later.
 
 if check_input(create_ENV_file) == "yes":
-	bot_token = input("Please enter your bot token: ")
 	# Enter guild name and the log channel
-	guild_ids = []
-	log_channel = []
-	print("Please enter GUILD ID followed by log channel ID in the GUILD")
+
+	bot_token = input("Enter BOT token: ")
+	print("Enter GUILD ID: ")
 	while True:
-		id_input = input("GUILD ID (-1 to stop): ")
-		match id_input:
+		guild_id = input("GUILD ID (-1 to stop): ")
+		match guild_id:
 			case "-1":
 				# If they want to stop break out of the
 				# while loop
 				break
 			case _:
-				if not id_input.isdigit():
+				if not guild_id.isdigit():
 					print("Invalid GUILD ID, try again!")
 					continue
-				# They want to enter more IDs
-				guild_ids.append(id_input)
-				# implement it as a dict
-				# not as a list
-				log_channel = input("lOG channel ID (0 for none): ")
+				print("Enter LOG CHANNEL ID: ")
+				log_channel_id = input("LOG CHANNEL ID (0 for none): ")
 
-	prefix = input("Would you like to change prefix (/): ")
+	prefix = input("Enter Desired prefix: ")
+	print("Leave it blank for default value of (/) ")
 	if prefix == "":
 		prefix = "/"
 
@@ -88,8 +85,8 @@ COLOUR = "4915330"									# this was from nuke
 
 TOKEN='{bot_token}'
 BOT_PREFIX='{prefix}'
-GUILD_ID={guild_ids}
-LOG_CHANNEL_ID='{log_channel}'
+GUILD_ID={guild_id}
+LOG_CHANNEL_ID='{log_channel_id}'
 
 """
 	Utils.writeToFile(filename='', content=content_env, mode='w', extension='.env')

@@ -23,8 +23,22 @@ class Utils:
         with open(f"{filename}{extension}", mode, encoding="utf-8") as file: #NOTE: reference ".txt".
             file.write(content + "\n")
             file.close()
+        
 
 
+
+
+
+
+
+    # IGNORE #
+    # Possible usage later, not implemented. Under revision.    
+    @staticmethod
+    def validateIsDigit(value:str):
+        if value.isdigit():
+            return True
+        else:
+            return False
     @staticmethod
     def getUserInput():  # Under revision
         pass
