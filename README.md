@@ -147,7 +147,7 @@ See the [open issues](https://github.com/UOW-Computing/Emperor/issues) for a ful
 
 <!-- CONTRIBUTING -->
 ## Contributing
-
+***Before contributing read [CONTRIBUTING.md](https://github.com/UOW-Computing/Emperor/blob/Breno-dev/CONTRIBUTING.md)***  
 Contributions are what make the open source community such an amazing place to learn, inspire, and create.  
 Even the smallest contribution matters.
 Any contributions you make are **greatly appreciated!!!**.
