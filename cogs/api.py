@@ -1,12 +1,11 @@
 import discord
 import aiohttp
 import random
-
-from discord.ext 	import commands
-from discord 		import app_commands
-from typing 		import List, Tuple
-from bs4 			import BeautifulSoup
-
+import openai
+from discord.ext import commands
+from discord import app_commands
+from typing import List, Tuple
+from bs4 import BeautifulSoup
 
 class API(commands.Cog):
 	"""
@@ -17,6 +16,7 @@ class API(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.model = openai.Model.load("text-davinci-003")
 
 
 	async def cog_load(self):
@@ -39,20 +39,19 @@ class API(commands.Cog):
 
 	async def cog_command_error(self, ctx, error):
 		print(error)
-		
+
 	async def cog_app_command_error(self, interaction, error):
 		self.bot.lj.warn(f'emperor.cogs.api.{interaction.command.name}',
-							f'<@{interaction.user.id}>, {error}')
+						 f'<@{interaction.user.id}>, {error}')
 		await interaction.response.send_message(f'<@{interaction.user.id}>, {error}')
 
 	async def cog_before_invoke(self, ctx):
 		self.bot.lj.log(f'emperor.cogs.api.{ctx.invoked_with}',
-						 f'{ctx.author.name} has attempted to executed {ctx.invoked_with}')
+						f'{ctx.author.name} has attempted to executed {ctx.invoked_with}')
 
 	async def cog_after_invoke(self, ctx):
 		self.bot.lj.log(f'emperor.cogs.api.{ctx.invoked_with}',
-						 f'{ctx.author.name} has executed {ctx.invoked_with} command')
-
+						f'{ctx.author.name} has executed {ctx.invoked_with} command')
 
 	async def __get_search_results(self, query: str) -> List[Tuple[str, str]]:
 		"""
@@ -86,7 +85,7 @@ class API(commands.Cog):
 
 	@app_commands.command(name="reddit", description="Looks through subreddits given by the user")
 	async def reddit(
-		self, interaction: discord.Interaction, subreddit: str
+			self, interaction: discord.Interaction, subreddit: str
 	):
 		"""
 		Gets a random post from user inputted subreddit
@@ -145,7 +144,7 @@ class API(commands.Cog):
 
 	@app_commands.command(name="ddg", description="Get search results from DuckDuckGo search")
 	async def ddg_search(
-		self, interaction: discord.Interaction, search_parameters: str
+			self, interaction: discord.Interaction, search_parameters: str
 	):
 		"""
 		Get search from DuckDuckGo.
@@ -154,7 +153,7 @@ class API(commands.Cog):
 		"""
 		results = await self.__get_search_results(search_parameters)
 
-		resultEmbed = discord.Embed(color= self.bot.config.COLOUR, title="DDG search results")
+		resultEmbed = discord.Embed(color=self.bot.config.COLOUR, title="DDG search results")
 
 		desc = ""
 
@@ -164,12 +163,37 @@ class API(commands.Cog):
 			if resultLimit > 0:
 				print(result[0])
 				desc += f'[{result[1]}](https:{result[0]})\n'
-				resultLimit-= 1
-
+				resultLimit -= 1
 
 		resultEmbed.description = desc
-  
+
 		await interaction.response.send_message(embed=resultEmbed)
+
+	
+	
+	# Create a GPT model
+
+	# Define a function to generate text using the GPT model
+	async def generate_text(self, prompt) -> str:
+		completions = model.completions(
+			prompt=prompt,
+			max_tokens=1024,
+			n=1,
+			stop=None,
+			temperature=0.5,
+		)
+
+		message = completions.choices[0].text
+		return message
+
+	@app_commands.command(name="gpt", description="Generates text using a GPT model")
+	async def gpt(self, ctx, prompt: str):
+		# Generate text using the GPT model
+		text = await self.generate_text(prompt)
+
+		# Send the generated text as a message in the Discord channel
+		await ctx.send(text)
+
 
 async def setup(bot):
 	# Make an discord.Object for each
