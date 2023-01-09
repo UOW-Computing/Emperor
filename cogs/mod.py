@@ -18,7 +18,7 @@ class Mod(commands.Cog):
                                    	  description="Creates tickets for supports")
 
 	async def cog_load(self):
-		self.bot.lj.info('emperor.cogs.mod', 'Moderation cog was loaded')
+		self.bot.lj.log('emperor.cogs.mod', 'Moderation cog was loaded')
 
 	async def cog_unload(self):
 		self.bot.lj.warn('emperor.cogs.mod', 'Moderation cog was unloaded')
@@ -46,11 +46,11 @@ class Mod(commands.Cog):
 	
 
 	async def cog_before_invoke(self, ctx):
-		self.bot.lj.info(f'emperor.cogs.mod.{ctx.invoked_with}',
+		self.bot.lj.log(f'emperor.cogs.mod.{ctx.invoked_with}',
 						 f'{ctx.author.name} has attempted to executed {ctx.invoked_with}')
 
 	async def cog_after_invoke(self, ctx):
-		self.bot.lj.info(f'emperor.cogs.mod.{ctx.invoked_with}',
+		self.bot.lj.log(f'emperor.cogs.mod.{ctx.invoked_with}',
 						 f'{ctx.author.name} has executed {ctx.invoked_with} command')
 
 	@app_commands.command(name='hellomod',
@@ -69,8 +69,8 @@ class Mod(commands.Cog):
 		Args:
 			reason (str): The purpose of the ticket being open
 		"""
-		
-		role = interaction.guild.get_role(1045055491220443287) # self.bot.config.SUPPORT_ROLE
+
+		role = interaction.guild.get_role(int(self.bot.config.STAFF_IDS[str(interaction.guild.id)])) # self.bot.config.SUPPORT_ROLE
 		overwrites = {
 			interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
 			interaction.user: discord.PermissionOverwrite(read_messages=True),
@@ -92,7 +92,8 @@ class Mod(commands.Cog):
 		self.bot.lj.log('emperor.mod.ticket.create', f'Ticket ({channel.id}) has been created by {interaction.user.name}')
 
 		await interaction.response.send_message(f'Ticket has been created, <#{channel.id}>')
-  
+
+
 	@ticket_group.command(name="close",
 						  description='Closes an already open ticket')
 	async def ticket_close(self, interaction: discord.Interaction) -> None:

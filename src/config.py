@@ -1,4 +1,5 @@
 from pydantic import BaseSettings
+import json
 
 
 class Settings(BaseSettings):
@@ -11,7 +12,8 @@ class Settings(BaseSettings):
 	TOKEN: str
 	BOT_PREFIX: str
 	GUILD_ID: int | list
-	LOG_CHANNEL_ID: str | list
+	LOG_CHANNEL_IDs: str | dict
+	STAFF_IDS: dict
 
 	class Config:
 

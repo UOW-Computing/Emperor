@@ -8,7 +8,7 @@ from discord.ext import commands
 class MyHelpCommand(commands.HelpCommand):
 
 	async def send_bot_help(self, mapping):
-		embed = discord.Embed(title="Help", description="Use `em!help` for this embed again!")
+		embed = discord.Embed(title="Help", description=f"Use `e!help` for this embed again!")
 		# Get help.json
 		with open(os.path.realpath('res/help.json'), 'r') as helpJSON:
 			data = json.loads(helpJSON.read())

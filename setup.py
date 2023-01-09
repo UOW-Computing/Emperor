@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from src.ServerUtils import Utils
-emperor_version = "v0.1.42"
+emperor_version = "v0.1.43"
 
 
 def check_input(var_input: str) -> str:
@@ -21,40 +21,66 @@ def check_input(var_input: str) -> str:
 		return "no"
 
 	return check_input(
-		var_input=input(
-			"""Incorrect input
+var_input=input(
+"""Incorrect input
 Would you like to create an env file?: [yes/no]
-"""
-		)
-	)
+"""))
+
+
+
 # Prints Logo
 Utils.outputBranding()
 
 create_ENV_file = input("Create a new .env file?: [yes/no] ")
-# NOTE: currently guild id and log channel id are being held as constant values
-# Nuke I removed the multiple guild ID's and the json feature, we'll speak about this later.
 
 if check_input(create_ENV_file) == "yes":
 	# Enter guild name and the log channel
 
 	bot_token = input("Enter BOT token: ")
+
+	guild_ids = []
+	log_channel_ids = {}
+	staff_ids = {}
+
 	while True:
-		guild_id = input("Enter GUILD ID (-1 to stop): ")
+		try:
+			guild_id = input("Enter GUILD ID (-1 to stop): ")
+		except:
+			print("Please only enter valid integer values")
+			guild_id = input("Enter GUILD ID (-1 to stop): ")
+
 		match guild_id:
 			case "-1":
 				# If they want to stop break out of the
 				# while loop
 				break
 			case _:
-				if not guild_id.isdigit():
-					print("Invalid GUILD ID, try again!")
-					continue
-				log_channel_id = input("Enter LOG CHANNEL ID (0 for none): ")
-				break
-	print("Leave prefix blank for default value of (/)")
+				if Utils.validateIsDigit(guild_id):
+
+					log_channel_id = input("Enter LOG CHANNEL ID (0 for none): ")
+
+					try:
+						log_channel_ids[guild_id] = str(log_channel_id)
+					except:
+						print("You already have a log channel setup in this guild, cannot have two log channels.")
+
+					staff_id = input("Please enter your staff role id (Cannot be left blank): ")
+
+					if Utils.validateIsDigit(staff_id):
+						try:
+							staff_ids[guild_id] = str(staff_id)
+						except:
+							staff_ids[guild_id] = [staff_ids[guild_id], str(staff_id)]
+					guild_ids.append(guild_id)
+
+				continue
+
+
+	print("Leave prefix blank for default value of (e!)")
 	prefix = input("Enter Desired prefix: ")
 	if prefix == "":
-		prefix = "/"
+		prefix = "e!"
+
 
 	content_env = f"""# Dotenv file
 # author: nukestye & UOW TEAM
@@ -72,12 +98,13 @@ COLOUR = "4915330"									# this was from nuke
 # otherwise an error will occur
 TOKEN="{bot_token}"
 BOT_PREFIX="{prefix}"
-GUILD_ID=["{guild_id}"]
-LOG_CHANNEL_ID="{log_channel_id}"
+GUILD_ID="{str(guild_ids)}"
+LOG_CHANNEL_IDS="{str(log_channel_ids)}"
+STAFF_IDS="{str(staff_ids)}"
 """
 	# Creates the .env file with the contents parsed above
-	Utils.writeToFile(filename='', content=content_env, mode='w', extension='.env')	
-	
+	Utils.writeToFile(filename='', content=content_env, mode='w', extension='.env')
+
 	# Creates a logs folder, where Lj stores all the logs
 	print("Creating logs folder for Lj....")
 	try:
@@ -88,5 +115,5 @@ LOG_CHANNEL_ID="{log_channel_id}"
 		print("Testing purposes : File Already Exists")
 		pass
 
- 
+
 	print("\u001B[32m All configurations completed!\u001B[0m\nYou can now run main.py to launch the bot\n")

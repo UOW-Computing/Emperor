@@ -15,7 +15,7 @@ class Admin(commands.Cog):
 		self.bot = bot
 
 	async def cog_load(self):
-		self.bot.lj.info('emperor.cogs.admin', 'Admin cog was loaded')
+		self.bot.lj.log('emperor.cogs.admin', 'Admin cog was loaded')
 
 	async def cog_unload(self):
 		self.bot.lj.warn('emperor.cogs.admin', 'Admin cog was unloaded')
@@ -41,11 +41,11 @@ class Admin(commands.Cog):
 		await interaction.response.send_message(f'<@{interaction.user.id}>, {error}')
 
 	async def cog_before_invoke(self, ctx):
-		self.bot.lj.info(f'emperor.cogs.admin.{ctx.invoked_with}',
+		self.bot.lj.log(f'emperor.cogs.admin.{ctx.invoked_with}',
 					f'{ctx.author.name} has attempted to executed {ctx.invoked_with}')
 
 	async def cog_after_invoke(self, ctx):
-		self.bot.lj.info(f'emperor.cogs.admin.{ctx.invoked_with}',
+		self.bot.lj.log(f'emperor.cogs.admin.{ctx.invoked_with}',
 					f'{ctx.author.name} has executed {ctx.invoked_with} command')
 
 	@commands.command(name="reload")
