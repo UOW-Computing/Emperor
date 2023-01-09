@@ -26,7 +26,17 @@ var_input=input(
 Would you like to create an env file?: [yes/no]
 """))
 
+def write_to_file_dict(content: dict) -> str:
+	"""
+	Makes a string that holds the correct way to store the dict in .env
 
+	Args:
+		content (dict): The content to convert into str
+
+	Returns:
+		str: The converted string
+	"""
+	return ", ".join( f'"{key}":"{value}"' for key, value in content.items())
 
 # Prints Logo
 Utils.outputBranding()
@@ -98,9 +108,9 @@ COLOUR = "4915330"									# this was from nuke
 # otherwise an error will occur
 TOKEN="{bot_token}"
 BOT_PREFIX="{prefix}"
-GUILD_ID="{str(guild_ids)}"
-LOG_CHANNEL_IDS="{str(log_channel_ids)}"
-STAFF_IDS="{str(staff_ids)}"
+GUILD_ID="[{", ".join(guild for guild in guild_ids)}]"
+LOG_CHANNEL_IDS='{{{write_to_file_dict(log_channel_ids)}}}'
+STAFF_IDS='{{{write_to_file_dict(staff_ids)}}}'
 """
 	# Creates the .env file with the contents parsed above
 	Utils.writeToFile(filename='', content=content_env, mode='w', extension='.env')

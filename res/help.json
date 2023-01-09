@@ -26,6 +26,11 @@
 			"name": "reddit",
 			"description": "Looks through subreddits given by the user",
 			"usage": "/reddit [subreddit]"
+		}],
+		"ddg": [{
+			"name": "duckduckgo search",
+			"description": "Get search results from DuckDuckGo search",
+			"usage": "/ddg [search parameter]"
 		}]
 	},
 	"Mod": {
