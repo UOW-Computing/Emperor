@@ -16,8 +16,7 @@ class API(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
-		self.model = openai.Model.load("text-davinci-003")
-
+		openai.api_key = bot.config.OPENAI_KEY
 
 	async def cog_load(self):
 		self.bot.lj.log('emperor.cogs.api', 'API cog was loaded')
@@ -40,7 +39,10 @@ class API(commands.Cog):
 	async def cog_command_error(self, ctx, error):
 		print(error)
 
+
 	async def cog_app_command_error(self, interaction, error):
+		if isinstance(error, app_commands.CommandOnCooldown):
+			await interaction.response.send_message(str(error), ephemeral=True)
 		self.bot.lj.warn(f'emperor.cogs.api.{interaction.command.name}',
 						 f'<@{interaction.user.id}>, {error}')
 		await interaction.response.send_message(f'<@{interaction.user.id}>, {error}')
@@ -175,7 +177,8 @@ class API(commands.Cog):
 
 	# Define a function to generate text using the GPT model
 	async def generate_text(self, prompt) -> str:
-		completions = model.completions(
+		response = openai.Completion.create(
+			engine="text-davinci-003",
 			prompt=prompt,
 			max_tokens=1024,
 			n=1,
@@ -183,16 +186,23 @@ class API(commands.Cog):
 			temperature=0.5,
 		)
 
-		message = completions.choices[0].text
-		return message
+		text = response["choices"][0]["text"]
+		if text:
+			# Send the response to the user in the Discord channel
+			return text
+		else:
+			# Send a default message if the response is empty
+			return "I'm sorry, I cannot generate a response for this prompt."
+
 
 	@app_commands.command(name="gpt", description="Generates text using a GPT model")
-	async def gpt(self, ctx, prompt: str):
+	@app_commands.checks.cooldown(1, 10.0, key=lambda i: (i.guild_id, i.user.id))
+	async def gpt(self, interactions: discord.Interaction, prompt: str):
 		# Generate text using the GPT model
 		text = await self.generate_text(prompt)
 
 		# Send the generated text as a message in the Discord channel
-		await ctx.send(text)
+		await interactions.response.send_message(text)
 
 
 async def setup(bot):
