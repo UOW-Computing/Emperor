@@ -114,7 +114,7 @@ class API(commands.Cog):
 					)
 					return
 
-				post_data = json_data["data"]["children"][random.randint(0, 10)]
+				post_data = json_data["data"]["children"][random.randint(0, len(json_data["data"]["children"]))]
 
 				# Check if the post is sfw
 				if post_data["data"]["over_18"]:
@@ -143,7 +143,7 @@ class API(commands.Cog):
 
 				await interaction.response.send_message(embed=post_embed)
 
-	@app_commands.command(name="ddg", description="Get result from DuckDuckGo search by user")
+	@app_commands.command(name="ddg", description="Get search results from DuckDuckGo search")
 	async def ddg_search(
 		self, interaction: discord.Interaction, search_parameters: str
 	):
