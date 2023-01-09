@@ -4,12 +4,6 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
-<!-- PROJECT SHIELDS -->
-[![Contributors - Work in Progress][contributors-shield]][contributors-url]
-[![Forks - Work in Progress][forks-shield]][forks-url]
-[![Stargazers - Work in Progress][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -63,11 +57,6 @@
   <a href="https://github.com/UOW-Computing/Emperor">
     <img src="res/screenshot.png" alt="Logo" width="751" height="197">
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Built With
-
-* [![Python][JQuery.com]][JQuery-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
