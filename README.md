@@ -58,35 +58,39 @@
     <img src="res/screenshot.png" alt="Logo" width="751" height="197">
 
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- GETTING STARTED -->
-## Getting Started
+## Getting Started 
+- Git basics
+  You need to make sure you know the fundamentals concepts of [Git](https://www.youtube.com/watch?v=USjZcfj8yxE).  
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+- Github basics
+  You also need to know how [Github](https://www.youtube.com/watch?v=nhNq2kIvi9s) works.  
+
+These quick videos will give you the fundamentals of working with Git and Github.  
+Once you understand how to `git init` a project, then you can continue.
 
 ### Prerequisites
-
+Make sure you have Python 3.10+  
 Currently Emperor is not a working package, therefore it cannot automatically install dependencies.  
 Install them manually using the command below.  
 
-Requirements.txt install all dependencies to your environment before starting the project.
+Requirements.txt installs all dependencies to your environment before starting the project.
 * requirements.txt
   ```sh
-  pip install -r requirements.txt
+  python3 -m pip install -r requirements.txt
   ```
 
 ### Installation
 
 1. Before running the modules(commands), make sure to have a bot ready with its token copied.  
 2. You can create one here: [Discord Application](https://discord.com/developers/applications/). This will generate your bot token.  
-3. Once you have a `TOKEN ID`,`GUILD ID` `CHANNEL ID`,[Discord Application](https://discord.com/developers/applications/).
+3. Once you have a `TOKEN ID`,`GUILD ID` `CHANNEL ID`.  
+
 4. Clone this repo
    ```sh
    git clone https://github.com/UOW-Computing/Emperor.git
    ```
-5. Install requirements.txt inside your terminal
+5. Install requirements.txt inside your terminal. (You can skip this if you have done it already)
    ```sh
    python3 -m pip install -r requirements.txt
    ```
