@@ -84,7 +84,7 @@ Requirements.txt installs all dependencies to your environment before starting t
 
 1. Before running the modules(commands), make sure to have a bot ready with its token copied.  
 2. You can create one here: [Discord Application](https://discord.com/developers/applications/). This will generate your bot token.  
-3. Once you have a `TOKEN ID`,`GUILD ID` `CHANNEL ID`.  
+3. Once you have a `TOKEN`,`GUILD_ID` `LOG_CHANNEL_IDs`, `OPENAI_KEY`, `STAFF_IDS`.
 
 4. Clone this repo
    ```sh
