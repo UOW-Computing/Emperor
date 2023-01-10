@@ -1,19 +1,17 @@
-import os
-import typing
 import discord
+import typing
 
-
-from dotenv import load_dotenv
-from src.config import Settings
 from src.ServerUtils import Utils
 from src.Emperor import Emperor
 from discord.ext import commands
+from src.config import Settings
+from dotenv import load_dotenv
 
 load_dotenv()
 
 config = Settings()
 
-Utils.outputBranding() # Prints Emperor Logo Branding
+Utils.outputBranding()  # Prints Emperor Logo Branding
 
 # Sending the intents
 intents = discord.Intents.default()
@@ -28,8 +26,10 @@ emperor = Emperor(intents, config)
 @commands.guild_only()
 @commands.is_owner()
 async def sync(
-  ctx: commands.Context, guilds: commands.Greedy[discord.Object],
-  spec: typing.Optional[typing.Literal["~", "*", "^"]] = None) -> None:
+    ctx: commands.Context,
+    guilds: commands.Greedy[discord.Object],
+    spec: typing.Optional[typing.Literal["~", "*", "^"]] = None,
+) -> None:
     if not guilds:
         if spec == "~":
             synced = await ctx.bot.tree.sync(guild=ctx.guild)
@@ -58,5 +58,6 @@ async def sync(
             ret += 1
 
     await ctx.send(f"Synced the tree to {ret}/{len(guilds)}.")
+
 
 emperor.run(config.TOKEN)

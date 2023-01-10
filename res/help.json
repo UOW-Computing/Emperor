@@ -5,18 +5,21 @@
 		[{
 			"name": "hello",
 			"description": "A simple hello command.",
-			"usage": "/hello"
+			"usage": "/hello",
+			"cooldown": "None"
 		}],
 		"info":[
 			{
 				"name":"member",
 				"description":"Gets information about the user",
-				"usage":"/info member"
+				"usage":"/info member",
+				"cooldown": "None"
 			},
 			{
 				"name":"server",
 				"description":"Collects and sends an embed with information about the server",
-				"usage":"/info server"
+				"usage":"/info server",
+				"cooldown": "None"
 			}
 		]
 	},
@@ -25,29 +28,34 @@
 		"reddit": [{
 			"name": "reddit",
 			"description": "Looks through subreddits given by the user",
-			"usage": "/reddit [subreddit]"
+			"usage": "/reddit [subreddit]",
+			"cooldown": "10s"
 		}],
 		"ddg": [{
 			"name": "duckduckgo search",
 			"description": "Get search results from DuckDuckGo search",
-			"usage": "/ddg [search parameter]"
+			"usage": "/ddg [search parameter]",
+			"cooldown": "10s"
 		}],
 		"gpt": [{
 			"name": "gpt",
 			"description": "Generates text using a GPT model",
-			"usage": "/gpt [user prompt]"
+			"usage": "/gpt [user prompt]",
+			"cooldown": "10s"
 		}]
 	},
 	"Mod": {
 		"ticket": [{
 			"name": "create",
 			"description": "Creates a channel for the ticket to be handled",
-			"usage": "/ticket create"
+			"usage": "/ticket create",
+			"cooldown": "30s"
 		},
 		{
 			"name": "close",
 			"description": "Closes an already open ticket",
-			"usage": "/ticket close"
+			"usage": "/ticket close",
+			"cooldown": "30s"
 		}]
 	}
 
