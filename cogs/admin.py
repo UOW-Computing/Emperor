@@ -57,6 +57,7 @@ class Admin(commands.Cog):
     async def reload(self, ctx: commands.Context, cog: str) -> None:
         """
         Allows the changes to be run without having the restart the discord bot
+        Reloads all the cogs
 
         Args:
                 cog str: The cog to reload
@@ -70,6 +71,38 @@ class Admin(commands.Cog):
 
             # The cog was reloaded
             await ctx.send(f"The `{cog}` was successfully reloaded")
+        except Exception as exc:
+            await ctx.send(exc)
+
+    @commands.command(name="load")
+    async def load(self, ctx: commands.Context, cog: str) -> None:
+        """
+        Loads a specifc cog
+
+        Args:
+                cog (str): The cog to load
+        """
+        try:
+            await self.bot.load_extension("cogs." + cog)
+
+            # The cog was reloaded
+            await ctx.send(f"The `{cog}` was successfully loaded")
+        except Exception as exc:
+            await ctx.send(exc)
+
+    @commands.command(name="unload")
+    async def unload(self, ctx: commands.Context, cog: str) -> None:
+        """
+        Unloads a specifc cog
+
+        Args:
+                cog (str): The cog to unload
+        """
+        try:
+            await self.bot.unload_extension("cogs." + cog)
+
+            # The cog was reloaded
+            await ctx.send(f"The `{cog}` was successfully unloaded")
         except Exception as exc:
             await ctx.send(exc)
 
