@@ -12,6 +12,7 @@ class Mod(commands.Cog):
 
     Holds all the commands for moderation
     """
+    ticket_number = 0 
 
     def __init__(self, bot):
         self.bot = bot
@@ -110,7 +111,9 @@ class Mod(commands.Cog):
 
         guild = interaction.guild
 
-        channel = await guild.create_text_channel("ticket-00", overwrites=overwrites)
+        self.ticket_number += 1
+        channel_name = f'ticket-{self.ticket_number:02}'
+        channel = await guild.create_text_channel(channel_name, overwrites=overwrites)
 
         supportEmbed = discord.Embed(
             color=self.bot.config.COLOUR,
