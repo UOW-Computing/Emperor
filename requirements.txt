@@ -1,6 +1,7 @@
-aiohttp==3.8.3
-asyncpg==0.27.0
-discord.py==2.1.0
-pydantic==1.10.2
-python-dotenv==0.21.0
+aiohttp
+asyncpg
+discord.py
+pydantic
+python-dotenv
+openai
 beautifulsoup4

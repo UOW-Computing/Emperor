@@ -47,7 +47,8 @@ if check_input(create_ENV_file) == "yes":
 	# Enter guild name and the log channel
 
 	bot_token = input("Enter BOT token: ")
-
+	openai_token = input("Enter you openai api key: ")
+	# we need to check bot_token and openai_token if is not None
 	guild_ids = []
 	log_channel_ids = {}
 	staff_ids = {}
@@ -107,6 +108,7 @@ COLOUR = "4915330"									# this was from nuke
 # Also, the bot should have access to the guild and log channel
 # otherwise an error will occur
 TOKEN="{bot_token}"
+OPENAI_KEY="{openai_token}"
 BOT_PREFIX="{prefix}"
 GUILD_ID="[{", ".join(guild for guild in guild_ids)}]"
 LOG_CHANNEL_IDS='{{{write_to_file_dict(log_channel_ids)}}}'

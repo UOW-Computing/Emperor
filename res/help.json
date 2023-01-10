@@ -31,6 +31,11 @@
 			"name": "duckduckgo search",
 			"description": "Get search results from DuckDuckGo search",
 			"usage": "/ddg [search parameter]"
+		}],
+		"gpt": [{
+			"name": "gpt",
+			"description": "Generates text using a GPT model",
+			"usage": "/gpt [user prompt]"
 		}]
 	},
 	"Mod": {
