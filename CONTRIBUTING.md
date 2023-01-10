@@ -8,7 +8,7 @@ If you encounter an issue or bug while using Emperor, we encourage you to report
 When reporting an issue, please include as much information as possible, such as the version of Emperor you are using, Emperor's log file, screenshots of the error, and steps to reproduce the issue.
 
 **In general, Issues  should start with one of the following types:**
-
+`BUG`: for bug report
 `FIX`: for bug fixes  
 `SUGGESTION`: for new features  
 `DOCS`: for documentation changes  
