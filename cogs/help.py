@@ -4,6 +4,7 @@ import discord
 
 
 from discord.ext import commands
+from src.ServerUtils import Utils
 
 
 class MyHelpCommand(commands.HelpCommand):
@@ -12,9 +13,7 @@ class MyHelpCommand(commands.HelpCommand):
             title="Help", description=f"Use `e!help` for this embed again!"
         )
         # Get help.json
-        with open(os.path.realpath("res/help.json"), "r") as helpJSON:
-            data = json.loads(helpJSON.read())
-        helpJSON.close()
+        data = Utils.read_from_json("res/help.json")
 
         for cog in data:
             cog_commands = ""
