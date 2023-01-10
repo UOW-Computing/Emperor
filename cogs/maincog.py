@@ -17,7 +17,7 @@ class Main(commands.Cog):
         self.bot = bot
 
     info_group = app_commands.Group(
-        name="log", description="Gives information about server, member or channel."
+        name="info", description="Gives information about server and member."
     )
 
     async def cog_load(self):
