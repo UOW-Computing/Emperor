@@ -60,79 +60,36 @@
 
 <!-- GETTING STARTED -->
 ## Getting Started 
-- Git basics
-  You need to make sure you know the fundamentals concepts of [Git](https://www.youtube.com/watch?v=USjZcfj8yxE).  
+You can have a look at the Tutorials [here](https://github.com/UOW-Computing/Emperor/discussions/categories/tutorials)!
 
-- Github basics
-  You also need to know how [Github](https://www.youtube.com/watch?v=nhNq2kIvi9s) works.  
-
-These quick videos will give you the fundamentals of working with Git and Github.  
-Once you understand how to `git init` a project, then you can continue.
-
-### Prerequisites
-Make sure you have Python 3.10+  
-Currently Emperor is not a working package, therefore it cannot automatically install dependencies.  
-Install them manually using the command below.  
-
-Requirements.txt installs all dependencies to your environment before starting the project.
-* requirements.txt
-  ```sh
-  python3 -m pip install -r requirements.txt
-  ```
-
-### Installation
-
-1. Before running the modules(commands), make sure to have a bot ready with its token copied.  
-2. You can create one here: [Discord Application](https://discord.com/developers/applications/). This will generate your bot token.  
-3. Once you have a `TOKEN ID`,`GUILD ID` `CHANNEL ID`.  
-
-4. Clone this repo
-   ```sh
-   git clone https://github.com/UOW-Computing/Emperor.git
-   ```
-5. Install requirements.txt inside your terminal. (You can skip this if you have done it already)
-   ```sh
-   python3 -m pip install -r requirements.txt
-   ```
-6. Run `setup.py`, this will generate the `.env` file. Emperor does not work without this file.  
-   ```sh
-   python3 setup.py
-   ```
-7. Once the `.env` has been generated, close this terminal. Open a new one and run `main.py` 
-   ```sh
-   python3 main.py
-   ```
-
-   Happy Programming ;) 
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
+If you get stuck at any part, message us for help.
+  
 <!-- USAGE EXAMPLES -->
 ## Usage
 This is a work in progress.  
 
 ### Moderation Commands
 
-- `ticket create`: Creates a channel exclusive to the ticket creater and staff members
-- `ticket close`: Closes a ticket channel
+- `ticket create`: Creates a channel exclusive to the ticket creater and staff members.
+- `ticket close`: Closes a ticket channel.
 
 ### General Commands
 
-- `hello`: Says hello back to you
- - `info server`: Gives info of the server in which it was executed in
- - `info member`: Gives information about the member mentioned
+- `hello`: Says hello back to you.
+- `info server`: Gives info of the server in which it was executed in.
+- `info member`: Gives information about the member mentioned.
 
 ### API Commands
 
-- `reddit`: Responds with a post in the subreddit given
+- `reddit`: Responds with a post in the subreddit given.
+- `ddg`: Searchs DuckDuckGo.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- ROADMAP -->
 ## Roadmap
-- [ ]  Add Lj logging into Ticket command
+- [x]  Add Lj logging into Ticket command
 - [ ] Rewrite clear as purge command for discord.py
 - [ ] Handle attachmens on on_message event
 - [ ] Turn createrole into sub commands of their own respective command, create role for createrole
