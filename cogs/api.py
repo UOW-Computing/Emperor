@@ -21,6 +21,7 @@ class API(commands.Cog):
         self.bot = bot
         openai.api_key = bot.config.OPENAI_KEY
 
+    # API Related #
     async def cog_load(self):
         self.bot.lj.log("emperor.cogs.api", "API cog was loaded")
 
@@ -77,62 +78,7 @@ class API(commands.Cog):
             f"{ctx.author.name} has executed {ctx.invoked_with} command",
         )
 
-    async def __get_search_results(self, query: str) -> List[Tuple[str, str]]:
-        """
-        Send a search query to the DuckDuckGo search engine and return the links and titles
-        of the search results.
-
-        Parameters:
-        - query: the search query to send to the search engine.
-
-        Returns:
-        - A list of tuples, where each tuple contains the link and title for a single search result.
-        """
-        # Clean up the query string
-        query = "+".join(query.strip().split())
-
-        # Send an HTTP GET request to the DuckDuckGo search engine
-        async with aiohttp.ClientSession() as cs:
-            async with cs.get(f"https://duckduckgo.com/html/?q={query}") as r:
-                data = await r.text()
-
-        # Parse the response data using BeautifulSoup
-        soup = BeautifulSoup(data, "html.parser")
-
-        # Find all the search result links
-        result_links = soup.select("a.result__a")
-
-        # Extract the link and title for each result
-        results = [(link["href"], link.text) for link in result_links]
-
-        return results
-
-    async def __generate_text(self, prompt: str) -> str:
-        """Uses the prompt to get the result from ChatGPT 3.0
-
-        Args:
-                prompt (str): User input, which is given to ChatGPT 3.0
-
-        Returns:
-                str: The response to the prompt given
-        """
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=prompt,
-            max_tokens=1024,
-            n=1,
-            stop=None,
-            temperature=0.5,
-        )
-
-        text = response["choices"][0]["text"]
-        if text:
-            # Send the response to the user in the Discord channel
-            return text
-        else:
-            # Send a default message if the response is empty
-            return "I'm sorry, I cannot generate a response for this prompt."
-
+    # Reddit Related #
     @app_commands.command(
         name="reddit", description="Looks through subreddits given by the user"
     )
@@ -195,6 +141,8 @@ class API(commands.Cog):
 
                 await interaction.response.send_message(embed=post_embed)
 
+
+    # DuckDuckGo Related #
     @app_commands.command(
         name="ddg", description="Get search results from DuckDuckGo search"
     )
@@ -227,6 +175,38 @@ class API(commands.Cog):
 
         await interaction.response.send_message(embed=resultEmbed)
 
+    async def __get_search_results(self, query: str) -> List[Tuple[str, str]]:
+        """
+        Send a search query to the DuckDuckGo search engine and return the links and titles
+        of the search results.
+
+        Parameters:
+        - query: the search query to send to the search engine.
+
+        Returns:
+        - A list of tuples, where each tuple contains the link and title for a single search result.
+        """
+        # Clean up the query string
+        query = "+".join(query.strip().split())
+
+        # Send an HTTP GET request to the DuckDuckGo search engine
+        async with aiohttp.ClientSession() as cs:
+            async with cs.get(f"https://duckduckgo.com/html/?q={query}") as r:
+                data = await r.text()
+
+        # Parse the response data using BeautifulSoup
+        soup = BeautifulSoup(data, "html.parser")
+
+        # Find all the search result links
+        result_links = soup.select("a.result__a")
+
+        # Extract the link and title for each result
+        results = [(link["href"], link.text) for link in result_links]
+
+        return results
+
+
+    # chatGPT Related #
     @app_commands.command(name="gpt", description="Generates text using a GPT model")
     @app_commands.checks.cooldown(1, 10.0, key=lambda i: (i.guild_id, i.user.id))
     async def gpt(self, interactions: discord.Interaction, prompt: str):
@@ -241,7 +221,33 @@ class API(commands.Cog):
         # Send the generated text as a message in the Discord channel
         await interactions.response.send_message(text)
 
+    async def __generate_text(self, prompt: str) -> str:
+        """Uses the prompt to get the result from ChatGPT 3.0
 
+        Args:
+                prompt (str): User input, which is given to ChatGPT 3.0
+
+        Returns:
+                str: The response to the prompt given
+        """
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=prompt,
+            max_tokens=1024,
+            n=1,
+            stop=None,
+            temperature=0.5,
+        )
+
+        text = response["choices"][0]["text"]
+        if text:
+            # Send the response to the user in the Discord channel
+            return text
+        else:
+            # Send a default message if the response is empty
+            return "I'm sorry, I cannot generate a response for this prompt."
+
+    # For new Newer features please keep functionallity together#
 async def setup(bot):
     # Make an discord.Object for each
     # guild in the list
