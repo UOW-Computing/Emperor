@@ -1,4 +1,12 @@
 {
+	"Emperor": {
+		"contribute":[{
+			"name": "contribute",
+			"description": "Lists out the ways to contribute to Emperor",
+			"usage": "/emperor contribute",
+			"cooldown": "None"
+		}]
+	},
 	"General":
 	{
 		"hello":
@@ -21,7 +29,14 @@
 				"usage":"/info server",
 				"cooldown": "None"
 			}
-		]
+		],
+		"tutorials": [{
+			"name": "git",
+			"description": "Lists out the tutorials for Git",
+			"usage": "/tutorials git",
+			"cooldown": "None"
+
+		}]
 	},
 	"API": 
 	{

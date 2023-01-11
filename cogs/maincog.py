@@ -20,6 +20,10 @@ class Main(commands.Cog):
         name="info", description="Gives information about server and member."
     )
 
+    tutorials_group = app_commands.Group(
+        name="tutorials", description="Holds all the tutorials comand"
+    )
+
     async def cog_load(self):
         self.bot.lj.log("emperor.cogs.maincog", "MainCog cog was loaded")
 
@@ -64,10 +68,10 @@ class Main(commands.Cog):
         """Counts the number of online members in the guild
 
         Args:
-                guild (discord.Guild): The guild to get the members from
+                        guild (discord.Guild): The guild to get the members from
 
         Returns:
-                int: The number of online (online & dnd) members
+                        int: The number of online (online & dnd) members
         """
         num = 0
         for member in guild.members:
@@ -84,10 +88,10 @@ class Main(commands.Cog):
         """Counts the number of bots in the guild
 
         Args:
-                guild (discord.Guild): The guild to count the bots from
+                        guild (discord.Guild): The guild to count the bots from
 
         Returns:
-                int: The number of bots in the guild
+                        int: The number of bots in the guild
         """
         num = 0
         for member in guild.members:
@@ -110,11 +114,11 @@ class Main(commands.Cog):
         Counts the number of emojis in the server
 
         Args:
-                guild (discord.Guild): The guild to count the emojis from
+                        guild (discord.Guild): The guild to count the emojis from
 
         Returns:
-                str: The emojis as <:emoji_name:emoji_id> or
-                         the string number of emojis
+                        str: The emojis as <:emoji_name:emoji_id> or
+                                         the string number of emojis
         """
         if len(guild.emojis) == 0:
             return "0"
@@ -130,10 +134,10 @@ class Main(commands.Cog):
         A simple hello command.
 
         Params:
-                interaction: the event that causes this command to execute
+                        interaction: the event that causes this command to execute
 
         Returns
-                Nothing
+                        Nothing
         """
         await interaction.response.send_message(f"<@{interaction.user.id}>, hello!")
 
@@ -145,11 +149,11 @@ class Main(commands.Cog):
         """Collects and sends an embed with information about the server
 
         Args:
-                interaction (discord.Interaction): The trigger for this command
+                        interaction (discord.Interaction): The trigger for this command
 
         Returns:
-                Embed (discord.Embed): Contains the information gathered on
-                the guild
+                        Embed (discord.Embed): Contains the information gathered on
+                        the guild
         """
 
         discordfile = None
@@ -208,18 +212,18 @@ class Main(commands.Cog):
         Gets the information about the user and sends it as an embed
 
         Args:
-                member (discord.Member): The user to collect information about
+                        member (discord.Member): The user to collect information about
 
         Returns:
-                Embed (discord.Embed): Information collected on the user
+                        Embed (discord.Embed): Information collected on the user
         """
         memberEmbed = discord.Embed(
             color=self.bot.config.COLOUR,
             title="Member Information",
             description=f"""Name: `{member.name}{f" ({member.display_name})" if member.display_name != member.name else ""}`
-            Joined Discord on: {format_dt(member.created_at)}
-            Joined Server on: {format_dt(member.joined_at)}
-            Roles: {self.__count_top_three_roles(member)}""",
+			Joined Discord on: {format_dt(member.created_at)}
+			Joined Server on: {format_dt(member.joined_at)}
+			Roles: {self.__count_top_three_roles(member)}""",
         )
 
         memberEmbed.set_image(url=member.display_avatar.url)
@@ -229,6 +233,45 @@ class Main(commands.Cog):
         )
 
         await interaction.response.send_message(embed=memberEmbed)
+
+    # All Tutorials commands #
+    @tutorials_group.command(name="git", description="Tutorials for Git")
+    async def git(self, interaction: discord.Interaction) -> None:
+        """Sends an embed containg tutorials for Git
+
+        Args:
+                interaction (discord.Interaction): The interacion which caused this to happen
+        """
+        discordFile: discord.File = discord.File("res/gitLogo.png", "gitLogo.png")
+
+        gitEmbed = {
+            "description": """
+Looking to learn Git?
+
+Install Git from [here](https://git-scm.com/downloads).
+
+*Some of the tutorials contain GitHub as well.*
+
+List of text based tutorials:
+- [Git Documentation](https://git-scm.com/docs/gittutorial) (*Best*)
+- [W3School](https://www.w3schools.com/git/default.asp)
+- [FreeCodeCamp](https://www.freecodecamp.org/news/best-git-tutorial/)
+- [Git Book](https://git-scm.com/book) (*Best*)
+
+List of Youtube tutorials:
+- [FreeCodeCamp](https://www.youtube.com/watch?v=RGOj5yH7evk)
+- [The Net Ninja, Git Playlist](https://www.youtube.com/playlist?list=PL4cUxeGkcC9goXbgTDQ0n_4TBzOO0ocPR)
+
+
+""",
+            "thumbnail": {"url": "attachment://gitLogo.png"},
+            "footer": {"text": "Emperor"},
+            "title": "Git",
+        }
+
+        await interaction.response.send_message(
+            embed=discord.Embed.from_dict(gitEmbed), file=discordFile
+        )
 
 
 async def setup(bot):

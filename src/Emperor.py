@@ -25,7 +25,7 @@ class Emperor(commands.Bot):
         super().__init__(
             description="Very important discord bot",
             command_prefix=commands.when_mentioned_or(self.config.BOT_PREFIX),
-            intents=p_intents
+            intents=p_intents,
         )
 
     async def setup_hook(self):
