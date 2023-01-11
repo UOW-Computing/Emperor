@@ -10,7 +10,7 @@ from src.ServerUtils import Utils
 class MyHelpCommand(commands.HelpCommand):
     async def send_bot_help(self, mapping):
         embed = discord.Embed(
-            title="Help", description=f"Use `e!help` for this embed again!"
+            title="Help", description=f"Use `e!help` for this embed again!\n"
         )
         # Get help.json
         data = Utils.read_from_json("res/help.json")
@@ -26,9 +26,9 @@ class MyHelpCommand(commands.HelpCommand):
                     cmd_cooldown = data[cog][command][i]["cooldown"]
 
                     # Format the information and add it to help
-                    cog_commands += f"• `{cmd_usage}`\n{cmd_description}\nCooldown is `{cmd_cooldown}`\n\n"
+                    cog_commands += f"• `{cmd_usage}`\n	{cmd_description}.\n	Cooldown is `{cmd_cooldown}`\n"
 
-            embed.add_field(name=cog, value=cog_commands, inline=True)
+            embed.description += f"**{cog}**\n {cog_commands}\n"
 
         channel = self.get_destination()
         await channel.send(embed=embed)
@@ -46,7 +46,13 @@ class Help(commands.Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(Help(bot))
+    # Make an discord.Object for each
+    # guild in the list
+    guild_objects: list[discord.Object] = []
+    for guild in bot.config.GUILD_ID:
+        guild_objects.append(discord.Object(id=guild))
+
+    await bot.add_cog(Help(bot), guilds=guild_objects)
 
 
 async def teardown(bot):

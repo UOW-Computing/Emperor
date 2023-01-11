@@ -4,7 +4,7 @@
 		"hello":
 		[{
 			"name": "hello",
-			"description": "A simple hello command.",
+			"description": "A simple hello command",
 			"usage": "/hello",
 			"cooldown": "None"
 		}],
@@ -34,14 +34,14 @@
 		"ddg": [{
 			"name": "duckduckgo search",
 			"description": "Get search results from DuckDuckGo search",
-			"usage": "/ddg [search parameter]",
+			"usage": "/ddg [query]",
 			"cooldown": "10s"
 		}],
-		"gpt": [{
-			"name": "gpt",
+		"chatgpt": [{
+			"name": "chatgpt",
 			"description": "Generates text using a GPT model",
 			"usage": "/gpt [user prompt]",
-			"cooldown": "10s"
+			"cooldown": "30s"
 		}]
 	},
 	"Mod": {
