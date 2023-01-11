@@ -120,8 +120,8 @@ if check_input(create_ENV_file) == "yes":
 # -------------------------------------------------
 # Do not change anything here
 BOT_ENV_VERSION='{emperor_version}'
-COGS = ["maincog", "admin", "mod", "api", "help"]	# this was from nuke
-COLOUR = "4915330"									# this was from nuke
+COGS = ["bot", "maincog", "admin", "mod", "api", "help"]
+COLOUR = "4915330"	
 # -------------------------------------------------
 #
 # Ensure that all fields are given correct values.

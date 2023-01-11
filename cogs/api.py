@@ -87,7 +87,7 @@ class API(commands.Cog):
         """
         Gets a random post from user inputted subreddit
         Params:
-                        subreddit: Subreddit to get the post from
+                                                                        subreddit: Subreddit to get the post from
         """
 
         subreddit_link = (
@@ -141,39 +141,45 @@ class API(commands.Cog):
 
                 await interaction.response.send_message(embed=post_embed)
 
-
     # DuckDuckGo Related #
     @app_commands.command(
         name="ddg", description="Get search results from DuckDuckGo search"
     )
     @app_commands.checks.cooldown(1, 10.0, key=lambda i: (i.guild_id, i.user.id))
-    async def ddg_search(
-        self, interaction: discord.Interaction, search_parameters: str
-    ):
+    async def ddg_search(self, interaction: discord.Interaction, query: str):
         """
         Get search from DuckDuckGo.
         Params:
-                search_parameters: get search result from DuckDuckGo.
+                                        query: The parameter for DuckDuckGo search.
         """
-        results = await self.__get_search_results(search_parameters)
 
-        resultEmbed = discord.Embed(
-            color=self.bot.config.COLOUR, title="DDG search results"
-        )
+        discordfile = None
+        guild = interaction.guild
+        if guild.icon is None:
+            discordfile = discord.File(
+                "res/DuckDuckGo Logo- Dax Solo.png", filename="ddg_logo.png"
+            )
 
-        desc = ""
+        results = await self.__get_search_results(query)
 
-        resultLimit = 10
+        resultEmbed = discord.Embed(color=self.bot.config.COLOUR)
+
+        desc: str = ""
+
+        resultLimit = 0
 
         for result in results:
-            if resultLimit > 0:
-                print(result[0])
-                desc += f"[{result[1]}](https:{result[0]})\n"
-                resultLimit -= 1
+            if resultLimit < 10:
+                desc += f"`{resultLimit}` • [{result[1]}](https:{result[0]})\n\n"
+                resultLimit += 1
 
-        resultEmbed.description = desc
+        resultEmbed.description = f' **"{query}"** search results:\n{desc}'
 
-        await interaction.response.send_message(embed=resultEmbed)
+        resultEmbed.set_footer(text=f"Searched by {interaction.user} | Emperor")
+        resultEmbed.set_author(name="DuckDuckGo")
+        resultEmbed.set_thumbnail(url="attachment://ddg_logo.png")
+
+        await interaction.response.send_message(embed=resultEmbed, file=discordfile)
 
     async def __get_search_results(self, query: str) -> List[Tuple[str, str]]:
         """
@@ -205,30 +211,36 @@ class API(commands.Cog):
 
         return results
 
-
     # chatGPT Related #
-    @app_commands.command(name="gpt", description="Generates text using a GPT model")
-    @app_commands.checks.cooldown(1, 10.0, key=lambda i: (i.guild_id, i.user.id))
+    @app_commands.command(
+        name="chatgpt", description="Generates text using a GPT model"
+    )
+    @app_commands.checks.cooldown(1, 30.0, key=lambda i: (i.guild_id, i.user.id))
     async def gpt(self, interactions: discord.Interaction, prompt: str):
         """Uses ChatGPT to generate a response to a user given prompt
 
         Args:
-                prompt (str): The user given input, to which the response is tailored towards
+                        prompt (str): The user given input, to which the response is tailored towards
         """
+
+        await interactions.response.defer()
+
         # Generate text using the GPT model
-        text = await self.__generate_text(prompt)
+        response = await self.__generate_text(prompt)
+
+        formated_response = f"**Question**: {prompt}\n\n**ChatGPT**: {response}"
 
         # Send the generated text as a message in the Discord channel
-        await interactions.response.send_message(text)
+        await interactions.followup.send(content=formated_response)
 
     async def __generate_text(self, prompt: str) -> str:
         """Uses the prompt to get the result from ChatGPT 3.0
 
         Args:
-                prompt (str): User input, which is given to ChatGPT 3.0
+                        prompt (str): User input, which is given to ChatGPT 3.0
 
         Returns:
-                str: The response to the prompt given
+                        str: The response to the prompt given
         """
         response = openai.Completion.create(
             engine="text-davinci-003",
@@ -248,6 +260,8 @@ class API(commands.Cog):
             return "I'm sorry, I cannot generate a response for this prompt."
 
     # For new Newer features please keep functionallity together#
+
+
 async def setup(bot):
     # Make an discord.Object for each
     # guild in the list
