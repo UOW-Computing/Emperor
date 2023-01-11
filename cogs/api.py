@@ -87,7 +87,7 @@ class API(commands.Cog):
         """
         Gets a random post from user inputted subreddit
         Params:
-                                        subreddit: Subreddit to get the post from
+                                                                        subreddit: Subreddit to get the post from
         """
 
         subreddit_link = (
@@ -150,7 +150,7 @@ class API(commands.Cog):
         """
         Get search from DuckDuckGo.
         Params:
-                        query: The parameter for DuckDuckGo search.
+                                        query: The parameter for DuckDuckGo search.
         """
 
         discordfile = None
@@ -220,24 +220,27 @@ class API(commands.Cog):
         """Uses ChatGPT to generate a response to a user given prompt
 
         Args:
-                prompt (str): The user given input, to which the response is tailored towards
+                        prompt (str): The user given input, to which the response is tailored towards
         """
+
+        await interactions.response.defer()
+
         # Generate text using the GPT model
         response = await self.__generate_text(prompt)
 
         formated_response = f"**Question**: {prompt}\n\n**ChatGPT**: {response}"
 
         # Send the generated text as a message in the Discord channel
-        await interactions.response.send_message(content=formated_response)
+        await interactions.followup.send(content=formated_response)
 
     async def __generate_text(self, prompt: str) -> str:
         """Uses the prompt to get the result from ChatGPT 3.0
 
         Args:
-                prompt (str): User input, which is given to ChatGPT 3.0
+                        prompt (str): User input, which is given to ChatGPT 3.0
 
         Returns:
-                str: The response to the prompt given
+                        str: The response to the prompt given
         """
         response = openai.Completion.create(
             engine="text-davinci-003",
