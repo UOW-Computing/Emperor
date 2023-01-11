@@ -19,7 +19,7 @@
     <br />
     <br />
     <br />
-    <a href="https://github.com/UOW-Computing/Emperor">View Demo</a>
+    <a href="https://github.com/UOW-Computing/Emperor/blob/master/CONTRIBUTING.md">Contribute</a>
     ·
     <a href="https://github.com/UOW-Computing/Emperor/issues">Report Bug</a>
     ·
