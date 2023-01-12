@@ -63,9 +63,9 @@ create_ENV_file = input("Create a new .env file?: [yes/no] ")
 if check_input(create_ENV_file) == "yes":
     # Enter guild name and the log channel
 
-    bot_token = check_loop("bot token", getpass("Enter BOT token: "))
+    bot_token = check_loop("Bot Token", getpass("Enter BOT token: "))
 
-    openai_token = check_loop("openai key", getpass("Enter you openai api key: "))
+    openai_key = check_loop("OpenAI key", getpass("Enter you openai api key: "))
 
     guild_ids = []
     log_channel_ids = {}
@@ -132,7 +132,7 @@ COLOUR = "4915330"
 # Also, the bot should have access to the guild and log channel
 # otherwise an error will occur
 TOKEN="{bot_token}"
-OPENAI_KEY="{openai_token}"
+OPENAI_KEY="{openai_key}"
 BOT_PREFIX="{prefix}"
 GUILD_ID="[{", ".join(guild for guild in guild_ids)}]"
 LOG_CHANNEL_IDS='{{{write_to_file_dict(log_channel_ids)}}}'
