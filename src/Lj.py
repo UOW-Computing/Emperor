@@ -16,7 +16,7 @@ class Lj:
     log_file = None
 
     def __init__(self):
-        self.log_file = f'logs_log-{datetime.now().strftime("%Y %m %d-%H %M")}' ".txt"
+        self.log_file = f'logs_log-{datetime.now().strftime("%Y %m %d-%H %M")}'
 
     def log(
         self, pathway: str = "emperor", content: str = "no content was given"
