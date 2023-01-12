@@ -71,6 +71,11 @@
 			"description": "Closes an already open ticket",
 			"usage": "/ticket close",
 			"cooldown": "30s"
+		},{
+			"name": "purge",
+			"description": "Clears a channel of messages",
+			"usage": "/purge [limit = 100]",
+			"cooldown": "None"
 		}]
 	}
 
