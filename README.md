@@ -19,7 +19,7 @@
     <br />
     <br />
     <br />
-    <a href="https://github.com/UOW-Computing/Emperor/blob/master/CONTRIBUTING.md">Contribute</a>
+    <a href="https://github.com/UOW-Computing/Emperor/blob/dev/CONTRIBUTING.md">Contribute</a>
     ·
     <a href="https://github.com/UOW-Computing/Emperor/issues">Report Bug</a>
     ·
@@ -62,6 +62,9 @@
 ## Getting Started 
 You can have a look at the Tutorials [here](https://github.com/UOW-Computing/Emperor/discussions/categories/tutorials)!
 
+If you get stuck at any part, you can message us for help.
+
+
 If you get stuck at any part, message us for help.
   
 <!-- USAGE EXAMPLES -->
@@ -83,6 +86,7 @@ This is a work in progress.
 
 - `reddit`: Responds with a post in the subreddit given.
 - `ddg`: Searchs DuckDuckGo.
+- `gpt`: Uses ChatGPT to answer a prompt.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

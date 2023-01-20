@@ -1,48 +1,86 @@
 {
+	"Emperor": {
+		"contribute":[{
+			"name": "contribute",
+			"description": "Lists out the ways to contribute to Emperor",
+			"usage": "/emperor contribute",
+			"cooldown": "None"
+		}]
+	},
 	"General":
 	{
 		"hello":
 		[{
 			"name": "hello",
-			"description": "A simple hello command.",
-			"usage": "/hello"
+			"description": "A simple hello command",
+			"usage": "/hello",
+			"cooldown": "None"
 		}],
 		"info":[
 			{
 				"name":"member",
 				"description":"Gets information about the user",
-				"usage":"/info member"
+				"usage":"/info member",
+				"cooldown": "None"
 			},
 			{
 				"name":"server",
 				"description":"Collects and sends an embed with information about the server",
-				"usage":"/info server"
+				"usage":"/info server",
+				"cooldown": "None"
 			}
-		]
+		],
+		"tutorials": [{
+			"name": "git",
+			"description": "Lists out the tutorials for Git",
+			"usage": "/tutorials git",
+			"cooldown": "None"
+
+		}]
 	},
 	"API": 
 	{
 		"reddit": [{
 			"name": "reddit",
 			"description": "Looks through subreddits given by the user",
-			"usage": "/reddit [subreddit]"
+			"usage": "/reddit [subreddit]",
+			"cooldown": "10s"
 		}],
 		"ddg": [{
 			"name": "duckduckgo search",
 			"description": "Get search results from DuckDuckGo search",
-			"usage": "/ddg [search parameter]"
+			"usage": "/ddg [query]",
+			"cooldown": "10s"
+		}],
+		"chatgpt": [{
+			"name": "chatgpt",
+			"description": "Generates text using a GPT model",
+			"usage": "/gpt [user prompt]",
+			"cooldown": "30s"
 		}]
 	},
 	"Mod": {
 		"ticket": [{
 			"name": "create",
 			"description": "Creates a channel for the ticket to be handled",
-			"usage": "/ticket create"
+			"usage": "/ticket create",
+			"cooldown": "30s"
 		},
 		{
 			"name": "close",
 			"description": "Closes an already open ticket",
-			"usage": "/ticket close"
+			"usage": "/ticket close",
+			"cooldown": "30s"
+		},{
+			"name": "purge",
+			"description": "Clears a channel of messages",
+			"usage": "/purge [limit = 100]",
+			"cooldown": "None"
+		},{
+			"name": "create",
+			"description": "Makes a reaction message, where you can get a role by reacting",
+			"usage": "/reactionrole create [message ID] [Role] [Emoji]",
+			"cooldown":"None"
 		}]
 	}
 
