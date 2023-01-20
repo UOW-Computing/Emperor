@@ -212,10 +212,10 @@ class Main(commands.Cog):
         Gets the information about the user and sends it as an embed
 
         Args:
-                        member (discord.Member): The user to collect information about
+            member (discord.Member): The user to collect information about
 
         Returns:
-                        Embed (discord.Embed): Information collected on the user
+            Embed (discord.Embed): Information collected on the user
         """
         memberEmbed = discord.Embed(
             color=self.bot.config.COLOUR,

@@ -1,4 +1,5 @@
 import discord
+import asyncio
 
 from discord import app_commands
 from discord.ext import commands
@@ -60,9 +61,7 @@ class Admin(commands.Cog):
         Reloads all the cogs
 
         Args:
-                cog str: The cog to reload
-
-
+            cog str: The cog to reload
         """
 
         try:
@@ -70,7 +69,15 @@ class Admin(commands.Cog):
             await self.bot.load_extension("cogs." + cog)
 
             # The cog was reloaded
-            await ctx.send(f"The `{cog}` was successfully reloaded")
+            message = await ctx.send(f"The `{cog}` was successfully reloaded")
+
+            # wait 5 seconds then delete
+            # both messages
+            await asyncio.sleep(5)
+
+            await message.delete()
+            await ctx.message.delete()
+
         except Exception as exc:
             await ctx.send(exc)
 
@@ -80,13 +87,21 @@ class Admin(commands.Cog):
         Loads a specifc cog
 
         Args:
-                cog (str): The cog to load
+            cog (str): The cog to load
         """
         try:
             await self.bot.load_extension("cogs." + cog)
 
-            # The cog was reloaded
-            await ctx.send(f"The `{cog}` was successfully loaded")
+            # The cog was loaded
+            message = await ctx.send(f"The `{cog}` was successfully loaded!")
+
+            # wait 5 seconds then delete
+            # both messages
+            await asyncio.sleep(5)
+
+            await message.delete()
+            await ctx.message.delete()
+
         except Exception as exc:
             await ctx.send(exc)
 
@@ -96,13 +111,21 @@ class Admin(commands.Cog):
         Unloads a specifc cog
 
         Args:
-                cog (str): The cog to unload
+            cog (str): The cog to unload
         """
         try:
             await self.bot.unload_extension("cogs." + cog)
 
             # The cog was reloaded
-            await ctx.send(f"The `{cog}` was successfully unloaded")
+            message = await ctx.send(f"The `{cog}` was successfully unloaded")
+
+            # wait 5 seconds then delete
+            # both messages
+            await asyncio.sleep(5)
+
+            await message.delete()
+            await ctx.message.delete()
+
         except Exception as exc:
             await ctx.send(exc)
 
