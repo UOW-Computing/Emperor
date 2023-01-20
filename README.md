@@ -81,6 +81,8 @@ This is a work in progress.
 - `hello`: Says hello back to you.
 - `info server`: Gives info of the server in which it was executed in.
 - `info member`: Gives information about the member mentioned.
+- `contribute` : Gives information on how to contribute to Emperor.
+- `issue`: Shortcut to creating an issue for Emperor's repo.
 
 ### API Commands
 
@@ -149,11 +151,8 @@ Project Contributor - [Nakano](https://github.com/NakanoYusui)
 <!-- Notes -->
 ## Notes for editors
 
-> Need to add instructions on how to fork/git init the project enviroment.  
 > Need to add explanations on how to get log_channel_id, guild_id, token ?  
-> ReadME has to be updated, TODO's, etc...  
-> If you want to contribute by editing the README, contact Breno.
-
+  
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
