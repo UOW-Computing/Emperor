@@ -220,7 +220,7 @@ class API(commands.Cog):
         """Uses ChatGPT to generate a response to a user given prompt
 
         Args:
-                        prompt (str): The user given input, to which the response is tailored towards
+                prompt (str): The user given input, to which the response is tailored towards
         """
 
         await interactions.response.defer()

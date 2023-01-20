@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     TOKEN: str
     BOT_PREFIX: str
     OPENAI_KEY: str
+    GITHUB_KEY: str
     GUILD_ID: int | list
     LOG_CHANNEL_IDs: str | dict
     STAFF_IDS: dict

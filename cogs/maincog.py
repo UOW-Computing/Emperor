@@ -76,9 +76,9 @@ class Main(commands.Cog):
         num = 0
         for member in guild.members:
             if (
-                member.status == discord.Status.dnd
-                or member.status == discord.Status.do_not_disturb
-                or member.status == discord.Status.online
+                    member.status == discord.Status.dnd
+                    or member.status == discord.Status.do_not_disturb
+                    or member.status == discord.Status.online
             ):
                 num += 1
 
@@ -206,7 +206,7 @@ class Main(commands.Cog):
 
     @info_group.command(name="member", description="Gets information about the user")
     async def info_member(
-        self, interaction: discord.Interaction, member: discord.Member
+            self, interaction: discord.Interaction, member: discord.Member
     ) -> None:
         """
         Gets the information about the user and sends it as an embed

@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from datetime import datetime
+from github import Github
 
 
 class BotCog(
@@ -15,6 +16,7 @@ class BotCog(
     All commands relate to the emperor, and developers working
     on the emperor.
     """
+
 
     def __init__(self, bot):
         self.bot = bot
@@ -98,6 +100,61 @@ Remember: **Do not be scared to contribute, no one will make a fool of you, we w
         embed = discord.Embed.from_dict(embedJSON)
 
         await interaction.response.send_message(embed=embed)
+
+
+    # Anything related to Github goes here!
+    # PyGithub Wrapper -> Github REST API
+    @app_commands.command(name="issue", description="Creates an Issue on Emperor's Repo.")
+    async def create_issue(self, interaction: discord.Interaction,
+                           title: str, body: str,
+                           assignee: str, label: str) -> None:
+        """
+        Creates an issue, requires title, topic, assignee and label.
+        
+
+        Args:
+                title (str): title of the Issue, use Emperor's Guidelines
+                body (str): Issue at question, Emperor's Guidelines
+                assignee (str): Author
+                label (str): Use labels accordingly, check Emperor's Issue/PR templates
+        
+        Returns:
+                Nothing
+        """
+        # github_connection = Github("your token") - > example of how to establish a connection
+
+        # Creates a session with Github using you token
+        GITHUB_CONNECTION = Github(f"{self.bot.config.GITHUB_KEY}")
+        
+        # Fetches Emperor's repo from the connection above
+        emperor_repo = GITHUB_CONNECTION.get_repo("UoW-Computing/Emperor")
+        
+        # Creates the issue with the parameters parsed from the slash command /create_issue
+        emperor_repo.create_issue(title=title, body=body, assignee=assignee, labels=[label])
+        
+        # Creates the Embed, this is will need to be refactored into a function.
+        # Hardcoding the Embed it's not a good practice.
+        githubEmbed = {
+            "description": f"""
+
+Your issue can be found [here](https://github.com/UOW-Computing/Emperor/issues).
+
+*Please, make sure you follow the [Bug Report Guidelines](https://github.com/UOW-Computing/Emperor/blob/master/.github/ISSUE_TEMPLATE/bug_report.md)*
+
+**Title**:\n {title}
+
+**Description**:\n {body}
+
+**Assignee**:\n {assignee}
+
+""",
+            "thumbnail": {"url": "attachment://discordLogo.png"},
+            "footer": {"text": "Emperor"},
+            "title": "Issue Created",
+}
+        # sends the Json above into a Embed
+        await interaction.response.send_message(
+            embed=discord.Embed.from_dict(githubEmbed))
 
 
 async def setup(bot):
