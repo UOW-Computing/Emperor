@@ -124,7 +124,7 @@ if check_input(create_ENV_file) == "yes":
 # -------------------------------------------------
 # Do not change anything here
 BOT_ENV_VERSION='{emperor_version}'
-COGS = ["bot", "maincog", "admin", "mod", "api", "help"]
+COGS = ["bot", "event",  "maincog", "admin", "mod", "api", "help"]
 COLOUR = "4915330"	
 # -------------------------------------------------
 #
