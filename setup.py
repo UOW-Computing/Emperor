@@ -1,5 +1,5 @@
 import os
-
+from getpass import getpass
 from src.ServerUtils import Utils
 
 emperor_version = "v0.1.44"
@@ -10,10 +10,10 @@ def check_input(var_input: str) -> str:
     Checks whether the user input is correct
 
     Params:
-            var_input: the user input
+                    var_input: the user input
 
     Returns:
-            Correct user input
+                    Correct user input
     """
     if var_input.lower() in ["y", "yes", "ye"]:
         return "yes"
@@ -33,7 +33,7 @@ Would you like to create an env file?: [yes/no]
 def check_loop(type: str, inp: str) -> str:
     if Utils.isEmpty(inp):
         print(f"{type} cannot be left empty!")
-        return check_loop(type, input("Please enter a value: "))
+        return check_loop(type, getpass("Please enter a value: "))
     else:
         return inp
 
@@ -43,10 +43,10 @@ def write_to_file_dict(content: dict) -> str:
     Makes a string that holds the correct way to store the dict in .env
 
     Args:
-            content (dict): The content to convert into str
+                    content (dict): The content to convert into str
 
     Returns:
-            str: The converted string
+                    str: The converted string
     """
     return ", ".join(f'"{key}":"{value}"' for key, value in content.items())
 
@@ -63,13 +63,17 @@ create_ENV_file = input("Create a new .env file?: [yes/no] ")
 if check_input(create_ENV_file) == "yes":
     # Enter guild name and the log channel
 
-    bot_token = check_loop("bot token", input("Enter BOT token: "))
+    bot_token = check_loop("Bot Token", getpass("Enter BOT token: "))
 
-    openai_token = check_loop("openai key", input("Enter you openai api key: "))
+    openai_key = check_loop("OpenAI key", getpass("Enter you openai api key: "))
 
     guild_ids = []
     log_channel_ids = {}
     staff_ids = {}
+
+    print(
+        "INFO: You must have at least 1 GUILD ID and STAFF ROLE for the bot to work, LOG CHANNEL ID can be set to 0"
+    )
 
     while True:
         try:
@@ -120,7 +124,7 @@ if check_input(create_ENV_file) == "yes":
 # -------------------------------------------------
 # Do not change anything here
 BOT_ENV_VERSION='{emperor_version}'
-COGS = ["bot", "maincog", "admin", "mod", "api", "help"]
+COGS = ["bot", "event",  "maincog", "admin", "mod", "api", "help"]
 COLOUR = "4915330"	
 # -------------------------------------------------
 #
@@ -128,7 +132,7 @@ COLOUR = "4915330"
 # Also, the bot should have access to the guild and log channel
 # otherwise an error will occur
 TOKEN="{bot_token}"
-OPENAI_KEY="{openai_token}"
+OPENAI_KEY="{openai_key}"
 BOT_PREFIX="{prefix}"
 GUILD_ID="[{", ".join(guild for guild in guild_ids)}]"
 LOG_CHANNEL_IDS='{{{write_to_file_dict(log_channel_ids)}}}'
@@ -147,6 +151,9 @@ STAFF_IDS='{{{write_to_file_dict(staff_ids)}}}'
         print("Testing purposes : File Already Exists")
         pass
 
-    print(
-        "\u001B[32m All configurations completed!\u001B[0m\nYou can now run main.py to launch the bot\n"
-    )
+# Installing the dependencies
+Utils.install_dependencies()
+
+print(
+    '\n\n\u001B[32mAll configurations completed!\u001B[0m\nYou can now do "python main.py" to launch the bot\n'
+)
