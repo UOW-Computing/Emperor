@@ -1,10 +1,8 @@
-aiohttp~=3.8.3
+aiohttp
 asyncpg
 discord.py
-pydantic==1.10.4
-python-dotenv~=0.21.0
-openai~=0.26.0
-beautifulsoup4~=4.11.1
-discord~=2.1.0
-PyGithub~=1.57
-github
+pydantic
+python-dotenv
+openai
+beautifulsoup4
+PyGithub

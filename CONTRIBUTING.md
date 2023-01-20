@@ -32,6 +32,17 @@ an example widget that displays a cat in the dashboard.
 <screenshots.png><logs.txt>
 ```
 
+### Creating Issues Through Discord Chat  
+You can use `/emperor issue` in the discord chat to create an Issue to the repo.  
+<img width="946" alt="image" src="https://user-images.githubusercontent.com/20073002/213742364-61b9a13a-6029-4a74-8b95-aa221b2a2689.png">
+
+This command it's meant to be used to generate Issues on the go, an example of this is when encountering bugs through testing.
+You can quickly create an issue regarding the bug without having to stop what you are doing.  
+After creating the issue you can later come back into the [Issues](https://github.com/UOW-Computing/Emperor/issues) page, and fill in the rest of the report while **following** `CONTRIBUTING.md` guidelines.
+
+**Note:** This command it's not meant to be a replacement to the Bug Report template on [Issues](https://github.com/UOW-Computing/Emperor/issues).
+
+
 ### Pull Requests
 We welcome pull requests that fix bugs, improve documentation, or add new features to Emperor. If you are planning to implement a new feature, we recommend opening an issue first to discuss it with the maintainers. This can help ensure that your work is aligned with the direction of the project and avoid unnecessary effort.
 
@@ -46,7 +57,7 @@ We welcome pull requests that fix bugs, improve documentation, or add new featur
 Information about development environment can be found at [README.md](https://github.com/UOW-Computing/Emperor/blob/master/README.md). 
 
 ### Commit Conventions
-**We follow the same Issue specifications for commit messages. ** 
+**We follow the same Issue specifications for commit messages.**  
 This helps us maintain a clear and consistent commit history, and makes it easier to automatically generate changelogs and release notes.  
 
 `git commit -m "DOCS: updating README.md"`

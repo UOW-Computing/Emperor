@@ -64,6 +64,9 @@ You can have a look at the Tutorials [here](https://github.com/UOW-Computing/Emp
 
 If you get stuck at any part, you can message us for help.
 
+
+If you get stuck at any part, message us for help.
+  
 <!-- USAGE EXAMPLES -->
 ## Usage
 This is a work in progress.  
