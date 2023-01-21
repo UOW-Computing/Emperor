@@ -102,10 +102,10 @@ class Main(commands.Cog):
 
     def __count_top_three_roles(self, member: discord.Member) -> str:
         roles = ""
+        rolelen = len(member.roles)
 
-        roles += f"<@&{member.roles[-1].id}>, "
-        roles += f"<@&{member.roles[-2].id}>, "
-        roles += f"<@&{member.roles[-3].id}>."
+        for i in range(1, rolelen, 1):
+            roles += f"<@&{member.roles[-i].id}>"
 
         return roles
 
