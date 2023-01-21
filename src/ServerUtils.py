@@ -97,14 +97,13 @@ class Utils:
 		"""Installs modules into the local system that are dependent by Emperor
 
 		Args:
-				module_name (str): The module to install
+			module_name (str): The module to install
 
 		Returns:
-				bool: True: modules have been installed, False: modules weren't installed
+			bool: True: modules have been installed, False: modules weren't installed
 		"""
 		# Open file to save
 		with open("logs/setup.log", "w") as f:
-
 
 			# Making sure this works on any os
 			system = platform.system()
