@@ -141,15 +141,15 @@ STAFF_IDS='{{{write_to_file_dict(staff_ids)}}}'
     # Creates the .env file with the contents parsed above
     Utils.writeToFile(filename="", content=content_env, mode="w", extension=".env")
 
-    # Creates a logs folder, where Lj stores all the logs
-    print("Creating logs folder for Lj....")
-    try:
-        # Create the folder
-        os.makedirs("logs")
-    except FileExistsError:
-        # The folder already exists
-        print("Testing purposes : File Already Exists")
-        pass
+# Creates a logs folder, where Lj stores all the logs
+print("Creating logs folder for Lj....")
+try:
+    # Create the folder
+    os.makedirs("logs")
+except FileExistsError:
+    # The folder already exists
+    print("Testing purposes : File Already Exists")
+    pass
 
 # Installing the dependencies
 Utils.install_dependencies()
