@@ -5,8 +5,15 @@
 			"description": "Lists out the ways to contribute to Emperor",
 			"usage": "/emperor contribute",
 			"cooldown": "None"
+		}],
+		"issue":[{
+			"name": "issue",
+			"description": "Shortcut to creating an issue in Emperor's Github",
+			"usage": "/emperor issue",
+			"cooldown": "None"
 		}]
 	},
+	
 	"General":
 	{
 		"hello":
