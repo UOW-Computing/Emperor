@@ -82,11 +82,16 @@
 			"name": "purge",
 			"description": "Clears a channel of messages",
 			"usage": "/purge [limit = 100]",
-			"cooldown": "None"
+			"cooldown": "10s"
 		},{
 			"name": "create",
 			"description": "Makes a reaction message, where you can get a role by reacting",
 			"usage": "/reactionrole create [message ID] [Role] [Emoji]",
+			"cooldown":"None"
+		},{
+			"name": "remove",
+			"description": "Removes the reaction role from the message",
+			"usage": "/reactionrole remove [Channel] [Message ID] [Reaction]",
 			"cooldown":"None"
 		}]
 	}

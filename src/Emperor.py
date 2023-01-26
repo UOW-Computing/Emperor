@@ -1,21 +1,37 @@
 """
-Emperor v0.1.2
-	Main class
+Emperor, discord bot for school of computing
+Copyright (C) 2022-2023  School of Computing Dev Team
 
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
+
 
 import discord
 
-from src.Lj import Lj
-from src.config import Settings
+from datetime import datetime
 from discord.ext import commands
+from src.config import Settings
+from src.Lj import Lj
 
 
 class Emperor(commands.Bot):
 
+    # pylint: disable=invalid-name
     config: Settings = None
     lj: Lj = None
+    uptime: datetime = None
+    # pylint: enable=invalid-name
 
     def __init__(self, p_intents: discord.Intents, p_config: Settings) -> None:
 
@@ -29,6 +45,9 @@ class Emperor(commands.Bot):
         )
 
     async def setup_hook(self):
+        """
+        Loads all the cogs into the bot
+        """
         for cog in self.config.COGS:
             try:
                 await self.load_extension("cogs." + cog)
@@ -43,32 +62,35 @@ class Emperor(commands.Bot):
         )
         self.lj.log("emperor.onready", f"Logged on as {self.user} (ID: {self.user.id})")
 
-    async def on_message(self, message: discord.Message):
+        self.uptime = datetime.now()
 
-        if message.author.bot:
+    async def on_message(self, msg: discord.Message):
+
+        if msg.author.bot:
             return
 
-        def check_for_message(msg: discord.Message):
+        def check_for_message():
             """
             Insures that if an attachment is given the content is not left blank
 
-            TODO: Add support to allow both content and attachments to be parsered through
-            NOTE: Currently bugged, does not work with attachments
-
             Args:
-                    msg (discord.Message): The message to parser through
+                msg (discord.Message): The message to parser through
 
             Returns:
-                    str: Message content if it had text
-                    url: Url(s) if the message had no content
+                str: Message content if it had text
+                url: Url(s) if the message had no content
             """
-            if message.content == "":
-                return " ".join(message.attachments.url)
-            else:
-                return message.content
+            if len(msg.attachments) != 0:
+                attachments_url = " ".join(
+                    attachment.url for attachment in msg.attachments
+                )
+
+                return f"{msg.content} \t {attachments_url}"
+
+            return msg.content
 
         self.lj.log(
-            f"emperor.message    {message.guild.name}.{message.channel.name}",
-            f"{message.author}: {message.content}",
+            f"emperor.message    {msg.guild.name}.{msg.channel.name}",
+            f"{msg.author}: {check_for_message()}",
         )
-        await self.process_commands(message)
+        await self.process_commands(msg)
