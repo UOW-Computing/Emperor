@@ -43,6 +43,12 @@
 			"usage": "/tutorials git",
 			"cooldown": "None"
 
+		}],
+		"uptime": [{
+			"name": "uptime",
+			"description": "Shows how long the bot has been online for",
+			"usage": "e!uptime",
+			"cooldown": "None"
 		}]
 	},
 	"API": 
@@ -78,12 +84,14 @@
 			"description": "Closes an already open ticket",
 			"usage": "/ticket close",
 			"cooldown": "30s"
-		},{
+		}],
+		"purge": [{
 			"name": "purge",
 			"description": "Clears a channel of messages",
 			"usage": "/purge [limit = 100]",
 			"cooldown": "10s"
-		},{
+		}],
+		"reactionrole": [{
 			"name": "create",
 			"description": "Makes a reaction message, where you can get a role by reacting",
 			"usage": "/reactionrole create [message ID] [Role] [Emoji]",
