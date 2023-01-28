@@ -1,13 +1,30 @@
+"""
+Emperor, discord bot for school of computing
+Copyright (C) 2022-2023  School of Computing Dev Team
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+import random
 import discord
 import aiohttp
-import random
 import openai
 
-from datetime import datetime
-from discord.ext import commands
-from discord import app_commands
-from typing import List, Tuple, Optional
 from bs4 import BeautifulSoup
+from datetime import datetime
+from discord import app_commands
+from discord.ext import commands
+from typing import List, Tuple
 
 
 class API(commands.Cog):
@@ -28,55 +45,29 @@ class API(commands.Cog):
     async def cog_unload(self):
         self.bot.lj.warn("emperor.cogs.api", "API cog was unloaded")
 
-    async def cog_check(self, ctx):
-        # checks that apply to every command in here
-        return True
-
-    async def bot_check(self, ctx):
-        # checks that apply to every command to the bot
-        return True
-
-    async def bot_check_once(self, ctx):
-        # check that apply to every command but is guaranteed to be called only once
-        return True
-
-    async def cog_command_error(self, ctx, error):
-        print(error)
-
     async def cog_app_command_error(self, interaction, error):
-
-        # Checks if the command is on cooldown,
-        # if so tell the user
-        if isinstance(error, app_commands.CommandOnCooldown):
-            on_cooldown: str = f"You are currently on cooldown, try again in <t:{int(datetime.now().timestamp()+error.retry_after)}:R>."
-            await interaction.response.send_message(
-                on_cooldown, delete_after=error.retry_after
-            )
 
         self.bot.lj.warn(
             f"emperor.cogs.api.{interaction.command.name}",
             f"<@{interaction.user.id}>, {error}",
         )
 
+        # Checks if the command is on cooldown,
+        # if so tell the user
+        if isinstance(error, app_commands.CommandOnCooldown):
+            on_cooldown: str = f"Currently on cooldown, try again in <t:{int(datetime.now().timestamp()+error.retry_after)}:R>."
+            await interaction.response.send_message(
+                on_cooldown, delete_after=error.retry_after
+            )
+            return
+
         # Handles the InteractionAlreadyBeenResponsed to Exception
         try:
             await interaction.response.send_message(
                 f"<@{interaction.user.id}>, {error}"
             )
-        except:
-            await interaction.followup.send(f"<@{interaction.user.id}>, {error}")
-
-    async def cog_before_invoke(self, ctx):
-        self.bot.lj.log(
-            f"emperor.cogs.api.{ctx.invoked_with}",
-            f"{ctx.author.name} has attempted to executed {ctx.invoked_with}",
-        )
-
-    async def cog_after_invoke(self, ctx):
-        self.bot.lj.log(
-            f"emperor.cogs.api.{ctx.invoked_with}",
-            f"{ctx.author.name} has executed {ctx.invoked_with} command",
-        )
+        except Exception as exc:
+            await interaction.followup.send(f"<@{interaction.user.id}>, {error}\n{exc}")
 
     # Reddit Related #
     @app_commands.command(
@@ -86,8 +77,9 @@ class API(commands.Cog):
     async def reddit(self, interaction: discord.Interaction, subreddit: str):
         """
         Gets a random post from user inputted subreddit
+
         Params:
-                                                                        subreddit: Subreddit to get the post from
+            subreddit: Subreddit to get the post from
         """
 
         subreddit_link = (
@@ -97,11 +89,11 @@ class API(commands.Cog):
         # Get the post
         # Choose a random post
         # Send it in as an embed
-        async with aiohttp.ClientSession() as cs:
-            async with cs.get(subreddit_link) as r:
+        async with aiohttp.ClientSession() as client_session:
+            async with client_session.get(subreddit_link) as response:
 
                 # Convert to json
-                json_data = await r.json()
+                json_data = await response.json()
 
                 # Checking if the subreddit does exist
                 if "error" in json_data:
@@ -149,8 +141,9 @@ class API(commands.Cog):
     async def ddg_search(self, interaction: discord.Interaction, query: str):
         """
         Get search from DuckDuckGo.
+
         Params:
-                                        query: The parameter for DuckDuckGo search.
+            query: The parameter for DuckDuckGo search.
         """
 
         discordfile = None
@@ -162,24 +155,24 @@ class API(commands.Cog):
 
         results = await self.__get_search_results(query)
 
-        resultEmbed = discord.Embed(color=self.bot.config.COLOUR)
+        result_embed = discord.Embed(color=self.bot.config.COLOUR)
 
         desc: str = ""
 
-        resultLimit = 0
+        result_limit = 0
 
         for result in results:
-            if resultLimit < 10:
-                desc += f"`{resultLimit}` • [{result[1]}](https:{result[0]})\n\n"
-                resultLimit += 1
+            if result_limit < 10:
+                desc += f"`{result_limit}` • [{result[1]}](https:{result[0]})\n\n"
+                result_limit += 1
 
-        resultEmbed.description = f' **"{query}"** search results:\n{desc}'
+        result_embed.description = f' **"{query}"** search results:\n{desc}'
 
-        resultEmbed.set_footer(text=f"Searched by {interaction.user} | Emperor")
-        resultEmbed.set_author(name="DuckDuckGo")
-        resultEmbed.set_thumbnail(url="attachment://ddg_logo.png")
+        result_embed.set_footer(text=f"Searched by {interaction.user} | Emperor")
+        result_embed.set_author(name="DuckDuckGo")
+        result_embed.set_thumbnail(url="attachment://ddg_logo.png")
 
-        await interaction.response.send_message(embed=resultEmbed, file=discordfile)
+        await interaction.response.send_message(embed=result_embed, file=discordfile)
 
     async def __get_search_results(self, query: str) -> List[Tuple[str, str]]:
         """
@@ -196,9 +189,11 @@ class API(commands.Cog):
         query = "+".join(query.strip().split())
 
         # Send an HTTP GET request to the DuckDuckGo search engine
-        async with aiohttp.ClientSession() as cs:
-            async with cs.get(f"https://duckduckgo.com/html/?q={query}") as r:
-                data = await r.text()
+        async with aiohttp.ClientSession() as client_session:
+            async with client_session.get(
+                f"https://duckduckgo.com/html/?q={query}"
+            ) as response:
+                data = await response.text()
 
         # Parse the response data using BeautifulSoup
         soup = BeautifulSoup(data, "html.parser")
@@ -212,35 +207,14 @@ class API(commands.Cog):
         return results
 
     # chatGPT Related #
-    @app_commands.command(
-        name="chatgpt", description="Generates text using a GPT model"
-    )
-    @app_commands.checks.cooldown(1, 30.0, key=lambda i: (i.guild_id, i.user.id))
-    async def gpt(self, interactions: discord.Interaction, prompt: str):
-        """Uses ChatGPT to generate a response to a user given prompt
-
-        Args:
-                prompt (str): The user given input, to which the response is tailored towards
-        """
-
-        await interactions.response.defer()
-
-        # Generate text using the GPT model
-        response = await self.__generate_text(prompt)
-
-        formated_response = f"**Question**: {prompt}\n\n**ChatGPT**: {response}"
-
-        # Send the generated text as a message in the Discord channel
-        await interactions.followup.send(content=formated_response)
-
     async def __generate_text(self, prompt: str) -> str:
         """Uses the prompt to get the result from ChatGPT 3.0
 
         Args:
-                        prompt (str): User input, which is given to ChatGPT 3.0
+            prompt (str): User input, which is given to ChatGPT 3.0
 
         Returns:
-                        str: The response to the prompt given
+            str: The response to the prompt given
         """
         response = openai.Completion.create(
             engine="text-davinci-003",
@@ -255,14 +229,42 @@ class API(commands.Cog):
         if text:
             # Send the response to the user in the Discord channel
             return text
-        else:
-            # Send a default message if the response is empty
-            return "I'm sorry, I cannot generate a response for this prompt."
+
+        # Send a default message if the response is empty
+        return "I'm sorry, I cannot generate a response for this prompt."
+
+    @app_commands.command(
+        name="chatgpt", description="Generates text using a GPT model"
+    )
+    @app_commands.checks.cooldown(1, 30.0, key=lambda i: (i.guild_id, i.user.id))
+    async def gpt(self, interactions: discord.Interaction, prompt: str):
+        """Uses ChatGPT to generate a response to a user given prompt
+
+        Args:
+            prompt (str): The user given input, to which the response is tailored towards
+        """
+
+        await interactions.response.defer()
+
+        # Generate text using the GPT model
+        response = await self.__generate_text(prompt)
+
+        formated_response = f"**Question**: {prompt}\n\n**ChatGPT**: {response}"
+
+        # Send the generated text as a message in the Discord channel
+        await interactions.followup.send(content=formated_response)
 
     # For new Newer features please keep functionallity together#
 
 
 async def setup(bot):
+    """
+    Setup function for the cog
+
+    Args:
+        bot (discord.ext.commands.Bot): Instance of the bot class
+    """
+
     # Make an discord.Object for each
     # guild in the list
     guild_objects: list(discord.Object) = []

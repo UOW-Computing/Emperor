@@ -1,8 +1,26 @@
+"""
+Emperor, discord bot for school of computing
+Copyright (C) 2022-2023  School of Computing Dev Team
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import os
 from getpass import getpass
 from src.ServerUtils import Utils
 
-emperor_version = "v0.1.44"
+EMPEROR_VERSION = "v0.1.45"
 
 
 def check_input(var_input: str) -> str:
@@ -10,10 +28,10 @@ def check_input(var_input: str) -> str:
     Checks whether the user input is correct
 
     Params:
-                    var_input: the user input
+        var_input: the user input
 
     Returns:
-                    Correct user input
+        Correct user input
     """
     if var_input.lower() in ["y", "yes", "ye"]:
         return "yes"
@@ -30,12 +48,23 @@ Would you like to create an env file?: [yes/no]
     )
 
 
-def check_loop(type: str, inp: str) -> str:
-    if Utils.isEmpty(inp):
-        print(f"{type} cannot be left empty!")
-        return check_loop(type, getpass("Please enter a value: "))
-    else:
-        return inp
+def check_loop(field: str, inp: str) -> str:
+    """Loops untill the condition the input is not empty
+
+    Args:
+        field (str): variable that cannot be left empty
+        inp (str): The input given by the user
+
+    Returns:
+        str: The non-empty value
+    """
+    # Check if the input given is empty
+    if Utils.is_empty(inp):
+        # Its empty, ask again
+        print(f"{field} cannot be left empty!")
+        return check_loop(field, getpass("Please enter a value: "))
+
+    return inp
 
 
 def write_to_file_dict(content: dict) -> str:
@@ -43,16 +72,16 @@ def write_to_file_dict(content: dict) -> str:
     Makes a string that holds the correct way to store the dict in .env
 
     Args:
-                    content (dict): The content to convert into str
+        content (dict): The content to convert into str
 
     Returns:
-                    str: The converted string
+        str: The converted string
     """
     return ", ".join(f'"{key}":"{value}"' for key, value in content.items())
 
 
 # Prints Logo
-Utils.outputBranding()
+Utils.print_branding()
 print(
     """As this is your first time setting up this repo, please either
 make a .env file or follow the wizard below to create one."""
@@ -88,13 +117,13 @@ if check_input(create_ENV_file) == "yes":
                 # while loop
                 break
             case _:
-                if Utils.validateIsDigit(guild_id):
+                if Utils.validate_is_digit(guild_id):
 
                     log_channel_id = input("Enter LOG CHANNEL ID (0 for none): ")
 
                     try:
                         log_channel_ids[guild_id] = str(log_channel_id)
-                    except:
+                    except Exception:
                         print(
                             "You already have a log channel setup in this guild, cannot have two log channels."
                         )
@@ -103,27 +132,27 @@ if check_input(create_ENV_file) == "yes":
                         "Please enter your staff role id (Cannot be left blank): "
                     )
 
-                    if Utils.validateIsDigit(staff_id):
+                    if Utils.validate_is_digit(staff_id):
                         try:
                             staff_ids[guild_id] = str(staff_id)
-                        except:
+                        except Exception:
                             staff_ids[guild_id] = [staff_ids[guild_id], str(staff_id)]
                     guild_ids.append(guild_id)
 
                 continue
 
     print("Leave prefix blank for default value of (e!)")
-    prefix = input("Enter Desired prefix: ")
-    if prefix == "":
-        prefix = "e!"
+    PREFIX = input("Enter Desired prefix: ")
+    if PREFIX == "":
+        PREFIX = "e!"
 
     content_env = f"""# Dotenv file
 # author: nukestye & UOW TEAM
-# version: {emperor_version}
+# version: {EMPEROR_VERSION}
 
 # -------------------------------------------------
 # Do not change anything here
-BOT_ENV_VERSION='{emperor_version}'
+BOT_ENV_VERSION='{EMPEROR_VERSION}'
 COGS = ["bot", "event",  "maincog", "admin", "mod", "api", "help"]
 COLOUR = "4915330"	
 # -------------------------------------------------
@@ -133,7 +162,7 @@ COLOUR = "4915330"
 # otherwise an error will occur
 TOKEN="{bot_token}"
 OPENAI_KEY="{openai_key}"
-BOT_PREFIX="{prefix}"
+BOT_PREFIX="{PREFIX}"
 GUILD_ID="[{", ".join(guild for guild in guild_ids)}]"
 LOG_CHANNEL_IDS='{{{write_to_file_dict(log_channel_ids)}}}'
 STAFF_IDS='{{{write_to_file_dict(staff_ids)}}}'
@@ -149,7 +178,6 @@ try:
 except FileExistsError:
     # The folder already exists
     print("Testing purposes : File Already Exists")
-    pass
 
 # Installing the dependencies
 Utils.install_dependencies()

@@ -1,5 +1,21 @@
-import os
-import json
+"""
+Emperor, discord bot for school of computing
+Copyright (C) 2022-2023  School of Computing Dev Team
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import discord
 
 
@@ -13,7 +29,7 @@ class MyHelpCommand(commands.HelpCommand):
             title="Help", description=f"Use `e!help` for this embed again!\n"
         )
         # Get help.json
-        data = Utils.read_from_json("res/help.json")
+        data = Utils.read_from_json("res/json/help.json")
 
         for cog in data:
             cog_commands = ""
@@ -46,6 +62,13 @@ class Help(commands.Cog):
 
 
 async def setup(bot):
+    """
+    Setup function for the cog
+
+    Args:
+        bot (discord.ext.commands.Bot): Instance of the bot class
+    """
+
     # Make an discord.Object for each
     # guild in the list
     guild_objects: list[discord.Object] = []

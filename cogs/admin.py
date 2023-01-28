@@ -1,7 +1,24 @@
-import discord
-import asyncio
+"""
+Emperor, discord bot for school of computing
+Copyright (C) 2022-2023  School of Computing Dev Team
 
-from discord import app_commands
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
+import asyncio
+import discord
+
 from discord.ext import commands
 
 
@@ -9,7 +26,8 @@ class Admin(commands.Cog):
     """
     Admin cog
 
-    Holds developer commands that should not be run by anyone but the bot owner
+    Holds developer commands that should not be run by anyone
+    but the bot dev team
     """
 
     def __init__(self, bot):
@@ -21,16 +39,11 @@ class Admin(commands.Cog):
     async def cog_unload(self):
         self.bot.lj.warn("emperor.cogs.admin", "Admin cog was unloaded")
 
+    # pylint: disable=invalid-overridden-method
     async def cog_check(self, ctx):
         return await self.bot.is_owner(ctx.author)
 
-    async def bot_check(self, ctx):
-        # checks that apply to every command to the bot
-        return True
-
-    async def bot_check_once(self, ctx):
-        # check that apply to every command but is guaranteed to be called only once
-        return True
+    # pylint: enable=invalid-overridden-method
 
     async def cog_command_error(self, ctx, error):
         print(error)
@@ -41,18 +54,6 @@ class Admin(commands.Cog):
             f"<@{interaction.user.id}>, {error}",
         )
         await interaction.response.send_message(f"<@{interaction.user.id}>, {error}")
-
-    async def cog_before_invoke(self, ctx):
-        self.bot.lj.log(
-            f"emperor.cogs.admin.{ctx.invoked_with}",
-            f"{ctx.author.name} has attempted to executed {ctx.invoked_with}",
-        )
-
-    async def cog_after_invoke(self, ctx):
-        self.bot.lj.log(
-            f"emperor.cogs.admin.{ctx.invoked_with}",
-            f"{ctx.author.name} has executed {ctx.invoked_with} command",
-        )
 
     @commands.command(name="reload")
     async def reload(self, ctx: commands.Context, cog: str) -> None:
@@ -71,9 +72,9 @@ class Admin(commands.Cog):
             # The cog was reloaded
             message = await ctx.send(f"The `{cog}` was successfully reloaded")
 
-            # wait 5 seconds then delete
+            # wait 2 seconds then delete
             # both messages
-            await asyncio.sleep(5)
+            await asyncio.sleep(2)
 
             await message.delete()
             await ctx.message.delete()
@@ -95,9 +96,9 @@ class Admin(commands.Cog):
             # The cog was loaded
             message = await ctx.send(f"The `{cog}` was successfully loaded!")
 
-            # wait 5 seconds then delete
+            # wait 2 seconds then delete
             # both messages
-            await asyncio.sleep(5)
+            await asyncio.sleep(2)
 
             await message.delete()
             await ctx.message.delete()
@@ -119,9 +120,9 @@ class Admin(commands.Cog):
             # The cog was reloaded
             message = await ctx.send(f"The `{cog}` was successfully unloaded")
 
-            # wait 5 seconds then delete
+            # wait 2 seconds then delete
             # both messages
-            await asyncio.sleep(5)
+            await asyncio.sleep(2)
 
             await message.delete()
             await ctx.message.delete()
@@ -131,6 +132,12 @@ class Admin(commands.Cog):
 
 
 async def setup(bot):
+    """
+    Setup function for the cog
+
+    Args:
+        bot (discord.ext.commands.Bot): Instance of the bot class
+    """
     # Make an discord.Object for each
     # guild in the list
     guild_objects: list(discord.Object) = []

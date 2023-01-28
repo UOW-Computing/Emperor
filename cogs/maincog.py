@@ -1,8 +1,26 @@
+"""
+Emperor, discord bot for school of computing
+Copyright (C) 2022-2023  School of Computing Dev Team
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import discord
 
+from datetime import datetime as dt
 from discord.utils import format_dt
 from discord.ext import commands
-from datetime import datetime as dt
 from discord import app_commands
 
 
@@ -30,18 +48,6 @@ class Main(commands.Cog):
     async def cog_unload(self):
         self.bot.lj.warn("emperor.cogs.maincog", "MainCog cog was unloaded")
 
-    async def cog_check(self, ctx):
-        # checks that apply to every command in here
-        return True
-
-    async def bot_check(self, ctx):
-        # checks that apply to every command to the bot
-        return True
-
-    async def bot_check_once(self, ctx):
-        # check that apply to every command but is guaranteed to be called only once
-        return True
-
     async def cog_command_error(self, ctx, error):
         print(error)
 
@@ -52,46 +58,42 @@ class Main(commands.Cog):
         )
         await interaction.response.send_message(f"<@{interaction.user.id}>, {error}")
 
-    async def cog_before_invoke(self, ctx):
-        self.bot.lj.log(
-            f"emperor.cogs.maincog.{ctx.invoked_with}",
-            f"{ctx.author.name} has attempted to executed {ctx.invoked_with}",
-        )
-
-    async def cog_after_invoke(self, ctx):
-        self.bot.lj.log(
-            f"emperor.cogs.maincog.{ctx.invoked_with}",
-            f"{ctx.author.name} has executed {ctx.invoked_with} command",
-        )
-
     async def __count_online_members(self, guild: discord.Guild) -> int:
         """Counts the number of online members in the guild
 
         Args:
-                        guild (discord.Guild): The guild to get the members from
+            guild (discord.Guild): The guild to get the members from
 
         Returns:
-                        int: The number of online (online & dnd) members
+            int: The number of online (online & dnd) members
         """
+
+        # Go through the guild members
+        # Check if their status is dnd/online
+        # increment if so
         num = 0
+
+        possibleStatus = [
+            discord.Status.dnd,
+            discord.Status.do_not_disturb,
+            discord.Status.online,
+        ]
+
         for member in guild.members:
-            if (
-                    member.status == discord.Status.dnd
-                    or member.status == discord.Status.do_not_disturb
-                    or member.status == discord.Status.online
-            ):
+            if member.status in possibleStatus:
                 num += 1
 
+        # Return the number of online/dnd members
         return num
 
     def __count_bot(self, guild: discord.Guild) -> int:
         """Counts the number of bots in the guild
 
         Args:
-                        guild (discord.Guild): The guild to count the bots from
+            guild (discord.Guild): The guild to count the bots from
 
         Returns:
-                        int: The number of bots in the guild
+            int: The number of bots in the guild
         """
         num = 0
         for member in guild.members:
@@ -114,30 +116,38 @@ class Main(commands.Cog):
         Counts the number of emojis in the server
 
         Args:
-                        guild (discord.Guild): The guild to count the emojis from
+            guild (discord.Guild): The guild to count the emojis from
 
         Returns:
-                        str: The emojis as <:emoji_name:emoji_id> or
-                                         the string number of emojis
+            str: The emojis as <:emoji_name:emoji_id> or the string number of emojis
         """
+
+        # Checking to see if the guild has 0 emojis
         if len(guild.emojis) == 0:
             return "0"
+
+        # Go through the guild emojis
+        # Add them into a string for later use
         emojilist = " ".join([f"<:{emoji.name}:{emoji.id}>" for emoji in guild.emojis])
+
+        # Making sure that the limit in embeds is not
+        # broken
         if len(emojilist) >= 1024:
             return str(len(guild.emojis))
-        else:
-            return emojilist
+
+        # If limit is isn't broken
+        # send the emojis
+        return emojilist
 
     @app_commands.command(name="hello")
     async def hello(self, interaction: discord.Interaction) -> None:
         """
         A simple hello command.
+        Used to test out if Application commands (Slash Commands) are working
 
         Params:
-                        interaction: the event that causes this command to execute
+            interaction: the event that causes this command to execute
 
-        Returns
-                        Nothing
         """
         await interaction.response.send_message(f"<@{interaction.user.id}>, hello!")
 
@@ -149,18 +159,23 @@ class Main(commands.Cog):
         """Collects and sends an embed with information about the server
 
         Args:
-                        interaction (discord.Interaction): The trigger for this command
+            interaction (discord.Interaction): The trigger for this command
 
         Returns:
-                        Embed (discord.Embed): Contains the information gathered on
-                        the guild
+            Embed (discord.Embed): Contains the information gathered on
+                the guild
         """
 
-        discordfile = None
+        # Uses the default logo
+        # If the guild doesn't have one
+        icon_file = None
         guild = interaction.guild
         if guild.icon is None:
-            discordfile = discord.File("res/discordLogo.png", filename="logo.png")
+            icon_file = discord.File("res/discordLogo.png", filename="logo.png")
 
+        # Making the embed with the pre-defined colour
+        # and setting the title & description
+        # with guild name and description
         server_embed = discord.Embed(
             color=self.bot.config.COLOUR,
             title=guild.name,
@@ -170,6 +185,8 @@ class Main(commands.Cog):
         server_embed.set_thumbnail(url=img_url)
         server_embed.add_field(name="Owner", value=f"<@{guild.owner_id}>", inline=True)
 
+        # If the guild has a banner
+        # set the image to it
         if guild.banner:
             server_embed.set_image(url=guild.banner.url)
 
@@ -186,27 +203,31 @@ class Main(commands.Cog):
         # Get the roles and make them mentionable
         server_embed.add_field(name="Roles", value=len(guild.roles), inline=True)
 
+        # Get the number of channels in the server
         server_embed.add_field(name="Channels", value=len(guild.channels), inline=True)
 
+        # Use the string value from __count_emojis
+        # to fill in the Emojis field
         server_embed.add_field(
             name="Emojis", value=self.__count_emojis(guild), inline=True
         )
 
+        # Guild id and when created as footer
         server_embed.set_footer(
             text=f'ID: {guild.id} | Server Created • {(guild.created_at.strftime("%Y/%m/%d %H:%M %p"))}'
         )
 
+        # Attach the file, only if the guild
+        # does not have an icon
         if guild.icon is not None:
             await interaction.response.send_message(embed=server_embed)
         else:
-            await interaction.response.send_message(
-                file=discordfile, embed=server_embed
-            )
+            await interaction.response.send_message(file=icon_file, embed=server_embed)
         # await interaction.response.send_message('This is a `/log server`')
 
     @info_group.command(name="member", description="Gets information about the user")
     async def info_member(
-            self, interaction: discord.Interaction, member: discord.Member
+        self, interaction: discord.Interaction, member: discord.Member
     ) -> None:
         """
         Gets the information about the user and sends it as an embed
@@ -217,22 +238,29 @@ class Main(commands.Cog):
         Returns:
             Embed (discord.Embed): Information collected on the user
         """
-        memberEmbed = discord.Embed(
+
+        # Create the embed
+        # Information is gathered from discord.Member
+        # properties
+        member_embed = discord.Embed(
             color=self.bot.config.COLOUR,
             title="Member Information",
             description=f"""Name: `{member.name}{f" ({member.display_name})" if member.display_name != member.name else ""}`
-			Joined Discord on: {format_dt(member.created_at)}
-			Joined Server on: {format_dt(member.joined_at)}
-			Roles: {self.__count_top_three_roles(member)}""",
+            Joined Discord on: {format_dt(member.created_at)}
+            Joined Server on: {format_dt(member.joined_at)}
+            Roles: {self.__count_top_three_roles(member)}""",
         )
 
-        memberEmbed.set_image(url=member.display_avatar.url)
-        memberEmbed.set_footer(
+        # Set the image to their avatar
+        member_embed.set_image(url=member.display_avatar.url)
+
+        # Simple footer filler
+        member_embed.set_footer(
             text=f'{self.bot.user.name} | {dt.now().strftime("%d %B %Y %H:%M %p")}',
             icon_url=self.bot.user.display_avatar,
         )
 
-        await interaction.response.send_message(embed=memberEmbed)
+        await interaction.response.send_message(embed=member_embed)
 
     # All Tutorials commands #
     @tutorials_group.command(name="git", description="Tutorials for Git")
@@ -240,11 +268,11 @@ class Main(commands.Cog):
         """Sends an embed containg tutorials for Git
 
         Args:
-                interaction (discord.Interaction): The interacion which caused this to happen
+            interaction (discord.Interaction): The interacion which caused this to happen
         """
-        discordFile: discord.File = discord.File("res/gitLogo.png", "gitLogo.png")
+        icon_file: discord.File = discord.File("res/gitLogo.png", "gitLogo.png")
 
-        gitEmbed = {
+        git_embed = {
             "description": """
 Looking to learn Git?
 
@@ -270,11 +298,28 @@ List of Youtube tutorials:
         }
 
         await interaction.response.send_message(
-            embed=discord.Embed.from_dict(gitEmbed), file=discordFile
+            embed=discord.Embed.from_dict(git_embed), file=icon_file
+        )
+
+    @commands.command(name="uptime")
+    async def uptime(self, ctx):
+        """
+        Shows how long the bot has been online for
+        """
+
+        await ctx.send(
+            f"The bot has been online for: <t:{int(dt.timestamp(self.bot.uptime))}:R>"
         )
 
 
 async def setup(bot):
+    """
+    Setup function for the cog
+
+    Args:
+        bot (discord.ext.commands.Bot): Instance of the bot class
+    """
+
     # Make an discord.Object for each
     # guild in the list
     guild_objects: list[discord.Object] = []
