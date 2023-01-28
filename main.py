@@ -23,7 +23,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from src.ServerUtils import Utils
 from src.config import Settings
-from src.emperor import Emperor
+from src.Emperor import Emperor
 
 load_dotenv()
 
