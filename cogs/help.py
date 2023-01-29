@@ -20,44 +20,79 @@ import discord
 
 
 from discord.ext import commands
-from src.ServerUtils import Utils
-
+from discord import app_commands
+from discord.ext.commands import Cog
+from typing import Mapping, Optional, List
 
 class MyHelpCommand(commands.HelpCommand):
-    async def send_bot_help(self, mapping):
-        embed = discord.Embed(
-            title="Help", description=f"Use `e!help` for this embed again!\n"
-        )
-        # Get help.json
-        data = Utils.read_from_json("res/json/help.json")
 
-        for cog in data:
-            cog_commands = ""
-            for command in data[cog]:
-                for i in range(len(data[cog][command])):
 
-                    # Get all the information
-                    cmd_usage = data[cog][command][i]["usage"]
-                    cmd_description = data[cog][command][i]["description"]
-                    cmd_cooldown = data[cog][command][i]["cooldown"]
+    async def send_bot_help(self, mapping: Mapping[Optional[Cog], List[commands.Command]]):
+        """
+        Sends an embed with all the commands for the server
+        
+        Args:
+            mapping (Mapping[Optional[Cog], List[commands.Command]]): List of all Cogs and commands
+        
+        Retruns:
+            discord.Embed - contains all commands formated correctly
+        
+        """
+        embed = discord.Embed(title="Bot help")
+        # `mapping` is a dict of the bot's cogs, which map to their commands
+        # print(mapping)
 
-                    # Format the information and add it to help
-                    cog_commands += f"• `{cmd_usage}`\n	{cmd_description}.\n	Cooldown is `{cmd_cooldown}`\n"
+        # NOTE: app_commands do not have a normal cooldown
+        # attribute, converting all the app_commands
+        # into hybrid commands would give them cooldown attribute
 
-            embed.description += f"**{cog}**\n {cog_commands}\n"
+        description = ""
+        for commands in mapping.items():
+            for item in commands:
+                # list object is normal text commands
+                if item.__class__ == list:
+                    for i in item:
+                        if i.__class__ is discord.app_commands.Group:
+                            continue
+                        if i.cog_name in [None, "Admin"]:
+                            continue
+
+                        description += f"\n• **e!{i.qualified_name}**: {i.description}"
+
+                # Any Cog object contains app_commands which
+                # is slash commands
+                elif item.__class__.__base__ == Cog:
+                    # Removing Admin and Event Cogs
+                    # Contain special commands that cannot be
+                    # used by normal users
+                    if item.__cog_name__ in ["Admin", "Event"]:
+                        continue
+
+                    description += f"\n\n**__{item.__cog_name__}__**\n"
+
+                    for command in item.walk_app_commands():
+                        if command.__class__ is discord.app_commands.Group:
+                            continue
+
+                        description += f"\n• **/{command.qualified_name}**: {command.description}"
+
+        embed.description = description
 
         channel = self.get_destination()
         await channel.send(embed=embed)
 
 
 class Help(commands.Cog):
+    """
+    Help command that showcases all the possible commands for the bot
+    """
     def __init__(self, bot) -> None:
         self.bot = bot
 
         # Focus here
         # Setting the cog for the help
         help_command = MyHelpCommand()
-        help_command.cog = self  # Instance of YourCog class
+        help_command.cog = self
         bot.help_command = help_command
 
 
