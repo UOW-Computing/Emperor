@@ -46,7 +46,7 @@ class MyHelpCommand(commands.HelpCommand):
         # attribute, converting all the app_commands
         # into hybrid commands would give them cooldown attribute
 
-        description = ""
+        description = f"{self.context.bot.description}\nUse `e!help` to see this embed again!\nAny `\` commands are slash commands, while `e!` are normal commands."
         for commands in mapping.items():
             for item in commands:
                 # list object is normal text commands
