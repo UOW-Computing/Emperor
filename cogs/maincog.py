@@ -301,7 +301,10 @@ List of Youtube tutorials:
             embed=discord.Embed.from_dict(git_embed), file=icon_file
         )
 
-    @commands.command(name="uptime")
+    @commands.command(
+        name="uptime",
+        description="Shows long the bot has been online for"
+    )
     async def uptime(self, ctx):
         """
         Shows how long the bot has been online for
