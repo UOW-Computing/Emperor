@@ -20,7 +20,7 @@ import os
 from getpass import getpass
 from src.ServerUtils import Utils
 
-EMPEROR_VERSION = "v0.1.45"
+EMPEROR_VERSION = "v0.1.5"
 
 
 def check_input(var_input: str) -> str:
@@ -84,7 +84,7 @@ def write_to_file_dict(content: dict) -> str:
 Utils.print_branding()
 print(
     """As this is your first time setting up this repo, please either
-make a .env file or follow the wizard below to create one."""
+make a .env file manually or follow the wizard below to create one."""
 )
 
 create_ENV_file = input("Create a new .env file?: [yes/no] ")
@@ -95,6 +95,10 @@ if check_input(create_ENV_file) == "yes":
     bot_token = check_loop("Bot Token", getpass("Enter BOT token: "))
 
     openai_key = check_loop("OpenAI key", getpass("Enter you openai api key: "))
+    
+    print("This field can be left empty, however any API commands that use this token will not work.")
+    
+    github_key = input("Enter your GitHub token: ")
 
     guild_ids = []
     log_channel_ids = {}
@@ -162,6 +166,7 @@ COLOUR = "4915330"
 # otherwise an error will occur
 TOKEN="{bot_token}"
 OPENAI_KEY="{openai_key}"
+GITHUB_KEY="{github_key}"
 BOT_PREFIX="{PREFIX}"
 GUILD_ID="[{", ".join(guild for guild in guild_ids)}]"
 LOG_CHANNEL_IDS='{{{write_to_file_dict(log_channel_ids)}}}'

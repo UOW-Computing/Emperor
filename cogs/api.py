@@ -37,6 +37,11 @@ class API(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         openai.api_key = bot.config.OPENAI_KEY
+        
+    duckduckgo = app_commands.Group(
+        name="duckduckgo",
+        description="Holds all duckduckgo commmands"
+    )
 
     # API Related #
     async def cog_load(self):
@@ -134,8 +139,43 @@ class API(commands.Cog):
                 await interaction.response.send_message(embed=post_embed)
 
     # DuckDuckGo Related #
-    @app_commands.command(
-        name="ddg", description="Get search results from DuckDuckGo search"
+    
+    async def __get_search_results(self, query: str) -> List[Tuple[str, str]]:
+        """
+        Send a search query to the DuckDuckGo search engine and return the links and titles
+        of the search results.
+
+        Parameters:
+        - query: the search query to send to the search engine.
+
+        Returns:
+        - A list of tuples, where each tuple contains the link and title for a single search result.
+        """
+        # Clean up the query string
+        query = "+".join(query.strip().split())
+
+        # Send an HTTP GET request to the DuckDuckGo search engine
+        async with aiohttp.ClientSession() as client_session:
+            async with client_session.get(
+                f"https://duckduckgo.com/html/?q={query}"
+            ) as response:
+                data = await response.text()
+
+        # Parse the response data using BeautifulSoup
+        soup = BeautifulSoup(data, "html.parser")
+
+        # Find all the search result links
+        result_links = soup.select("a.result__a")
+
+        # Extract the link and title for each result
+        results = [(link["href"], link.text) for link in result_links]
+
+        return results
+    
+    
+    
+    @duckduckgo.command(
+        name="search", description="Get search results from DuckDuckGo search"
     )
     @app_commands.checks.cooldown(1, 10.0, key=lambda i: (i.guild_id, i.user.id))
     async def ddg_search(self, interaction: discord.Interaction, query: str):
@@ -174,37 +214,45 @@ class API(commands.Cog):
 
         await interaction.response.send_message(embed=result_embed, file=discordfile)
 
-    async def __get_search_results(self, query: str) -> List[Tuple[str, str]]:
+    @duckduckgo.command(
+        name="im_feeling_lucky",
+        description="Duckduckgo implementation of Im Feeling Lucky!"
+    )
+    async def im_feeling_lucky(self, interaction, query: str) -> None:
         """
-        Send a search query to the DuckDuckGo search engine and return the links and titles
-        of the search results.
+        Send a search query to the DuckDuckGo search engine and return the link and title
+        of the first search result.
 
-        Parameters:
-        - query: the search query to send to the search engine.
+        Args:
+            query: the search query to send to the search engine.
 
-        Returns:
-        - A list of tuples, where each tuple contains the link and title for a single search result.
         """
         # Clean up the query string
         query = "+".join(query.strip().split())
 
         # Send an HTTP GET request to the DuckDuckGo search engine
         async with aiohttp.ClientSession() as client_session:
-            async with client_session.get(
-                f"https://duckduckgo.com/html/?q={query}"
-            ) as response:
+            async with client_session.get(f'https://duckduckgo.com/html/?q={query}') as response:
                 data = await response.text()
 
         # Parse the response data using BeautifulSoup
-        soup = BeautifulSoup(data, "html.parser")
+        soup = BeautifulSoup(data, 'html.parser')
 
         # Find all the search result links
         result_links = soup.select("a.result__a")
 
-        # Extract the link and title for each result
-        results = [(link["href"], link.text) for link in result_links]
+        # Extract the link and title for the first result
+        result = result_links[0]
+        link = result['href']
+        title = result.text
 
-        return results
+        result_embed = discord.Embed(
+            color=self.bot.config.COLOUR,
+            title="I'm feeling lucky search!",
+            description=f"\n[Click here](https:{link})"
+        )
+
+        await interaction.response.send_message(embed=result_embed)
 
     # chatGPT Related #
     async def __generate_text(self, prompt: str) -> str:

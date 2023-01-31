@@ -271,7 +271,7 @@ class Mod(commands.Cog):
 
         try:
 
-            data = Utils.read_from_json("res/reaction_roles.json")
+            data = Utils.read_from_json("res/json/reaction_roles.json")
 
             # If the guild doesnt exist in json
             # add it
@@ -303,7 +303,7 @@ class Mod(commands.Cog):
                         emoji.id if emoji is not None else reaction
                     ] = role.id
 
-            with open("res/reaction_roles.json", "w") as reaction_file:
+            with open("res/json/reaction_roles.json", "w") as reaction_file:
                 json.dump(obj=data, fp=reaction_file, indent=4, ensure_ascii=False)
             reaction_file.close()
 
