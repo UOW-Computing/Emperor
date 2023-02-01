@@ -1,35 +1,62 @@
-import os
-import typing
+"""
+Emperor, discord bot for school of computing
+Copyright (C) 2022-2023  School of Computing Dev Team
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import discord
+import typing
 
-
-from dotenv import load_dotenv
-from src.config import Settings
-from src.ServerUtils import Utils
-from src.Emperor import Emperor
 from discord.ext import commands
+from dotenv import load_dotenv
+from src.ServerUtils import Utils
+from src.config import Settings
+from src.Emperor import Emperor
 
 load_dotenv()
 
 config = Settings()
 
-Utils.outputBranding() # Prints Emperor Logo Branding
+Utils.print_branding()  # Prints Emperor Logo Branding
 
 # Sending the intents
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 intents.presences = True
+intents.reactions = True
 
-emperor = Emperor(intents, config)
+Emperor = Emperor(intents, config)
 
 # Command used to sync command changes
-@emperor.command()
+@Emperor.command()
 @commands.guild_only()
 @commands.is_owner()
 async def sync(
-  ctx: commands.Context, guilds: commands.Greedy[discord.Object],
-  spec: typing.Optional[typing.Literal["~", "*", "^"]] = None) -> None:
+    ctx: commands.Context,
+    guilds: commands.Greedy[discord.Object],
+    spec: typing.Optional[typing.Literal["~", "*", "^"]] = None,
+) -> None:
+    """
+    Syncs all the commands to the guild/globaly
+
+    Args:
+        ctx (commands.Context): The context of the command
+        guilds (commands.Greedy[discord.Object]): The Guild where to sync
+        spec (typing.Optional[typing.Literal[, optional): Where to sync (global/guild). Defaults to None.
+    """
     if not guilds:
         if spec == "~":
             synced = await ctx.bot.tree.sync(guild=ctx.guild)
@@ -59,4 +86,5 @@ async def sync(
 
     await ctx.send(f"Synced the tree to {ret}/{len(guilds)}.")
 
-emperor.run(config.TOKEN)
+
+Emperor.run(config.TOKEN)

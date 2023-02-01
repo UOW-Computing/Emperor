@@ -45,7 +45,6 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -62,45 +61,11 @@
 ## Getting Started 
 You can have a look at the Tutorials [here](https://github.com/UOW-Computing/Emperor/discussions/categories/tutorials)!
 
-If you get stuck at any part, message us for help.
+If you get stuck at any part, you can message us for help.
   
 <!-- USAGE EXAMPLES -->
 ## Usage
 This is a work in progress.  
-
-### Moderation Commands
-
-- `ticket create`: Creates a channel exclusive to the ticket creater and staff members.
-- `ticket close`: Closes a ticket channel.
-
-### General Commands
-
-- `hello`: Says hello back to you.
-- `info server`: Gives info of the server in which it was executed in.
-- `info member`: Gives information about the member mentioned.
-
-### API Commands
-
-- `reddit`: Responds with a post in the subreddit given.
-- `ddg`: Searchs DuckDuckGo.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-<!-- ROADMAP -->
-## Roadmap
-- [x]  Add Lj logging into Ticket command
-- [ ] Rewrite clear as purge command for discord.py
-- [ ] Handle attachmens on on_message event
-- [ ] Turn createrole into sub commands of their own respective command, create role for createrole
-- [ ] Introduce CHANGELOG.md
-- [ ] Better error handling than just Lj
-- [ ] Add database into Lj for logging and server backups
-
-See the [open issues](https://github.com/UOW-Computing/Emperor/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -145,11 +110,8 @@ Project Contributor - [Nakano](https://github.com/NakanoYusui)
 <!-- Notes -->
 ## Notes for editors
 
-> Need to add instructions on how to fork/git init the project enviroment.  
 > Need to add explanations on how to get log_channel_id, guild_id, token ?  
-> ReadME has to be updated, TODO's, etc...  
-> If you want to contribute by editing the README, contact Breno.
-
+  
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->

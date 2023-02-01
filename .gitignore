@@ -8,9 +8,11 @@ package.json
 src/__pycache__/*
 .env
 env
-
 test*
 venv
 activate.bat
 response*
 .vscode
+.idea 
+flask
+activate.sh

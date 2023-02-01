@@ -1,129 +1,192 @@
+"""
+Emperor, discord bot for school of computing
+Copyright (C) 2022-2023  School of Computing Dev Team
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import os
-from pathlib import Path
+from getpass import getpass
 from src.ServerUtils import Utils
-emperor_version = "v0.1.43"
+
+EMPEROR_VERSION = "v0.1.5"
 
 
 def check_input(var_input: str) -> str:
-	"""
-	Checks whether the user input is correct
+    """
+    Checks whether the user input is correct
 
-	Params:
-		var_input: the user input
+    Params:
+        var_input: the user input
 
-	Returns:
-		Correct user input
-	"""
-	if var_input.lower() in ["y", "yes", "ye"]:
-		return "yes"
+    Returns:
+        Correct user input
+    """
+    if var_input.lower() in ["y", "yes", "ye"]:
+        return "yes"
 
-	if var_input.lower() in ["n", "no"]:
-		return "no"
+    if var_input.lower() in ["n", "no"]:
+        return "no"
 
-	return check_input(
-var_input=input(
-"""Incorrect input
+    return check_input(
+        var_input=input(
+            """Incorrect input
 Would you like to create an env file?: [yes/no]
-"""))
+"""
+        )
+    )
+
+
+def check_loop(field: str, inp: str) -> str:
+    """Loops untill the condition the input is not empty
+
+    Args:
+        field (str): variable that cannot be left empty
+        inp (str): The input given by the user
+
+    Returns:
+        str: The non-empty value
+    """
+    # Check if the input given is empty
+    if Utils.is_empty(inp):
+        # Its empty, ask again
+        print(f"{field} cannot be left empty!")
+        return check_loop(field, getpass("Please enter a value: "))
+
+    return inp
+
 
 def write_to_file_dict(content: dict) -> str:
-	"""
-	Makes a string that holds the correct way to store the dict in .env
+    """
+    Makes a string that holds the correct way to store the dict in .env
 
-	Args:
-		content (dict): The content to convert into str
+    Args:
+        content (dict): The content to convert into str
 
-	Returns:
-		str: The converted string
-	"""
-	return ", ".join( f'"{key}":"{value}"' for key, value in content.items())
+    Returns:
+        str: The converted string
+    """
+    return ", ".join(f'"{key}":"{value}"' for key, value in content.items())
+
 
 # Prints Logo
-Utils.outputBranding()
+Utils.print_branding()
+print(
+    """As this is your first time setting up this repo, please either
+make a .env file manually or follow the wizard below to create one."""
+)
 
 create_ENV_file = input("Create a new .env file?: [yes/no] ")
 
 if check_input(create_ENV_file) == "yes":
-	# Enter guild name and the log channel
+    # Enter guild name and the log channel
 
-	bot_token = input("Enter BOT token: ")
+    bot_token = check_loop("Bot Token", getpass("Enter BOT token: "))
 
-	guild_ids = []
-	log_channel_ids = {}
-	staff_ids = {}
+    openai_key = check_loop("OpenAI key", getpass("Enter you openai api key: "))
+    
+    print("This field can be left empty, however any API commands that use this token will not work.")
+    
+    github_key = input("Enter your GitHub token: ")
 
-	while True:
-		try:
-			guild_id = input("Enter GUILD ID (-1 to stop): ")
-		except:
-			print("Please only enter valid integer values")
-			guild_id = input("Enter GUILD ID (-1 to stop): ")
+    guild_ids = []
+    log_channel_ids = {}
+    staff_ids = {}
 
-		match guild_id:
-			case "-1":
-				# If they want to stop break out of the
-				# while loop
-				break
-			case _:
-				if Utils.validateIsDigit(guild_id):
+    print(
+        "INFO: You must have at least 1 GUILD ID and STAFF ROLE for the bot to work, LOG CHANNEL ID can be set to 0"
+    )
 
-					log_channel_id = input("Enter LOG CHANNEL ID (0 for none): ")
+    while True:
+        try:
+            guild_id = input("Enter GUILD ID (-1 to stop): ")
+        except:
+            print("Please only enter valid integer values")
+            guild_id = input("Enter GUILD ID (-1 to stop): ")
 
-					try:
-						log_channel_ids[guild_id] = str(log_channel_id)
-					except:
-						print("You already have a log channel setup in this guild, cannot have two log channels.")
+        match guild_id:
+            case "-1":
+                # If they want to stop break out of the
+                # while loop
+                break
+            case _:
+                if Utils.validate_is_digit(guild_id):
 
-					staff_id = input("Please enter your staff role id (Cannot be left blank): ")
+                    log_channel_id = input("Enter LOG CHANNEL ID (0 for none): ")
 
-					if Utils.validateIsDigit(staff_id):
-						try:
-							staff_ids[guild_id] = str(staff_id)
-						except:
-							staff_ids[guild_id] = [staff_ids[guild_id], str(staff_id)]
-					guild_ids.append(guild_id)
+                    try:
+                        log_channel_ids[guild_id] = str(log_channel_id)
+                    except Exception:
+                        print(
+                            "You already have a log channel setup in this guild, cannot have two log channels."
+                        )
 
-				continue
+                    staff_id = input(
+                        "Please enter your staff role id (Cannot be left blank): "
+                    )
 
+                    if Utils.validate_is_digit(staff_id):
+                        try:
+                            staff_ids[guild_id] = str(staff_id)
+                        except Exception:
+                            staff_ids[guild_id] = [staff_ids[guild_id], str(staff_id)]
+                    guild_ids.append(guild_id)
 
-	print("Leave prefix blank for default value of (e!)")
-	prefix = input("Enter Desired prefix: ")
-	if prefix == "":
-		prefix = "e!"
+                continue
 
+    print("Leave prefix blank for default value of (e!)")
+    PREFIX = input("Enter Desired prefix: ")
+    if PREFIX == "":
+        PREFIX = "e!"
 
-	content_env = f"""# Dotenv file
+    content_env = f"""# Dotenv file
 # author: nukestye & UOW TEAM
-# version: {emperor_version}
+# version: {EMPEROR_VERSION}
 
 # -------------------------------------------------
 # Do not change anything here
-BOT_ENV_VERSION='{emperor_version}'
-COGS = ["maincog", "admin", "mod", "api", "help"]	# this was from nuke
-COLOUR = "4915330"									# this was from nuke
+BOT_ENV_VERSION='{EMPEROR_VERSION}'
+COGS = ["bot", "event",  "maincog", "admin", "mod", "api", "help"]
+COLOUR = "4915330"	
 # -------------------------------------------------
 #
 # Ensure that all fields are given correct values.
 # Also, the bot should have access to the guild and log channel
 # otherwise an error will occur
 TOKEN="{bot_token}"
-BOT_PREFIX="{prefix}"
+OPENAI_KEY="{openai_key}"
+GITHUB_KEY="{github_key}"
+BOT_PREFIX="{PREFIX}"
 GUILD_ID="[{", ".join(guild for guild in guild_ids)}]"
 LOG_CHANNEL_IDS='{{{write_to_file_dict(log_channel_ids)}}}'
 STAFF_IDS='{{{write_to_file_dict(staff_ids)}}}'
 """
-	# Creates the .env file with the contents parsed above
-	Utils.writeToFile(filename='', content=content_env, mode='w', extension='.env')
+    # Creates the .env file with the contents parsed above
+    Utils.writeToFile(filename="", content=content_env, mode="w", extension=".env")
 
-	# Creates a logs folder, where Lj stores all the logs
-	print("Creating logs folder for Lj....")
-	try:
-		# Create the folder
-		os.makedirs('logs')
-	except FileExistsError:
-		# The folder already exists
-		print("Testing purposes : File Already Exists")
-		pass
+# Creates a logs folder, where Lj stores all the logs
+print("Creating logs folder for Lj....")
+try:
+    # Create the folder
+    os.makedirs("logs")
+except FileExistsError:
+    # The folder already exists
+    print("Testing purposes : File Already Exists")
 
+# Installing the dependencies
+Utils.install_dependencies()
 
-	print("\u001B[32m All configurations completed!\u001B[0m\nYou can now run main.py to launch the bot\n")
+print(
+    '\n\n\u001B[32mAll configurations completed!\u001B[0m\nYou can now do "python main.py" to launch the bot\n'
+)
