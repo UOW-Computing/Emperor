@@ -105,7 +105,7 @@ class Event(commands.Cog):
 
                     self.bot.lj.log(
                         "emperor.cogs.event.process_reaction",
-                        f"Role: {role.name} has been removed from {user.name}",
+                        f"Role: {role.name} has been given to {user.name}",
                     )
 
                     await user.add_roles(role)

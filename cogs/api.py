@@ -186,12 +186,9 @@ class API(commands.Cog):
             query: The parameter for DuckDuckGo search.
         """
 
-        discordfile = None
-        guild = interaction.guild
-        if guild.icon is None:
-            discordfile = discord.File(
-                "res/DuckDuckGo Logo- Dax Solo.png", filename="ddg_logo.png"
-            )
+        discordfile = discord.File(
+            "res/DuckDuckGo Logo- Dax Solo.png", filename="ddg_logo.png"
+        )
 
         results = await self.__get_search_results(query)
 
