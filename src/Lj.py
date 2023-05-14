@@ -59,7 +59,7 @@ class Lj:
         # Simple try and except where it saves to file
         try:
             # save to file
-            Utils.writeToFile(
+            Utils.write_to_file(
                 self.log_file, clean_info_format, extension=".log", directory="logs/"
             )
             return True
@@ -95,7 +95,7 @@ class Lj:
         # Simple try and except where it saves to file
         try:
             # save to file
-            Utils.writeToFile(
+            Utils.write_to_file(
                 self.log_file, clean_warn_format, extension=".log", directory="logs/"
             )
             return True
@@ -137,7 +137,7 @@ class Lj:
         # Simple try and except where it saves to file
         try:
             # save to file
-            Utils.writeToFile(
+            Utils.write_to_file(
                 self.log_file, clean_error_format, extension=".log", directory="logs/"
             )
             return True

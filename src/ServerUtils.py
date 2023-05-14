@@ -30,12 +30,9 @@ class Utils:
     """
 
     @staticmethod
-    def writeToFile(
+    def write_to_file(
         filename, content, mode="a", extension=".txt", directory=""
     ) -> None:
-        # Writes the data into a text file
-        # NOTE: when giving the filename, do not use .txt since the function already does that for you.
-
         """Writes the data to a given file name.
         Only needs filename and content to work.
         Optinal args provided, see Docs.
@@ -57,7 +54,36 @@ class Utils:
             f"{directory}{filename}{extension}", mode, encoding="utf-8"
         ) as file:  # NOTE: reference ".txt".
             file.write(content + "\n")
-            file.close()
+        file.close()
+
+
+    @staticmethod
+    def write_to_json(
+        filename: str,
+        content: dict,
+        mode: str = "a",
+        directory=""
+    ) -> None:
+        """
+        Writes to a json file.
+        Only needs filename and content to work
+
+        Args:
+            filename (str): name of the json file to be written to
+            content (dict): data to be wirtten
+            mode (str, optional): modes for writing. Defaults to "a", appending.
+            directory (str, optional): where to save the file. Defaults to "", current directory.
+        """
+        
+        with open(
+            f"{directory}{filename}.json",
+            mode,
+            encoding="utf-8"
+        ) as json_file:
+            json.dump(content, json_file, indent=4)
+        
+        json_file.close()
+
 
     @staticmethod
     def read_from_json(path_to_file: str) -> dict:
@@ -88,7 +114,7 @@ class Utils:
         |   __|_____ ___ ___ ___ ___ ___
         |   __|     | . | -_|  _| . |  _|
         |_____|_|_|_|  _|___|_| |___|_|
-             v0.1.5 |_| GPL-3.0-only 
+             v1.0.0 |_| GPL-3.0-only 
 
         © 2022-2023 School of Computing Dev Team
 

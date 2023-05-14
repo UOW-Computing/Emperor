@@ -23,8 +23,10 @@ from discord.utils import format_dt
 from discord.ext import commands
 from discord import app_commands
 
+from src.errors.checks import DisabledCommand
+from src.ServerUtils import Utils
 
-class Main(commands.Cog):
+class Core(commands.Cog):
     """
     Main Cog
 
@@ -43,10 +45,10 @@ class Main(commands.Cog):
     )
 
     async def cog_load(self):
-        self.bot.lj.log("emperor.cogs.maincog", "MainCog cog was loaded")
+        self.bot.lj.log("emperor.cogs.core", "Core cog was loaded")
 
     async def cog_unload(self):
-        self.bot.lj.warn("emperor.cogs.maincog", "MainCog cog was unloaded")
+        self.bot.lj.warn("emperor.cogs.core", "Core cog was unloaded")
 
     async def cog_command_error(self, ctx, error):
         print(error)
@@ -56,7 +58,37 @@ class Main(commands.Cog):
             f"emperor.cogs.maincog.{interaction.command.name}",
             f"<@{interaction.user.id}>, {error}",
         )
+        
+        if isinstance(error, DisabledCommand):
+            await interaction.response.send_message(
+                f"{error.args}\nPlease ask staff to enable, if need be.",
+                ephemeral=True
+            )
+            return
+
+        
         await interaction.response.send_message(f"<@{interaction.user.id}>, {error}")
+
+    # Implementing on and off for commands
+    def is_on():
+        def _extras_json() -> dict:
+            return Utils.read_from_json("res/json/extras.json")
+        
+        def predicate(interaction: discord.Interaction, bot: discord.ext.commands.Bot) -> bool:
+            
+            if interaction.command.extras['command_signature'] in _extras_json()['disabled_commands']:
+                raise DisabledCommand("Command has been disabled, therefore cannot be executed.")
+            else:
+                return True
+        
+        async def decorator(interaction: discord.Interaction):
+            
+            bot = interaction.client
+            
+            return predicate(interaction, bot)
+        
+        return app_commands.check(decorator)
+
 
     async def __count_online_members(self, guild: discord.Guild) -> int:
         """Counts the number of online members in the guild
@@ -154,7 +186,11 @@ class Main(commands.Cog):
     @info_group.command(
         name="server",
         description="Collects and sends an embed with information about the server",
+        extras=dict({
+            "command_signature": 'info_server'
+        })
     )
+    @is_on()
     async def info_server(self, interaction: discord.Interaction) -> None:
         """Collects and sends an embed with information about the server
 
@@ -225,7 +261,14 @@ class Main(commands.Cog):
             await interaction.response.send_message(file=icon_file, embed=server_embed)
         # await interaction.response.send_message('This is a `/log server`')
 
-    @info_group.command(name="member", description="Gets information about the user")
+    @info_group.command(
+        name="member",
+        description="Gets information about the user",
+        extras=dict({
+            "command_signature": 'info_member'
+        })
+    )
+    @is_on()
     async def info_member(
         self, interaction: discord.Interaction, member: discord.Member
     ) -> None:
@@ -263,7 +306,14 @@ class Main(commands.Cog):
         await interaction.response.send_message(embed=member_embed)
 
     # All Tutorials commands #
-    @tutorials_group.command(name="git", description="Tutorials for Git")
+    @tutorials_group.command(
+        name="git",
+        description="Tutorials for Git",
+        extras=dict({
+            "command_signature": 'tutorials_git'
+        })
+    )
+    @is_on()
     async def git(self, interaction: discord.Interaction) -> None:
         """Sends an embed containg tutorials for Git
 
@@ -303,8 +353,12 @@ List of Youtube tutorials:
 
     @commands.command(
         name="uptime",
-        description="Shows long the bot has been online for"
+        description="Shows long the bot has been online for",
+        extras=dict({
+            "command_signature": 'uptime'
+        })
     )
+    @is_on()
     async def uptime(self, ctx):
         """
         Shows how long the bot has been online for
@@ -329,4 +383,4 @@ async def setup(bot):
     for guild in bot.config.GUILD_ID:
         guild_objects.append(discord.Object(id=guild))
 
-    await bot.add_cog(Main(bot), guilds=guild_objects)
+    await bot.add_cog(Core(bot), guilds=guild_objects)

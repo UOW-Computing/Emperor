@@ -20,7 +20,7 @@ import os
 from getpass import getpass
 from src.ServerUtils import Utils
 
-EMPEROR_VERSION = "v0.1.5"
+EMPEROR_VERSION = "v1.0.0"
 
 
 def check_input(var_input: str) -> str:
@@ -157,7 +157,7 @@ if check_input(create_ENV_file) == "yes":
 # -------------------------------------------------
 # Do not change anything here
 BOT_ENV_VERSION='{EMPEROR_VERSION}'
-COGS = ["bot", "event",  "maincog", "admin", "mod", "api", "help"]
+COGS = ["emp", "event",  "core", "dev", "mod", "api", "help"]
 COLOUR = "4915330"	
 # -------------------------------------------------
 #
@@ -173,7 +173,7 @@ LOG_CHANNEL_IDS='{{{write_to_file_dict(log_channel_ids)}}}'
 STAFF_IDS='{{{write_to_file_dict(staff_ids)}}}'
 """
     # Creates the .env file with the contents parsed above
-    Utils.writeToFile(filename="", content=content_env, mode="w", extension=".env")
+    Utils.write_to_file(filename="", content=content_env, mode="w", extension=".env")
 
 # Creates a logs folder, where Lj stores all the logs
 print("Creating logs folder for Lj....")
