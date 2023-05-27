@@ -24,7 +24,7 @@ from discord import app_commands
 from github import Github
 
 
-class BotCog(
+class Emp(
     commands.GroupCog,
     group_name="emperor",
     description="All commands relate to emperor, and developers working on emperor",
@@ -180,4 +180,4 @@ async def setup(bot):
     for guild in bot.config.GUILD_ID:
         guild_objects.append(discord.Object(id=guild))
 
-    await bot.add_cog(BotCog(bot), guilds=guild_objects)
+    await bot.add_cog(Emp(bot), guilds=guild_objects)

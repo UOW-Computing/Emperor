@@ -1,0 +1,15 @@
+{
+    "disabled_commands": [
+        "gpt_prompt"
+    ],
+    "command_signatures": [
+        "reddit_search",
+        "ddg_search",
+        "ddg_lucky",
+        "gpt_prompt",
+        "info_server",
+        "info_member",
+        "tutorials_git",
+        "uptime"
+    ]
+}

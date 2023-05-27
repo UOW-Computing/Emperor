@@ -19,12 +19,14 @@ import random
 import discord
 import aiohttp
 import openai
+from src.ServerUtils import Utils
 
 from bs4 import BeautifulSoup
 from datetime import datetime
 from discord import app_commands
 from discord.ext import commands
 from typing import List, Tuple
+from src.errors.checks import DisabledCommand
 
 
 class API(commands.Cog):
@@ -60,9 +62,17 @@ class API(commands.Cog):
         # Checks if the command is on cooldown,
         # if so tell the user
         if isinstance(error, app_commands.CommandOnCooldown):
-            on_cooldown: str = f"Currently on cooldown, try again in <t:{int(datetime.now().timestamp()+error.retry_after)}:R>."
+            on_cooldown: str = \
+                f"Currently on cooldown, try again in <t:{int(datetime.now().timestamp()+error.retry_after)}:R>."
             await interaction.response.send_message(
                 on_cooldown, delete_after=error.retry_after
+            )
+            return
+
+        if isinstance(error, DisabledCommand):
+            await interaction.response.send_message(
+                f"{error.args}\nPlease ask staff to enable, if need be.",
+                ephemeral=True
             )
             return
 
@@ -74,10 +84,37 @@ class API(commands.Cog):
         except Exception as exc:
             await interaction.followup.send(f"<@{interaction.user.id}>, {error}\n{exc}")
 
+
+    # Implementing on and off for commands
+    def is_on():
+        def _extras_json() -> dict:
+            return Utils.read_from_json("res/json/extras.json")
+        
+        def predicate(interaction: discord.Interaction, bot: discord.ext.commands.Bot) -> bool:
+            
+            if interaction.command.extras['command_signature'] in _extras_json()['disabled_commands']:
+                raise DisabledCommand("Command has been disabled, therefore cannot be executed.")
+            else:
+                return True
+        
+        async def decorator(interaction: discord.Interaction):
+            
+            bot = interaction.client
+            
+            return predicate(interaction, bot)
+        
+        return app_commands.check(decorator)
+
     # Reddit Related #
     @app_commands.command(
-        name="reddit", description="Looks through subreddits given by the user"
+        name="reddit",
+        description="Looks through subreddits given by the user",
+        extras=dict({
+            'command_signature': 'reddit_search'
+        })
     )
+    # Checking to see if this command can be run
+    @is_on()
     @app_commands.checks.cooldown(1, 10.0, key=lambda i: (i.guild_id, i.user.id))
     async def reddit(self, interaction: discord.Interaction, subreddit: str):
         """
@@ -128,7 +165,7 @@ class API(commands.Cog):
 
                 post_embed = discord.Embed(
                     description=f"{post_title}\nBy *{post_data['data']['author']}*",
-                    color=9240816,
+                    color=self.bot.config.COLOUR,
                 )
                 post_embed.set_footer(
                     text=f"👍 {post_data['data']['ups']} | 💬 {post_data['data']['num_comments']}"
@@ -139,7 +176,6 @@ class API(commands.Cog):
                 await interaction.response.send_message(embed=post_embed)
 
     # DuckDuckGo Related #
-    
     async def __get_search_results(self, query: str) -> List[Tuple[str, str]]:
         """
         Send a search query to the DuckDuckGo search engine and return the links and titles
@@ -173,10 +209,14 @@ class API(commands.Cog):
         return results
     
     
-    
     @duckduckgo.command(
-        name="search", description="Get search results from DuckDuckGo search"
+        name="search",
+        description="Get search results from DuckDuckGo search",
+        extras=dict({
+            'command_signature': 'ddg_search'
+        })
     )
+    @is_on()
     @app_commands.checks.cooldown(1, 10.0, key=lambda i: (i.guild_id, i.user.id))
     async def ddg_search(self, interaction: discord.Interaction, query: str):
         """
@@ -185,6 +225,8 @@ class API(commands.Cog):
         Params:
             query: The parameter for DuckDuckGo search.
         """
+
+        await interaction.response.defer()
 
         discordfile = None
         guild = interaction.guild
@@ -212,11 +254,14 @@ class API(commands.Cog):
         result_embed.set_author(name="DuckDuckGo")
         result_embed.set_thumbnail(url="attachment://ddg_logo.png")
 
-        await interaction.response.send_message(embed=result_embed, file=discordfile)
+        await interaction.followup.send(embed=result_embed, file=discordfile)
 
     @duckduckgo.command(
         name="im_feeling_lucky",
-        description="Duckduckgo implementation of Im Feeling Lucky!"
+        description="Duckduckgo implementation of Im Feeling Lucky!",
+        extras=dict({
+            'command_signature': 'ddg_lucky'
+        })
     )
     async def im_feeling_lucky(self, interaction, query: str) -> None:
         """
@@ -282,8 +327,13 @@ class API(commands.Cog):
         return "I'm sorry, I cannot generate a response for this prompt."
 
     @app_commands.command(
-        name="chatgpt", description="Generates text using a GPT model"
+        name="chatgpt",
+        description="Generates text using a GPT model",
+        extras=dict({
+            'command_signature': "gpt_prompt"
+        })
     )
+    @is_on()
     @app_commands.checks.cooldown(1, 30.0, key=lambda i: (i.guild_id, i.user.id))
     async def gpt(self, interactions: discord.Interaction, prompt: str):
         """Uses ChatGPT to generate a response to a user given prompt
@@ -291,6 +341,10 @@ class API(commands.Cog):
         Args:
             prompt (str): The user given input, to which the response is tailored towards
         """
+        
+        await interactions.response.send_message("Sorry, currently ChatGPT is disabled.")
+        
+        return None
 
         await interactions.response.defer()
 

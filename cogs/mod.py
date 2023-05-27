@@ -51,6 +51,14 @@ class Mod(commands.Cog):
     create_group = app_commands.Group(
         name="create", description="Set of create commands."
     )
+    
+    async def __delete_messages_after(self, message: discord.Message, ctx: commands.Context):
+        # wait 2 seconds then delete
+        # both messages
+        await asyncio.sleep(2)
+        
+        await message.delete()
+        await ctx.message.delete()
 
     async def cog_load(self):
         self.bot.lj.log("emperor.cogs.mod", "Moderation cog was loaded")
@@ -530,8 +538,96 @@ class Mod(commands.Cog):
                 f'Successfully created [{"" if title is None else f"{title}"}]({embed_message.jump_url}) embed.',
                 ephemeral=True,
             )
+    
+    
+    async def __prechecks(self, ctx: commands.Context):
+        command: str = ctx.message.content
+        extras_data: dict = Utils.read_from_json("res/json/extras.json")
+        
+        # Currently, only supporting one command enabling at a
+        # time
+        if command.split(" ").__len__() > 2:
+            message = await ctx.channel.send("More than one signature was used, please only specific one.")
+            await self.__delete_messages_after(message, ctx)
+            return None, None
+        
+        elif command.split(" ").__len__() == 1:
+            message = await ctx.channel.send("This command requires one signature at least.")
+            await self.__delete_messages_after(message, ctx)
+            return None, None
+        
+        else:
+            # Remove the prefix and command, only take in the signature
+            command = str(command.split(" ")[1])
+        
+        
+        # Check to see if the command is real
+        if command not in extras_data['command_signatures']:
+            message = await ctx.channel.send("The command signature does not exist.")
+            await self.__delete_messages_after(message, ctx)
+            return None, None
+        
+        return command, extras_data
+    
+    @commands.command(
+        name="disable",
+        description="Disable commands for execution by users"
+        
+    )
+    async def disable(self, ctx: commands.Context):
+        """
+        Disables the command from being executed whenever the user types it
+        """
 
+        command, extras_data = await self.__prechecks(ctx)
+        
+        # Command failed in prechecks, therefore exit
+        if command is None and extras_data is None:
+            return 
+        
+        # Checking to see if the command is already disabled
+        if command in extras_data['disabled_commands']:
+            message = await ctx.channel.send("The command has already been disabled.")
+            await self.__delete_messages_after(message, ctx)
+            return
 
+        extras_data['disabled_commands'] += [command]
+        
+        Utils.write_to_json("extras", extras_data, "w", "res/json/")
+        
+        message = await ctx.channel.send("The command has now been disabled.")
+        await self.__delete_messages_after(message, ctx)
+
+    @commands.command(
+        name="enable",
+        description="Enable a command to allow execution"
+    )
+    async def enable(self, ctx: commands.Context):
+        """
+        Enable a command, this allow the forementioed command to be executed by a user.
+        """
+        
+        command, extras_data = await self.__prechecks(ctx)
+        
+        # Command failed in prechecks, therefore exit
+        if command is None and extras_data is None:
+            return 
+
+        # Has the command been disabled
+        if command not in extras_data['disabled_commands']:
+            message = await ctx.channel.send(
+                "The command has not been disabled, therefore cannot enable a enabled command."
+            )
+            await self.__delete_messages_after(message, ctx)
+            return
+        
+        extras_data['disabled_commands'].remove(command)
+        
+        Utils.write_to_json("extras", extras_data, "w", "res/json/")
+        
+        message = await ctx.channel.send("The command has now been enabled.")
+        await self.__delete_messages_after(message, ctx)
+    
 async def setup(bot):
     """
     Setup function for the cog

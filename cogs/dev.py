@@ -18,11 +18,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import asyncio
 import discord
+import typing
 
 from discord.ext import commands
 
 
-class Admin(commands.Cog):
+class Dev(commands.Cog):
     """
     Admin cog
 
@@ -34,14 +35,15 @@ class Admin(commands.Cog):
         self.bot = bot
 
     async def cog_load(self):
-        self.bot.lj.log("emperor.cogs.admin", "Admin cog was loaded")
+        self.bot.lj.log("emperor.cogs.dev", "Dev cog was loaded")
 
     async def cog_unload(self):
-        self.bot.lj.warn("emperor.cogs.admin", "Admin cog was unloaded")
+        self.bot.lj.warn("emperor.cogs.dev", "Dev cog was unloaded")
 
     # pylint: disable=invalid-overridden-method
     async def cog_check(self, ctx):
-        return await self.bot.is_owner(ctx.author)
+        return await self.bot.is_owner(ctx.author) or \
+            self.bot.config.STAFF_IDS in ctx.author.roles
 
     # pylint: enable=invalid-overridden-method
 
@@ -54,6 +56,15 @@ class Admin(commands.Cog):
             f"<@{interaction.user.id}>, {error}",
         )
         await interaction.response.send_message(f"<@{interaction.user.id}>, {error}")
+        
+        
+    async def __delete_messages_after(self, message: discord.Message, ctx: commands.Context):
+        # wait 2 seconds then delete
+        # both messages
+        await asyncio.sleep(2)
+
+        await message.delete()
+        await ctx.message.delete()
 
     @commands.command(name="reload")
     async def reload(self, ctx: commands.Context, cog: str) -> None:
@@ -72,15 +83,11 @@ class Admin(commands.Cog):
             # The cog was reloaded
             message = await ctx.send(f"The `{cog}` was successfully reloaded")
 
-            # wait 2 seconds then delete
-            # both messages
-            await asyncio.sleep(2)
-
-            await message.delete()
-            await ctx.message.delete()
+            await self.__delete_messages_after(message, ctx)
 
         except Exception as exc:
-            await ctx.send(exc)
+            message = await ctx.send(exc)
+            await self.__delete_messages_after(message, ctx)
 
     @commands.command(name="load")
     async def load(self, ctx: commands.Context, cog: str) -> None:
@@ -95,16 +102,12 @@ class Admin(commands.Cog):
 
             # The cog was loaded
             message = await ctx.send(f"The `{cog}` was successfully loaded!")
-
-            # wait 2 seconds then delete
-            # both messages
-            await asyncio.sleep(2)
-
-            await message.delete()
-            await ctx.message.delete()
+            
+            await self.__delete_messages_after(message, ctx)
 
         except Exception as exc:
-            await ctx.send(exc)
+            message = await ctx.send(exc)
+            await self.__delete_messages_after(message, ctx)
 
     @commands.command(name="unload")
     async def unload(self, ctx: commands.Context, cog: str) -> None:
@@ -120,15 +123,63 @@ class Admin(commands.Cog):
             # The cog was reloaded
             message = await ctx.send(f"The `{cog}` was successfully unloaded")
 
-            # wait 2 seconds then delete
-            # both messages
-            await asyncio.sleep(2)
-
-            await message.delete()
-            await ctx.message.delete()
+            await self.__delete_messages_after(message, ctx)
 
         except Exception as exc:
-            await ctx.send(exc)
+            message = await ctx.send(exc)
+            await self.__delete_messages_after(message, ctx)
+            
+            
+    
+    # Command used to sync command changes
+    @commands.command(name="sync")
+    @commands.guild_only()
+    @commands.is_owner()
+    async def sync(self,
+        ctx: commands.Context,
+        guilds: commands.Greedy[discord.Object],
+        spec: typing.Optional[typing.Literal["~", "*", "^"]] = None,
+    ) -> None:
+        """
+        Syncs all the commands to the guild/globaly
+
+        Args:
+            ctx (commands.Context): The context of the command
+            guilds (commands.Greedy[discord.Object]): The Guild where to sync
+            spec (typing.Optional[typing.Literal[, optional): Where to sync (global/guild). Defaults to None.
+        """
+        if not guilds:
+            if spec == "~":
+                synced = await ctx.bot.tree.sync(guild=ctx.guild)
+            elif spec == "*":
+                ctx.bot.tree.copy_global_to(guild=ctx.guild)
+                synced = await ctx.bot.tree.sync(guild=ctx.guild)
+            elif spec == "^":
+                ctx.bot.tree.clear_commands(guild=ctx.guild)
+                await ctx.bot.tree.sync(guild=ctx.guild)
+                synced = []
+            else:
+                synced = await ctx.bot.tree.sync()
+
+            message = await ctx.send(
+                f"Synced {len(synced)} commands {'globally' if spec is None else 'to the current guild.'}"
+            )
+            
+            await self.__delete_messages_after(message, ctx)
+
+            return
+
+        ret = 0
+        for guild in guilds:
+            try:
+                await ctx.bot.tree.sync(guild=guild)
+            except discord.HTTPException:
+                pass
+            else:
+                ret += 1
+
+        message = await ctx.send(f"Synced the tree to {ret}/{len(guilds)}.")
+        await self.__delete_messages_after(message, ctx)
 
 
 async def setup(bot):
@@ -144,4 +195,4 @@ async def setup(bot):
     for guild in bot.config.GUILD_ID:
         guild_objects.append(discord.Object(id=guild))
 
-    await bot.add_cog(Admin(bot), guilds=guild_objects)
+    await bot.add_cog(Dev(bot), guilds=guild_objects)
