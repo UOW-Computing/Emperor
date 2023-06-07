@@ -38,6 +38,21 @@ class AbstractDAO:
                 bot_level
             )
 
+    async def _create(self, *columns):
+        """
+            Abstracted version and backbone of create_guild, create_member.\n
+            All error handling should be done in create_guild and create_member
+        """
+
+        async with self.connection_pool.acquire() as connection:
+            await connection.execute(
+                f"""
+                    INSERT INTO {self.table_name} {self.columns_names}
+                    VALUES ({', '.join(['${}'.format(i) for i in range(1, len(columns) + 1)])})
+                    """,
+                *columns
+            )
+
     async def delete_member(self, discord_id: int):
         """DELETES the record from the table
         :param discord_id: int"""
@@ -55,7 +70,8 @@ class AbstractDAO:
         If you want to update just one field, use update_field from the subclass instead.
 
         *Example:* \n
-        update_record(primary_key, user_id, 1000, 1000, 1)"""
+        update_record(primary_key, user_id, 1000, 1000, 1)
+        """
         async with self.connection_pool.acquire() as connection:
             await connection.execute(
                 f"""
@@ -101,4 +117,3 @@ class AbstractDAO:
                 """
             )
             return result
-
