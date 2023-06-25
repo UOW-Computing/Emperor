@@ -1,5 +1,7 @@
-from Members import Member
-from AbstractDAO import AbstractDAO
+import discord
+
+from db.Member import Member
+from db.AbstractDAO import AbstractDAO
 
 
 class MembersDAO(AbstractDAO):
@@ -18,16 +20,38 @@ class MembersDAO(AbstractDAO):
             - get_field         - Returns a specific field from the parsed column
      """
 
-    def __init__(self, connection_pool, table_name):
+    def __init__(self, connection_pool):
         """
         :param connection_pool: Inherited connection pool from AbstractDAO
-        :param table_name:      table_name corresponds the table in the database
         """
-        super().__init__(table_name,
-                         "(discord_id, university_id, xp_level, elo_rating, bot_level)",
-                         connection_pool
-                         )
-        self.connection_pool = connection_pool
+        super(MembersDAO, self).__init__(connection_pool)
+
+        self.__table = ("members", "(discord_id, university_id, xp_level, elo_rating, bot_level)")
+        self.__connection_pool = connection_pool
+
+    async def create_member_record(self, member: discord.Member):
+        if not isinstance(member, discord.Member):
+            print("'member' must be type discord.Member")
+
+        await super()._create_record(self.__table[0], {
+            "discord_id": member.id,
+            "university_id": "null",
+            "xp_level": 0,
+            "elo_rating": 0,
+            "bot_level": 0,
+            "about_me": "none"
+        })
+
+    async def check_if_member_record_exists(self, discord_id: int):
+        if not isinstance(discord_id, int):
+            print("'guild_id' must be int, not any other type.")
+
+        query_result = await super()._read_record(self.__table[0], discord_id)
+
+        if len(query_result) != 0:
+            return True
+
+        return False
 
     async def get_record(self, discord_id: int) -> Member:
         """
@@ -42,10 +66,10 @@ class MembersDAO(AbstractDAO):
         Returns:
             - An instance of the Member dataclass
         """
-        async with self.connection_pool.acquire() as connection:
+        async with self.__connection_pool.acquire() as connection:
             record = await connection.fetchrow(
                 f"""
-                    SELECT * FROM {self.table_name} WHERE discord_id = $1
+                    SELECT * FROM {self.__table[0]} WHERE discord_id = $1
                 """,
                 discord_id)
 
@@ -75,10 +99,10 @@ class MembersDAO(AbstractDAO):
             print("Updating 'discord_id' cannot be done for the database, it is not allowed.")
             return
 
-        async with self.connection_pool.acquire() as connection:
+        async with self.__connection_pool.acquire() as connection:
             await connection.execute(
                 f"""
-                UPDATE {self.table_name}
+                UPDATE {self.__table[0]}
                 SET {attribute} = $2
                 WHERE discord_id = $1
                 """,
@@ -88,15 +112,43 @@ class MembersDAO(AbstractDAO):
 
             connection.close()
 
+    async def update_member_university_id(self, member_id: int, new_university_id: str):
+
+        if not isinstance(new_university_id, str):
+            print("Please give in an string value for 'new_university_id'!")
+            return None
+
+        if len(new_university_id) > 8 or len(new_university_id) < 8:
+            print("'university_id' takes in value of length 8, value given was not '8' in length.")
+            return None
+
+        if new_university_id[0] != 'w':
+            print("University ID begins with 'w', it was not found in the value given.")
+            return None
+
+        await super()._update_record(self.__table[0], member_id, {"university_id": new_university_id})
+
+    async def update_member_xp_level(self, member_id: int, new_xp_level: int):
+        await super()._update_record(self.__table[0], member_id, {"xp_level": new_xp_level})
+
+    async def update_member_elo_level(self, member_id: int, new_elo_rating: int):
+        await super()._update_record(self.__table[0], member_id, {"elo_rating": new_elo_rating})
+
+    async def update_member_bot_level(self, member_id: int, new_bot_level: int):
+        await super()._update_record(self.__table[0], member_id, {"bot_level": new_bot_level})
+
+    async def update_member_about_me(self, member_id: int, new_about_me: str):
+        await super()._update_record(self.__table[0], member_id, {"about_me": new_about_me})
+
     async def commit(self, member: Member):
         """
         Updates the database Record with information from the Member object. \n
         Any changes made to the Member class has to be committed through this function.
         """
-        async with self.connection_pool.acquire() as connection:
+        async with self.__connection_pool.acquire() as connection:
             await connection.execute(
                 f"""
-                UPDATE {self.table_name}
+                UPDATE {self.__table[0]}
                 SET university_id = $2, xp_level = $3, elo_rating = $4, bot_level = $5, about_me = $6
                 WHERE discord_id = $1
                 """,

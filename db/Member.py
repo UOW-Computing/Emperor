@@ -17,8 +17,8 @@ class Member:
     about_me: int
 
     class Enum(StrEnum):
-        Discord_ID: str = "discord_id"
-        University_ID: str = "university_id"
+        DISCORD_ID: str = "discord_id"
+        UNIVERSITY_ID: str = "university_id"
         XP_LEVEL: str = "xp_level"
         ELO_RATING: str = "elo_rating"
         BOT_LEVEL: str = "bot_level"
