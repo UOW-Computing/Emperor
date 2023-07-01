@@ -39,6 +39,8 @@ class Settings(BaseSettings):
     LOG_CHANNEL_IDs: str | dict
     STAFF_IDS: dict
 
+    CREDENTIALS: dict
+
     class Config:
         """
         Config class that knows where the information is stored

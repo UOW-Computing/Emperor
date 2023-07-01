@@ -21,28 +21,38 @@ import discord
 
 from datetime import datetime
 from discord.ext import commands
+
+from src import Database
 from src.config import Settings
 from src.Lj import Lj
 
 
 class Emperor(commands.Bot):
 
-    # pylint: disable=invalid-name
     config: Settings = None
     lj: Lj = None
     uptime: datetime = None
-    # pylint: enable=invalid-name
+    db: Database = None
 
     def __init__(self, p_intents: discord.Intents, p_config: Settings) -> None:
 
         self.config = p_config
         self.lj = Lj()
+        self.db = Database.Database(self)
 
+        # noinspection PyTypeChecker
         super().__init__(
             description="Discord made by School of Computing Dev team.",
             command_prefix=commands.when_mentioned_or(self.config.BOT_PREFIX),
             intents=p_intents,
         )
+
+    async def on_connect(self):
+        """
+        On the connection to discord, ensure all prerequisite actions
+        are completed.
+        """
+        await self.db.create_database(self.config.CREDENTIALS)
 
     async def setup_hook(self):
         """
@@ -57,6 +67,9 @@ class Emperor(commands.Bot):
                 )
 
     async def on_ready(self):
+        """
+        When bot is ready to take in commands, this gets executed.
+        """
         await self.change_presence(
             activity=discord.Activity(type=discord.ActivityType.listening, name="e!")
         )

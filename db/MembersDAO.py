@@ -110,8 +110,6 @@ class MembersDAO(AbstractDAO):
                 value
             )
 
-            connection.close()
-
     async def update_member_university_id(self, member_id: int, new_university_id: str):
 
         if not isinstance(new_university_id, str):

@@ -1,3 +1,10 @@
+"""
+
+Version v1
+author: Breno & nukestye
+
+"""
+
 from dataclasses import dataclass
 from enum import StrEnum
 
