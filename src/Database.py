@@ -47,5 +47,42 @@ class Database:
             password=credentials['password']
         )
 
+        # Create the tables
+        async with self.__connection_pool.acquire() as connection:
+            await connection.execute(
+                """
+                create table if not exists members_table (
+                    discord_id bigint not null primary key,
+                    extras json,
+                    guilds bigint[]
+                );
+
+
+                create table if not exists xp_table(
+                    discord_id bigint primary key not null,
+                    xp_lvl int not null default 0,
+                    xp_points int not null default 0,
+
+                    CONSTRAINT discord_id
+                        foreign key (discord_id)
+                        references members_table(discord_id)
+                        on delete cascade
+                );
+
+
+                create table if not exists repu_table(
+                    discord_id bigint primary key not null,
+                    reputation int not null default 0,
+                    last_repu_from int default -1,
+                    last_repu_to int default -1,
+
+                    CONSTRAINT discord_id
+                        foreign key (discord_id)
+                        references members_table(discord_id)
+                        on delete cascade
+                    );
+                """
+            )
+
         self.m = MembersDAO(self.__connection_pool)
         self.g = GuildsDAO(self.__connection_pool)

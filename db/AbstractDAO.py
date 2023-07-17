@@ -194,7 +194,7 @@ class AbstractDAO:
                 """
             )
 
-            return query
+            return query[0] if (len(query) == 1) else query
 
     async def _update_record(self, table_name: str, key: int, columns: dict) -> bool:
         """
@@ -210,7 +210,7 @@ class AbstractDAO:
             relies on the primary key to set value.
 
 
-            **Example**::
+            Example::
 
                 data = {
                     "column_1": 5,
