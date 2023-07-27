@@ -157,10 +157,10 @@ if check_input(create_ENV_file) == "yes":
 # -------------------------------------------------
 # Do not change anything here
 BOT_ENV_VERSION='{EMPEROR_VERSION}'
-COGS = ["emp", "event",  "core", "dev", "mod", "api", "help"]
+COGS = COGS = ["api", "core", "emp", "mod", "event", "dev", "help"]
 COLOUR = "4915330"	
 # -------------------------------------------------
-#
+
 # Ensure that all fields are given correct values.
 # Also, the bot should have access to the guild and log channel
 # otherwise an error will occur

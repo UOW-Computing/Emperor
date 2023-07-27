@@ -28,7 +28,7 @@ from discord import app_commands
 from src.ServerUtils import Utils
 
 
-class Mod(commands.Cog):
+class Mod(commands.Cog, description="Moderation commands"):
     """
     Moderation cog
 

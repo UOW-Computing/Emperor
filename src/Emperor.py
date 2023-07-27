@@ -39,7 +39,7 @@ class Emperor(commands.Bot):
         self.lj = Lj()
 
         super().__init__(
-            description="Discord made by School of Computing Dev team.",
+            description="Emperor bot made by School of Computing Dev team.",
             command_prefix=commands.when_mentioned_or(self.config.BOT_PREFIX),
             intents=p_intents,
         )

@@ -29,7 +29,7 @@ from typing import List, Tuple
 from src.errors.checks import DisabledCommand
 
 
-class API(commands.Cog):
+class API(commands.Cog, description="Commands that relate to APIs"):
     """
      API Cog
 

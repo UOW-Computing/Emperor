@@ -25,8 +25,8 @@ from github import Github
 
 
 class Emp(
-    commands.GroupCog,
-    group_name="emperor",
+    commands.Cog,
+    name="Emperor",
     description="All commands relate to emperor, and developers working on emperor",
 ):
     """
@@ -34,6 +34,9 @@ class Emp(
     All commands relate to the emperor, and developers working
     on the emperor.
     """
+    
+    emperor_group = app_commands.Group(name="emperor",
+                                   description="All commands relate to emperor, and developers working on emperor")
 
     def __init__(self, bot):
         self.bot = bot
@@ -51,8 +54,8 @@ class Emp(
         )
         await interaction.response.send_message(f"<@{interaction.user.id}>, {error}")
 
-    @app_commands.command(name="contribute", description="Contribute to Emperor")
-    async def hello(self, interaction: discord.Interaction) -> None:
+    @emperor_group.command(name="contribute", description="Contribute to Emperor")
+    async def contribute(self, interaction: discord.Interaction) -> None:
         """
         Instructions on how to contribute to Emperor
 
@@ -101,7 +104,7 @@ Remember: **Do not be scared to contribute, no one will make a fool of you, we w
     # pylint: disable=too-many-arguments
     # Anything related to Github goes here!
     # PyGithub Wrapper -> Github REST API
-    @app_commands.command(
+    @emperor_group.command(
         name="issue", description="Creates an Issue on Emperor's Repo."
     )
     async def create_issue(
