@@ -21,15 +21,12 @@ import discord
 
 from discord.ext import commands
 from discord import app_commands
-from discord.ext.commands import Cog
 from typing import Mapping, Optional, List
-
-from discord.ext.commands.cog import Cog
 
 class MyHelpCommand(commands.HelpCommand):
 
 
-    async def send_bot_help(self, mapping: Mapping[Optional[Cog], List[commands.Command]]):
+    async def send_bot_help(self, mapping: Mapping[Optional[commands.Cog], List[commands.Command]]):
         """
         Sends an embed with all the commands for the server
         
@@ -46,9 +43,9 @@ class MyHelpCommand(commands.HelpCommand):
         Using `{self.context.clean_prefix}help` shows this embed again.
         NOTE: Slash Commnads will not work with `{self.context.clean_prefix}help [command]`."""
         
-        for cog, command in mapping.items():            
+        for cog, command in mapping.items():
             cog_name = getattr(cog, "qualified_name", "No Category")
-                        
+
             if cog_name in ["Dev", "Event", "Help", "No Category"]:
                 continue
             
@@ -58,11 +55,11 @@ class MyHelpCommand(commands.HelpCommand):
             
             app_commands_union = cog.get_app_commands() if not (cog is None) else []
             num = 0
-            for i in range(len(app_commands_union)):
-                if isinstance(app_commands_union[i], app_commands.Command):
+            for app_command in app_commands_union:
+                if isinstance(app_command, app_commands.Command):
                     num += 1
-                if isinstance(app_commands_union[i], app_commands.Group):
-                    num += len(app_commands_union[i].commands)
+                if isinstance(app_command, app_commands.Group):
+                    num += len(app_command.commands)
             
             embed.add_field(name=f'{cog_name} ({len(commands_list) + num})',
                                 value=cog.description if not (cog is None) else "Nothing here",
@@ -87,7 +84,7 @@ class MyHelpCommand(commands.HelpCommand):
         channel = self.get_destination()
         await channel.send(embed=embed)
         
-    async def send_cog_help(self, cog: Cog) -> None:
+    async def send_cog_help(self, cog: commands.Cog) -> None:
         """Gathers information about the cog and sends an embed with the information.
 
         Args:

@@ -34,7 +34,7 @@ class Emp(
     All commands relate to the emperor, and developers working
     on the emperor.
     """
-    
+
     emperor_group = app_commands.Group(name="emperor",
                                    description="All commands relate to emperor, and developers working on emperor")
 
