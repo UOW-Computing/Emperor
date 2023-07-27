@@ -42,7 +42,7 @@ class MyHelpCommand(commands.HelpCommand):
         description = f"""{self.context.bot.description}
         Using `{self.context.clean_prefix}help` shows this embed again.
         NOTE: Slash Commnads will not work with `{self.context.clean_prefix}help [command]`."""
-        
+
         for cog, command in mapping.items():
             cog_name = getattr(cog, "qualified_name", "No Category")
 
