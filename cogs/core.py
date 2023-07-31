@@ -340,9 +340,18 @@ List of Youtube tutorials:
 
 """,
             "thumbnail": {"url": "attachment://gitLogo.png"},
-            "footer": {"text": "Emperor"},
+            "author": {
+                "name": "Emperor",
+                "icon_url": self.bot.user.display_avatar.url
+            },
+            "footer": {
+                "text": f"run by {interaction.user.display_name} ID: {interaction.user.id} | Emperor", 
+                "icon_url": interaction.user.display_avatar.url
+            },
             "title": "Git",
+            "color": self.bot.config.COLOUR
         }
+        
 
         await interaction.response.send_message(
             embed=discord.Embed.from_dict(git_embed), file=icon_file
