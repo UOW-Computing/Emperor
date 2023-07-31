@@ -135,13 +135,10 @@ class Core(commands.Cog, description="Bunch of commands"):
         return num
 
     def __count_top_three_roles(self, member: discord.Member) -> str:
-        roles = ""
-        rolelen = len(member.roles)
 
-        for i in range(1, rolelen, 1):
-            roles += f"<@&{member.roles[-i].id}>"
+        roles_list = [f'<@&{role.id}>' for role in member.roles]
 
-        return roles
+        return ", ".join(roles_list[:-4:-1]) + "."
 
     def __count_emojis(self, guild: discord.Guild) -> str:
         """
