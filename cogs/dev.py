@@ -23,7 +23,7 @@ import typing
 from discord.ext import commands
 
 
-class Dev(commands.Cog):
+class Dev(commands.Cog, description="Developer commands"):
     """
     Admin cog
 
@@ -66,7 +66,7 @@ class Dev(commands.Cog):
         await message.delete()
         await ctx.message.delete()
 
-    @commands.command(name="reload")
+    @commands.command(name="reload", description="unloads and loads the cog")
     async def reload(self, ctx: commands.Context, cog: str) -> None:
         """
         Allows the changes to be run without having the restart the discord bot
@@ -89,7 +89,7 @@ class Dev(commands.Cog):
             message = await ctx.send(exc)
             await self.__delete_messages_after(message, ctx)
 
-    @commands.command(name="load")
+    @commands.command(name="load", description="Loads the cog, so commands inside can be used")
     async def load(self, ctx: commands.Context, cog: str) -> None:
         """
         Loads a specifc cog
@@ -109,7 +109,7 @@ class Dev(commands.Cog):
             message = await ctx.send(exc)
             await self.__delete_messages_after(message, ctx)
 
-    @commands.command(name="unload")
+    @commands.command(name="unload", description="Unloads the cog, prevents commands form being executed/known.")
     async def unload(self, ctx: commands.Context, cog: str) -> None:
         """
         Unloads a specifc cog

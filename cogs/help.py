@@ -21,13 +21,12 @@ import discord
 
 from discord.ext import commands
 from discord import app_commands
-from discord.ext.commands import Cog
 from typing import Mapping, Optional, List
 
 class MyHelpCommand(commands.HelpCommand):
 
 
-    async def send_bot_help(self, mapping: Mapping[Optional[Cog], List[commands.Command]]):
+    async def send_bot_help(self, mapping: Mapping[Optional[commands.Cog], List[commands.Command]]):
         """
         Sends an embed with all the commands for the server
         
@@ -38,51 +37,81 @@ class MyHelpCommand(commands.HelpCommand):
             discord.Embed - contains all commands formated correctly
         
         """
-        embed = discord.Embed(title="Bot help")
-        # `mapping` is a dict of the bot's cogs, which map to their commands
-        # print(mapping)
+        embed = discord.Embed(title="Emperor Help", color=self.context.bot.config.COLOUR)
 
-        # NOTE: app_commands do not have a normal cooldown
-        # attribute, converting all the app_commands
-        # into hybrid commands would give them cooldown attribute
+        description = f"""{self.context.bot.description}
+        Using `{self.context.clean_prefix}help` shows this embed again.
+        NOTE: Slash Commnads will not work with `{self.context.clean_prefix}help [command]`."""
 
-        description = f"{self.context.bot.description}\nUse `e!help` to see this embed again!\nAny `\` commands are slash commands, while `e!` are normal commands."
-        for commands in mapping.items():
-            for item in commands:
-                # list object is normal text commands
-                if item.__class__ == list:
-                    for i in item:
-                        if i.__class__ is discord.app_commands.Group:
-                            continue
-                        if i.cog_name in [None, "Admin"]:
-                            continue
+        for cog, command in mapping.items():
+            cog_name = getattr(cog, "qualified_name", "No Category")
 
-                        description += f"\n• **e!{i.qualified_name}**: {i.description}"
-
-                # Any Cog object contains app_commands which
-                # is slash commands
-                elif item.__class__.__base__ == Cog:
-                    # Removing Admin and Event Cogs
-                    # Contain special commands that cannot be
-                    # used by normal users
-                    if item.__cog_name__ in ["Admin", "Event"]:
-                        continue
-
-                    description += f"\n\n**__{item.__cog_name__}__**\n"
-
-                    for command in item.walk_app_commands():
-                        if command.__class__ is discord.app_commands.Group:
-                            continue
-
-                        description += f"\n• **/{command.qualified_name}**: {command.description}"
-
+            if cog_name in ["Dev", "Event", "Help", "No Category"]:
+                continue
+            
+            # Figure out how many commands are
+            # inside the cog
+            commands_list = cog.get_commands() if not (cog is None) else command
+            
+            app_commands_union = cog.get_app_commands() if not (cog is None) else []
+            num = 0
+            for app_command in app_commands_union:
+                if isinstance(app_command, app_commands.Command):
+                    num += 1
+                if isinstance(app_command, app_commands.Group):
+                    num += len(app_command.commands)
+            
+            embed.add_field(name=f'{cog_name} ({len(commands_list) + num})',
+                                value=cog.description if not (cog is None) else "Nothing here",
+                                inline=False)
+                
         embed.description = description
-
+        embed.set_author(name=self.context.bot.user.display_name, icon_url=self.context.bot.user.display_avatar)
+        embed.set_footer(text=f'run by {self.context.author.display_name} | ID: {self.context.author.id}',
+                         icon_url=self.context.author.display_avatar)
+        
         channel = self.get_destination()
         await channel.send(embed=embed)
 
+    async def send_command_help(self, command):
+        embed = discord.Embed(title=self.get_command_signature(command),
+                              color=self.context.bot.config.COLOUR)
+        embed.add_field(name="Help", value=command.help)
+        alias = command.aliases
+        if alias:
+            embed.add_field(name="Aliases", value=", ".join(alias), inline=False)
 
-class Help(commands.Cog):
+        channel = self.get_destination()
+        await channel.send(embed=embed)
+        
+    async def send_cog_help(self, cog: commands.Cog) -> None:
+        """Gathers information about the cog and sends an embed with the information.
+
+        Args:
+            cog (Cog): The cog the information is about.
+        """
+        channel = self.get_destination()
+        
+        embed = discord.Embed(title=f'{cog.qualified_name}', color=self.context.bot.config.COLOUR)
+        
+        # embed.add_field(name="Commands", value="Commands that can be run through the prefix", inline=False)
+        for command in cog.walk_commands():
+            embed.add_field(name=command.name, value=command.description, inline=True)
+        
+        # embed.add_field(name="Slash Commands", value="Commands that are built into the client by the bot", inline=False)
+        for command in cog.walk_app_commands():
+            if isinstance(command, app_commands.Group):
+                continue
+            embed.add_field(name=f'{command.qualified_name}', value=command.description, inline=True)
+        
+        embed.description = cog.description
+        embed.set_author(name=self.context.bot.user.display_name, icon_url=self.context.bot.user.display_avatar)
+        embed.set_footer(text=f'run by {self.context.author.display_name} | ID: {self.context.author.id}',
+                         icon_url=self.context.author.display_avatar)
+        
+        await channel.send(embed=embed)
+
+class Help(commands.Cog, description="Shows this message."):
     """
     Help command that showcases all the possible commands for the bot
     """

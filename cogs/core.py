@@ -26,7 +26,7 @@ from discord import app_commands
 from src.errors.checks import DisabledCommand
 from src.ServerUtils import Utils
 
-class Core(commands.Cog):
+class Core(commands.Cog, description="Bunch of commands"):
     """
     Main Cog
 
