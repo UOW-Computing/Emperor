@@ -371,7 +371,7 @@ List of Youtube tutorials:
         """
 
         await ctx.send(
-            f"The bot has been online for: <t:{int(dt.timestamp(self.bot.uptime))}:R>"
+            f"The bot came online <t:{int(dt.timestamp(self.bot.uptime))}:R>."
         )
 
 
