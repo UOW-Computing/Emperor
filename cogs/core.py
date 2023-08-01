@@ -135,13 +135,10 @@ class Core(commands.Cog, description="Bunch of commands"):
         return num
 
     def __count_top_three_roles(self, member: discord.Member) -> str:
-        roles = ""
-        rolelen = len(member.roles)
 
-        for i in range(1, rolelen, 1):
-            roles += f"<@&{member.roles[-i].id}>"
+        roles_list = [f'<@&{role.id}>' for role in member.roles]
 
-        return roles
+        return ", ".join(roles_list[:-4:-1]) + "."
 
     def __count_emojis(self, guild: discord.Guild) -> str:
         """
@@ -343,9 +340,18 @@ List of Youtube tutorials:
 
 """,
             "thumbnail": {"url": "attachment://gitLogo.png"},
-            "footer": {"text": "Emperor"},
+            "author": {
+                "name": "Emperor",
+                "icon_url": self.bot.user.display_avatar.url
+            },
+            "footer": {
+                "text": f"run by {interaction.user.display_name} ID: {interaction.user.id} | Emperor", 
+                "icon_url": interaction.user.display_avatar.url
+            },
             "title": "Git",
+            "color": self.bot.config.COLOUR
         }
+        
 
         await interaction.response.send_message(
             embed=discord.Embed.from_dict(git_embed), file=icon_file
@@ -365,7 +371,7 @@ List of Youtube tutorials:
         """
 
         await ctx.send(
-            f"The bot has been online for: <t:{int(dt.timestamp(self.bot.uptime))}:R>"
+            f"The bot came online <t:{int(dt.timestamp(self.bot.uptime))}:R>."
         )
 
 
