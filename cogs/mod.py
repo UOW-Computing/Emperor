@@ -167,12 +167,16 @@ class Mod(commands.Cog, description="Moderation commands"):
         support_embed = discord.Embed(
             color=self.bot.config.COLOUR,
             title="Support Ticket",
-            description="Thank you for creating a support ticket, any moment staff members will get in touch to talk about your issue!",
+            description="Thank you for creating a support ticket, any moment now staff members will get in touch to " 
+                        "talk about your problem!",
         )
 
         support_embed.add_field(name="Reason for ticket", value=reason)
         support_embed.set_author(name="Emperor", icon_url=self.bot.user.display_avatar.url)
-        support_embed.set_footer(text=f"run by {interaction.user.display_name} | ID: {interaction.user.id}", icon_url=interaction.user.display_avatar)
+        support_embed.set_footer(
+            text=f"run by {interaction.user.display_name} | ID: {interaction.user.id}",
+            icon_url=interaction.user.display_avatar
+            )
         # Send the embed in the ticket
         # just created
         await channel.send(embed=support_embed)
@@ -193,6 +197,17 @@ class Mod(commands.Cog, description="Moderation commands"):
         """
         Closes an already open ticket made by an member
         """
+        # Get the staff role 
+        staff_role = interaction.guild.get_role(int(self.bot.config.STAFF_IDS[str(interaction.guild_id)]))
+
+        # Check if the user has Staff role
+        # Only Staff should be allowed to close
+        # channels
+        if not (staff_role in interaction.user.roles):
+            await interaction.response.send_message("You do not have permission to close tickets. "
+                                                    "Please let a staff member close this ticket.", ephemeral=True)
+            return
+
         # Check if the channel is ticket channel
         guild = interaction.guild
 
@@ -224,7 +239,8 @@ class Mod(commands.Cog, description="Moderation commands"):
             await channel.delete()
         else:
             await interaction.response.send_message(
-                "This command cannot be used outside of a ticket!"
+                "Oopsies, this channel is not a ticket channel, therefore cannot be closed!",
+                ephemeral=True
             )
 
     # Reaction role command
