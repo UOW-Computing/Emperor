@@ -138,34 +138,41 @@ class Mod(commands.Cog, description="Moderation commands"):
 
         # Gets the Guild
         guild = interaction.guild
-
         # Gets the @Staff role for the guild
         role = guild.get_role(
-            int(self.bot.config.STAFF_IDS[str(interaction.guild.id)])
+            int(self.bot.config.STAFF_IDS[str(guild.id)])
         )  # self.bot.config.SUPPORT_ROLE
         overwrites = {
             guild.default_role: discord.PermissionOverwrite(read_messages=False),
             interaction.user: discord.PermissionOverwrite(read_messages=True),
             role: discord.PermissionOverwrite(read_messages=True),
         }
-
         # Ticket channel name
         self.ticket_number += 1
         channel_name = f"ticket-{self.ticket_number:02}"
-
+ 
+        # Find the ticket category
+        if len(interaction.guild.categories) > 0:
+            for category in interaction.guild.categories:
+                if category.name == "Tickets":
+                    category_channel = category
+        else:
+            category_channel = await guild.create_category_channel(name="Tickets", overwrites=overwrites)
+ 
         # Create the channel with the ticket
         # channel name above
-        channel = await guild.create_text_channel(channel_name, overwrites=overwrites)
+        channel = await guild.create_text_channel(channel_name, overwrites=overwrites, category=category_channel)
 
         # Make the embed
         support_embed = discord.Embed(
             color=self.bot.config.COLOUR,
             title="Support Ticket",
-            description="Thank you for creating a support ticket, any moment staff members will get in touch!",
+            description="Thank you for creating a support ticket, any moment staff members will get in touch to talk about your issue!",
         )
 
         support_embed.add_field(name="Reason for ticket", value=reason)
-
+        support_embed.set_author(name="Emperor", icon_url=self.bot.user.display_avatar.url)
+        support_embed.set_footer(text=f"run by {interaction.user.display_name} | ID: {interaction.user.id}", icon_url=interaction.user.display_avatar)
         # Send the embed in the ticket
         # just created
         await channel.send(embed=support_embed)
